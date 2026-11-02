@@ -5,9 +5,12 @@ plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.compose.compiler)
   alias(libs.plugins.kotlinx.serialization)
-  alias(libs.plugins.ksp)
   alias(libs.plugins.room)
 }
+
+// KSP applied via buildscript classpath (see root build.gradle.kts) because the
+// plugin marker artifact is rate-limited on Maven Central and not on Aliyun mirror.
+pluginManager.apply("com.google.devtools.ksp")
 
 android {
   namespace = "com.magen.player"
@@ -203,7 +206,9 @@ dependencies {
   implementation(libs.accompanist.permissions)
 
   implementation(libs.room.runtime)
-  ksp(libs.room.compiler)
+  // KSP Room compiler — using add("ksp", ...) because KSP is applied via buildscript
+  // classpath rather than the plugins DSL (see root build.gradle.kts).
+  add("ksp", libs.room.compiler)
   implementation(libs.room.ktx)
 
   implementation(libs.kotlinx.immutable.collections)

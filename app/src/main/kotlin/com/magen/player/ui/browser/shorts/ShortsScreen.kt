@@ -1284,7 +1284,7 @@ private fun MoreActionsSheet(
             ListItem(
                 headlineContent = { Text(stringResource(R.string.pref_quick_delete_shorts)) },
                 supportingContent = { Text(stringResource(R.string.pref_quick_delete_shorts_summary)) },
-                leadingContent = { Icon(Icons.Default.DeleteForever, contentDescription = null) },
+                leadingContent = { Icon(Icons.Default.Delete, contentDescription = null) },
                 trailingContent = {
                     Switch(checked = quickDeleteEnabled, onCheckedChange = { onToggleQuickDelete() })
                 },

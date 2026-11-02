@@ -13,6 +13,7 @@ import com.magen.player.domain.thumbnail.isMostlySolidThumbnail
 import com.magen.player.domain.thumbnail.scaleToThumbnailMax
 import com.magen.player.utils.storage.FileTypeUtils
 import `is`.xyz.mpv.FastThumbnails
+import `is`.xyz.mpv.getEmbeddedPictureAsync
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ensureActive

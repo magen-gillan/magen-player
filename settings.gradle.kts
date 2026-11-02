@@ -7,19 +7,23 @@ pluginManagement {
         includeGroupByRegex("androidx.*")
       }
     }
-    mavenCentral()
+    // Aliyun mirror first to avoid Maven Central 429 rate limiting
+    maven(url = "https://maven.aliyun.com/repository/central")
+    maven(url = "https://maven.aliyun.com/repository/public")
+    // Explicit Maven Central endpoint (repo1.maven.org) — more reliable than mavenCentral()
+    maven(url = "https://repo1.maven.org/maven2")
     gradlePluginPortal()
   }
-}
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 dependencyResolutionManagement {
   repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
   repositories {
     google()
     mavenLocal()
-    mavenCentral()
+    // Aliyun mirror before Maven Central to avoid 429 rate limiting
+    maven(url = "https://maven.aliyun.com/repository/central")
+    maven(url = "https://maven.aliyun.com/repository/public")
+    maven(url = "https://repo1.maven.org/maven2")
     maven(url = "https://magenplayer.github.io/MagenPlayer-libmpv")
     maven(url = "https://www.jitpack.io") {
       content {
