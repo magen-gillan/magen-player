@@ -201,6 +201,12 @@ dependencies {
   implementation(libs.kotlinx.immutable.collections)
   implementation(libs.kotlinx.serialization.json)
   implementation(libs.okhttp)
+  implementation(libs.smbj)
+  implementation(libs.commons.net)
+  implementation(libs.sardine.android) {
+    exclude(group = "xpp3", module = "xpp3")
+  }
+  implementation(libs.nanohttpd)
 
   implementation(libs.truetype.parser)
   implementation(libs.fsaf)
@@ -209,12 +215,6 @@ dependencies {
   implementation(libs.androidx.security.crypto)
 
   // Network protocol libraries
-  implementation(libs.smbj)
-  implementation(libs.commons.net)
-  implementation(libs.sardine.android) {
-    exclude(group = "xpp3", module = "xpp3")
-  }
-  implementation(libs.nanohttpd)
   implementation(libs.lazycolumnscrollbar)
   implementation(libs.reorderable)
   implementation(libs.compose.markdown)

@@ -132,6 +132,7 @@ import com.magen.player.preferences.PlayerPreferences
 import com.magen.player.ui.player.PlayerTutorialManager
 import com.magen.player.preferences.preference.collectAsState
 import com.magen.player.preferences.BrowserPreferences
+import com.magen.player.preferences.ShortsSortType
 import com.magen.player.ui.player.controls.components.glassSurface
 import com.magen.player.utils.media.MediaUtils
 import com.magen.player.ui.browser.miniplayer.MiniPlayerStateManager
@@ -712,6 +713,7 @@ private fun ShortPageItem(
     var showInfo by remember { mutableStateOf(false) }
     var showMore by remember { mutableStateOf(false) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
+    var showSortDialog by remember { mutableStateOf(false) }
 
     val playerPreferences = koinInject<PlayerPreferences>()
     val browserPreferences = koinInject<BrowserPreferences>()
@@ -1108,6 +1110,10 @@ private fun ShortPageItem(
                     showMore = false
                     showInfo = true
                 },
+                onShowSort = {
+                    showMore = false
+                    showSortDialog = true
+                },
                 onDeleteShort = {
                     showMore = false
                     if (quickDeleteEnabled) {
@@ -1119,6 +1125,9 @@ private fun ShortPageItem(
             )
         }
 
+        if (showSortDialog) {
+            ShortsSortDialog(onDismiss = { showSortDialog = false })
+        }
         if (showDeleteConfirmation) {
             AlertDialog(
                 onDismissRequest = { showDeleteConfirmation = false },
@@ -1212,6 +1221,32 @@ private fun ConfettiBurst(trigger: Long, center: Offset) {
     }
 }
 
+@Composable
+private fun ShortsSortDialog(onDismiss: () -> Unit) {
+    val browserPreferences = koinInject<BrowserPreferences>()
+    val current by browserPreferences.shortsSortType.collectAsState()
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.pref_shorts_sort)) },
+        text = {
+            Column {
+                ShortsSortType.entries.forEach { type ->
+                    ListItem(
+                        headlineContent = { Text(stringResource(type.stringRes)) },
+                        trailingContent = { if (type == current) Icon(Icons.Default.Check, contentDescription = null) },
+                        modifier = Modifier.clickable {
+                            browserPreferences.shortsSortType.set(type)
+                            onDismiss()
+                        },
+                        colors = ListItemDefaults.colors(containerColor = Color.Transparent)
+                    )
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.cancel)) } }
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun MoreActionsSheet(
@@ -1226,6 +1261,7 @@ private fun MoreActionsSheet(
     onShowBlocked: () -> Unit,
     onShowFavorites: () -> Unit,
     onShowInfo: () -> Unit,
+    onShowSort: () -> Unit,
     onDeleteShort: () -> Unit
 ) {
     val playerPreferences = koinInject<PlayerPreferences>()
@@ -1248,6 +1284,13 @@ private fun MoreActionsSheet(
         }
     ) {
         Column(modifier = Modifier.padding(bottom = 32.dp)) {
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.pref_shorts_sort)) },
+                supportingContent = { Text(stringResource(R.string.pref_shorts_sort_summary)) },
+                leadingContent = { Icon(Icons.Default.MoreVert, contentDescription = null) },
+                modifier = Modifier.clickable { onShowSort() },
+                colors = ListItemDefaults.colors(containerColor = Color.Transparent)
+            )
             ListItem(
                 headlineContent = { Text(stringResource(R.string.auto_swipe_to_next_short)) },
                 supportingContent = { Text(stringResource(R.string.auto_swipe_to_next_short_desc)) },

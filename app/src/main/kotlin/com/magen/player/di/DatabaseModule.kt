@@ -646,22 +646,8 @@ val DatabaseModule =
     }
 
     // MediaFileRepository is a singleton object - no DI needed
-
-    single {
-      get<MagenPlayerDatabase>().networkConnectionDao()
-    }
-
-    single {
-      get<MagenPlayerDatabase>().shortsMediaDao()
-    }
-
-    single {
-      com.magen.player.repository.NetworkRepository(
-        dao = get(),
-      )
-    }
-
-    single {
+    single { get<MagenPlayerDatabase>().shortsMediaDao() }
+single {
       PlaylistRepository(
         playlistDao = get<MagenPlayerDatabase>().playlistDao(),
       )

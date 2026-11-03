@@ -101,8 +101,6 @@ class MainActivity : ComponentActivity() {
     
     PermissionUtils.setMediaAccessLauncher(mediaAccessLauncher)
 
-    // Register proxy lifecycle observer for network streaming
-    lifecycle.addObserver(com.magen.player.ui.browser.networkstreaming.proxy.ProxyLifecycleObserver())
 
     setContent {
       // Set up theme and edge-to-edge display
@@ -300,95 +298,6 @@ class MainActivity : ComponentActivity() {
         )
       }
 
-      // Display Update Dialog when appropriate (only if update feature is enabled)
-      if (BuildConfig.ENABLE_UPDATE_FEATURE && updateViewModel != null) {
-        when (updateState) {
-          is UpdateViewModel.UpdateState.Available -> {
-            val release = (updateState as UpdateViewModel.UpdateState.Available).release
-            UpdateDialog(
-              release = release,
-              isDownloading = isDownloading,
-              progress = downloadProgress,
-              actionLabel = if (isDownloading) "Downloading..." else "Download",
-              currentVersion = currentVersion,
-              onDismiss = { updateViewModel.dismiss() },
-              onAction = { 
-                // Redirect to GitHub releases page as requested by user
-                context.startActivity(
-                  Intent(
-                    Intent.ACTION_VIEW, 
-                    (release.htmlUrl ?: if (UpdateManager.isPreviewBuild()) {
-                      UpdateManager.PREVIEW_PAGE_URL
-                    } else {
-                      "https://github.com/MagenPlayer/Magen-Player/releases/latest"
-                    }).toUri()
-                  )
-                )
-                // updateViewModel.downloadUpdate(release) // Kept in code but disabled for now
-              },
-              onIgnore = { updateViewModel.ignoreVersion(release.tagName.removePrefix("v")) }
-            )
-          }
-          is UpdateViewModel.UpdateState.ReadyToInstall -> {
-            val release = (updateState as UpdateViewModel.UpdateState.ReadyToInstall).release
-            UpdateDialog(
-              release = release,
-              isDownloading = isDownloading,
-              progress = downloadProgress,
-              actionLabel = "Install",
-              currentVersion = currentVersion,
-              onDismiss = { updateViewModel.dismiss() },
-              onAction = { 
-                // Redirect to GitHub releases page as requested by user
-                context.startActivity(
-                  Intent(
-                    Intent.ACTION_VIEW, 
-                    (release.htmlUrl ?: if (UpdateManager.isPreviewBuild()) {
-                      UpdateManager.PREVIEW_PAGE_URL
-                    } else {
-                      "https://github.com/MagenPlayer/Magen-Player/releases/latest"
-                    }).toUri()
-                  )
-                )
-                // updateViewModel.installUpdate(release) // Kept in code but disabled for now
-              },
-              onIgnore = { updateViewModel.ignoreVersion(release.tagName.removePrefix("v")) }
-            )
-          }
-          else -> {}
-        }
-      }
-
-      // Companion (Magen-Ytdlp APK) update dialog — only when addon is installed.
-      // Guarded so an active app-update dialog always wins; companion shows after it's dismissed.
-      if (BuildConfig.ENABLE_UPDATE_FEATURE && updateViewModel != null &&
-          updateState !is UpdateViewModel.UpdateState.Available &&
-          updateState !is UpdateViewModel.UpdateState.ReadyToInstall) {
-        when (companionUpdateState) {
-          is UpdateViewModel.UpdateState.Available -> {
-            val release = (companionUpdateState as UpdateViewModel.UpdateState.Available).release
-            UpdateDialog(
-              release = release,
-              isDownloading = false,
-              progress = 0f,
-              actionLabel = "Download",
-              currentVersion = updateViewModel.ytdlpInstalledVersion() ?: "",
-              titleOverride = "Magen-Ytdlp Update Available",
-              onDismiss = { updateViewModel.dismissCompanionNoUpdate() },
-              onAction = {
-                context.startActivity(
-                  Intent(
-                    Intent.ACTION_VIEW,
-                    (release.htmlUrl ?: "https://github.com/MagenPlayer/Magen-Ytdlp/releases/latest").toUri()
-                  )
-                )
-              },
-              onIgnore = { updateViewModel.ignoreYtdlpVersion(release.tagName.removePrefix("v")) }
-            )
-          }
-          else -> {}
-        }
-      }
     }
   }
 }

@@ -301,7 +301,6 @@ fun FileSystemBrowserScreen(path: String? = null) {
   // Bottom bar visibility state
   var showFloatingBottomBar by remember { mutableStateOf(false) }
   var showMarkAsSheet by remember { mutableStateOf(false) }
-  var showWebShareSheet by remember { mutableStateOf(false) }
 
   // Animation duration for responsive slide animations
   val animationDuration = 200
@@ -653,11 +652,6 @@ fun FileSystemBrowserScreen(path: String? = null) {
                     }
                   }
                 },
-              ))
-              add(SelectionOverflowAction(
-                icon = Icons.Filled.Share,
-                label = stringResource(R.string.web_share_title),
-                onClick = { showWebShareSheet = true },
               ))
               if (folderSelectionManager.isInSelectionMode && !videoSelectionManager.isInSelectionMode) {
                 add(SelectionOverflowAction(
@@ -1147,13 +1141,6 @@ fun FileSystemBrowserScreen(path: String? = null) {
     }
     multiSelectionInfo?.let { (count, bytes, duration) ->
       com.magen.player.ui.browser.sheets.MultiSelectionInfoSheet(count = count, totalBytes = bytes, totalDurationMs = duration, onDismiss = { multiSelectionInfo = null }, unit = multiSelectionUnit)
-    }
-
-    if (showWebShareSheet) {
-      com.magen.player.feature.webshare.WebShareSheet(
-        videos = videoSelectionManager.getSelectedItems(),
-        onDismiss = { showWebShareSheet = false }
-      )
     }
   }
 }

@@ -30,7 +30,6 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.outlined.VideoLibrary
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Language
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -64,7 +63,6 @@ import com.magen.player.preferences.preference.collectAsState
 import com.magen.player.presentation.Screen
 import com.magen.player.ui.browser.dialogs.CommunityLinksDialog
 import com.magen.player.ui.browser.folderlist.FolderListScreen
-import com.magen.player.ui.browser.networkstreaming.NetworkStreamingScreen
 import com.magen.player.ui.browser.playlist.PlaylistScreen
 import com.magen.player.ui.browser.recentlyplayed.RecentlyPlayedScreen
 import com.magen.player.ui.browser.shorts.ShortsScreen
@@ -183,7 +181,6 @@ object MainScreen : Screen {
     val enableTabYou by browserPreferences.enableTabYou.collectAsState()
     val enableTabRecents by browserPreferences.enableTabRecents.collectAsState()
     val enableTabPlaylists by browserPreferences.enableTabPlaylists.collectAsState()
-    val enableTabNetwork by browserPreferences.enableTabNetwork.collectAsState()
     val bottomNavOrder by browserPreferences.bottomNavOrder.collectAsState()
     val customProfileImagePath by appearancePreferences.customProfileImagePath.collectAsState()
 
@@ -205,12 +202,11 @@ object MainScreen : Screen {
     val youLabel = stringResource(R.string.you)
     val recentsLabel = stringResource(R.string.recents)
     val playlistsLabel = stringResource(R.string.playlists)
-    val networkLabel = stringResource(R.string.network)
 
     val visibleTabs = remember(
-      isShortsEnabled, enableTabYou, enableTabRecents, enableTabPlaylists, enableTabNetwork,
+      isShortsEnabled, enableTabYou, enableTabRecents, enableTabPlaylists,
       bottomNavOrder,
-      homeLabel, shortsLabel, youLabel, recentsLabel, playlistsLabel, networkLabel
+      homeLabel, shortsLabel, youLabel, recentsLabel, playlistsLabel
     ) {
       val rawTabs = buildList {
         add(
@@ -240,13 +236,6 @@ object MainScreen : Screen {
               }
             )
           }
-        }
-        if (enableTabNetwork) {
-          add(
-            VisibleTab("network", networkLabel, Icons.Filled.Language) {
-              NetworkStreamingScreen.Content()
-            }
-          )
         }
         if (enableTabYou) {
           add(

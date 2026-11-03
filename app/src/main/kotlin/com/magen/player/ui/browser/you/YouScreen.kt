@@ -136,7 +136,6 @@ import com.magen.player.ui.browser.dialogs.AddToPlaylistDialog
 import com.magen.player.ui.browser.playlist.PlaylistDetailScreen
 import com.magen.player.ui.browser.playlist.PlaylistScreen
 import com.magen.player.ui.browser.playlist.PlaylistViewModel
-import com.magen.player.ui.browser.networkstreaming.NetworkStreamingScreen
 import com.magen.player.ui.browser.recentlyplayed.RecentlyPlayedItem
 import com.magen.player.ui.browser.recentlyplayed.RecentlyPlayedScreen
 import com.magen.player.ui.browser.recentlyplayed.RecentlyPlayedViewModel
@@ -285,7 +284,7 @@ object YouScreen : Screen {
               playlistCount = playlistsWithCount.size,
               onHistoryClick = { backStack.add(RecentlyPlayedScreen) },
               onPlaylistsClick = { backStack.add(PlaylistScreen) },
-              onNetworkClick = if (!enableTabNetwork) { { backStack.add(NetworkStreamingScreen) } } else null,
+              onNetworkClick = null,
               onShortsClick = if (!isShortsEnabled) { { backStack.add(ShortsScreen()) } } else null,
             )
           }

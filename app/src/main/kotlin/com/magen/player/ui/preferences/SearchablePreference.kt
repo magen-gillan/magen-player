@@ -2,7 +2,6 @@ package com.magen.player.ui.preferences
 
 import androidx.annotation.StringRes
 import com.magen.player.R
-import com.magen.player.jellyfin.ui.JellyfinSettingsScreen
 import com.magen.player.presentation.Screen
 
 /**
@@ -1334,104 +1333,6 @@ object SearchablePreferences {
                 category = "Magen Shorts",
                 screen = ShortsPreferencesScreen,
                 targetIndex = 5,
-            ))
-
-            // Integrations preferences
-            add(SearchablePreference(
-                title = "Jellyfin",
-                summary = "External player sync",
-                keywords = listOf("jellyfin", "server", "sync", "stream", "media", "integration"),
-                category = "Integrations",
-                screen = JellyfinSettingsScreen,
-                targetIndex = 0,
-            ))
-            add(SearchablePreference(
-                title = "yt-dlp",
-                summary = "Manage Magen Ytdlp & extractor preferences",
-                keywords = listOf("ytdl", "yt-dlp", "youtube", "extractor", "stream", "downloader", "addon"),
-                category = "Integrations",
-                screen = YtdlSettingsScreen,
-                targetIndex = 0,
-            ))
-            add(SearchablePreference(
-                title = "Resolution Preference",
-                summary = "Auto / Best, 4K, 2K, 1080p, 720p, 480p, Audio Only",
-                keywords = listOf("resolution", "quality", "1080p", "4k", "yt-dlp", "stream", "video"),
-                category = "Integrations",
-                screen = YtdlSettingsScreen,
-                targetIndex = 2,
-            ))
-            add(SearchablePreference(
-                title = "Geo-Bypass",
-                summary = "Bypass geographic video restrictions where possible",
-                keywords = listOf("geo-bypass", "region", "country", "restrictions", "yt-dlp", "bypass"),
-                category = "Integrations",
-                screen = YtdlSettingsScreen,
-                targetIndex = 2,
-            ))
-            add(SearchablePreference(
-                title = "Prefer Nightly Channel",
-                summary = "Receive cutting-edge yt-dlp nightly extractor fixes",
-                keywords = listOf("nightly", "channel", "updates", "yt-dlp", "extractor", "cutting-edge"),
-                category = "Integrations",
-                screen = YtdlSettingsScreen,
-                targetIndex = 2,
-            ))
-            add(SearchablePreference(
-                titleRes = R.string.pref_ytdlp_auto_check_updates,
-                summaryRes = R.string.pref_ytdlp_auto_check_updates_summary,
-                keywords = listOf("auto check", "updates", "ytdlp", "companion", "addon", "startup"),
-                category = "Integrations",
-                screen = YtdlSettingsScreen,
-                targetIndex = 2,
-            ))
-            add(SearchablePreference(
-                titleRes = R.string.pref_ytdlp_check_updates,
-                summaryRes = R.string.pref_ytdlp_check_updates_summary,
-                keywords = listOf("check", "updates", "ytdlp", "companion", "addon", "github"),
-                category = "Integrations",
-                screen = YtdlSettingsScreen,
-                targetIndex = 2,
-            ))
-            add(SearchablePreference(
-                title = "Auto-detect Web Pages",
-                summary = "Proactively probe unknown URLs to route HTML web pages through yt-dlp",
-                keywords = listOf("auto-detect", "web", "pages", "urls", "probe", "yt-dlp", "routing"),
-                category = "Integrations",
-                screen = YtdlSettingsScreen,
-                targetIndex = 4,
-            ))
-            add(SearchablePreference(
-                title = "Custom Supported Domains",
-                summary = "Domains (comma or space separated) routed through yt-dlp",
-                keywords = listOf("custom domains", "domains", "websites", "url", "routing", "yt-dlp"),
-                category = "Integrations",
-                screen = YtdlSettingsScreen,
-                targetIndex = 4,
-            ))
-            add(SearchablePreference(
-                title = "Custom Format Selector",
-                summary = "yt-dlp format selector (e.g. bestvideo+bestaudio/best)",
-                keywords = listOf("format", "format selector", "bestvideo", "bestaudio", "yt-dlp", "stream"),
-                category = "Integrations",
-                screen = YtdlSettingsScreen,
-                targetIndex = 6,
-            ))
-            add(SearchablePreference(
-                title = "Proxy",
-                summary = "Proxy URL for yt-dlp connections",
-                keywords = listOf("proxy", "http", "socks5", "network", "yt-dlp"),
-                category = "Integrations",
-                screen = YtdlSettingsScreen,
-                targetIndex = 6,
-            ))
-            add(SearchablePreference(
-                title = "Custom User-Agent",
-                summary = "User-Agent Header for yt-dlp requests",
-                keywords = listOf("user-agent", "header", "http", "browser", "yt-dlp"),
-                category = "Integrations",
-                screen = YtdlSettingsScreen,
-                targetIndex = 6,
             ))
 
             // About

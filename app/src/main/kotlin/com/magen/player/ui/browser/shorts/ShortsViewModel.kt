@@ -16,6 +16,7 @@ import com.magen.player.preferences.BrowserPreferences
 import com.magen.player.preferences.ShortsSortType
 import com.magen.player.utils.media.MediaFormatter
 import com.magen.player.utils.media.ShortsDiscoveryOps
+import com.magen.player.utils.sort.SortUtils
 import `is`.xyz.mpv.MPVLib
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -150,7 +151,7 @@ class ShortsViewModel(
     }
 
     private fun sortShorts(videos: List<Video>): List<Video> = when (browserPreferences.shortsSortType.get()) {
-        ShortsSortType.Title -> videos.sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.displayName })
+        ShortsSortType.Title -> videos.sortedWith { a, b -> SortUtils.NaturalOrderComparator.DEFAULT.compare(a.displayName, b.displayName) }
         ShortsSortType.Size -> videos.sortedByDescending { it.size }
         ShortsSortType.Date -> videos.sortedByDescending { it.dateAdded }
     }

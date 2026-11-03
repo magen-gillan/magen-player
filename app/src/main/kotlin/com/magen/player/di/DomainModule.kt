@@ -28,9 +28,6 @@ val domainModule = module {
     single { PlaybackManager(get()) }
     single { MiniPlayerStateManager() }
     single { HeadlessPlaybackController(androidContext()) }
-    single { com.magen.player.jellyfin.api.JellyfinApi(get(), get(), get()) }
-    single { com.magen.player.jellyfin.remote.JellyfinRemoteClient(get(), get(), get(), androidContext()) }
-    single { com.magen.player.domain.ytdl.YtDlClient(androidContext(), get()) }
 }
 
 

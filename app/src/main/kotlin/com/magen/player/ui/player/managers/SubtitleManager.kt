@@ -278,7 +278,7 @@ class SubtitleManager(
                 }
                 .onFailure {
                     Log.e(TAG, "Subtitle search failed", it)
-                    onShowToast("Search failed")
+                    onShowToast("Search failed: ${it.message?.take(80) ?: "check Wyzie API key"}")
                 }
             _isSearchingSub.value = false
         }

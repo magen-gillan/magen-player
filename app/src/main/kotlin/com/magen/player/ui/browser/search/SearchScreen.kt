@@ -86,7 +86,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.magen.player.R
 import com.magen.player.domain.browser.FileSystemItem
 import com.magen.player.domain.media.model.Video
-import com.magen.player.feature.webshare.WebShareSheet
 import com.magen.player.presentation.Screen
 import com.magen.player.ui.browser.LocalNavigationBarHeight
 import com.magen.player.ui.browser.components.BrowserBottomBar
@@ -197,7 +196,6 @@ data class SearchScreen(
     var renameDialogOpen by rememberSaveable { mutableStateOf(false) }
     var addToPlaylistDialogOpen by rememberSaveable { mutableStateOf(false) }
     var showMarkAsSheet by remember { mutableStateOf(false) }
-    var showWebShareSheet by remember { mutableStateOf(false) }
     var mediaInfoUri by remember { mutableStateOf<Uri?>(null) }
     var multiSelectionInfo by remember { mutableStateOf<Triple<Int, Long, Long>?>(null) }
     var multiSelectionUnit by remember { mutableStateOf("item") }
@@ -374,13 +372,6 @@ data class SearchScreen(
                     videoSelectionManager.shareSelected()
                     folderSelectionManager.clear()
                   }
-                )
-              )
-              add(
-                SelectionOverflowAction(
-                  icon = Icons.Filled.Share,
-                  label = stringResource(R.string.web_share_title),
-                  onClick = { showWebShareSheet = true }
                 )
               )
               val selectedVideos = videoSelectionManager.getSelectedItems()
@@ -844,18 +835,6 @@ data class SearchScreen(
         totalDurationMs = duration,
         unit = multiSelectionUnit,
         onDismiss = { multiSelectionInfo = null },
-      )
-    }
-
-    // Web Share Sheet
-    if (showWebShareSheet) {
-      val selectedVideos = videoSelectionManager.getSelectedItems()
-      WebShareSheet(
-        videos = selectedVideos,
-        onDismiss = {
-          showWebShareSheet = false
-          videoSelectionManager.clear()
-        },
       )
     }
   }

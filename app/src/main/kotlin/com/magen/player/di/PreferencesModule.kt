@@ -14,9 +14,7 @@ import com.magen.player.preferences.PlayerPreferences
 import com.magen.player.preferences.SettingsManager
 import com.magen.player.preferences.SubtitlesPreferences
 import com.magen.player.preferences.UiPreferences
-import com.magen.player.preferences.YtdlPreferences
 import com.magen.player.ui.player.PlayerTutorialManager
-import com.magen.player.jellyfin.preferences.JellyfinPreferences
 import com.magen.player.preferences.preference.AndroidPreferenceStore
 import com.magen.player.preferences.preference.PreferenceStore
 import org.koin.android.ext.koin.androidContext
@@ -26,7 +24,6 @@ import org.koin.dsl.module
 
 val PreferencesModule =
   module {
-    single { JellyfinPreferences(androidContext()) }
     single { AndroidPreferenceStore(androidContext()) }.bind(PreferenceStore::class)
 
     single { AppearancePreferences(get()) }
@@ -42,5 +39,4 @@ val PreferencesModule =
     singleOf(::SettingsManager)
     singleOf(::UiPreferences)
     singleOf(::PlayerTutorialManager)
-    singleOf(::YtdlPreferences)
   }
