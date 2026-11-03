@@ -154,7 +154,7 @@ class BrowserPreferences(
   val enableShorts = preferenceStore.getBoolean("enable_shorts", true)
   val autoSwipeShorts = preferenceStore.getBoolean("shorts_auto_swipe", false)
   val quickDeleteShorts = preferenceStore.getBoolean("shorts_quick_delete", false)
-  val shortsSortType = preferenceStore.getEnum("shorts_sort_type", ShortsSortType.Date)
+  val shortsSortType = preferenceStore.getEnum("shorts_sort_type", ShortsSortType.Title)
   val enableGlassShortsControls = preferenceStore.getBoolean("enable_glass_shorts_controls", false)
   val showShortsBackButton = preferenceStore.getBoolean("show_shorts_back_button", true)
   val includeShortHorizontalVideos = preferenceStore.getBoolean("shorts_include_horizontal", false)

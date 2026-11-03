@@ -1349,7 +1349,6 @@
     <string name="web_share_require_token_enabled_desc">Se requiere el token ?t= para ver los archivos</string>
     <string name="web_share_require_token_disabled_desc">Acceso libre (rápido y fácil)</string>
     <string name="web_share_received_title">Recibido (%1$d)</string>
-    <string name="web_share_received_path">Descargar/Magen Player</string>
     <string name="web_share_copy_link">Copiar enlace</string>
     <string name="web_share_link_copied">Enlace copiado al portapapeles</string>
     <string name="web_share_step_2">Escanee el código QR o escriba la URL en cualquier navegador</string>

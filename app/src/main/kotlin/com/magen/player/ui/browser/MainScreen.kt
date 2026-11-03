@@ -26,7 +26,6 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.PlaylistPlay
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.outlined.VideoLibrary
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
@@ -66,7 +65,6 @@ import com.magen.player.ui.browser.folderlist.FolderListScreen
 import com.magen.player.ui.browser.playlist.PlaylistScreen
 import com.magen.player.ui.browser.recentlyplayed.RecentlyPlayedScreen
 import com.magen.player.ui.browser.shorts.ShortsScreen
-import com.magen.player.ui.browser.you.YouScreen
 import com.magen.player.ui.browser.selection.SelectionManager
 import com.magen.player.ui.browser.miniplayer.MiniPlayer
 import com.magen.player.ui.browser.miniplayer.MiniPlayerDefaults
@@ -178,7 +176,6 @@ object MainScreen : Screen {
     val miniPlayerStateManager = koinInject<MiniPlayerStateManager>()
     val miniPlayerState by miniPlayerStateManager.state.collectAsState()
     val isShortsEnabled by browserPreferences.enableShorts.collectAsState()
-    val enableTabYou by browserPreferences.enableTabYou.collectAsState()
     val enableTabRecents by browserPreferences.enableTabRecents.collectAsState()
     val enableTabPlaylists by browserPreferences.enableTabPlaylists.collectAsState()
     val bottomNavOrder by browserPreferences.bottomNavOrder.collectAsState()
@@ -199,14 +196,13 @@ object MainScreen : Screen {
 
     val homeLabel = stringResource(R.string.home)
     val shortsLabel = stringResource(R.string.shorts)
-    val youLabel = stringResource(R.string.you)
     val recentsLabel = stringResource(R.string.recents)
     val playlistsLabel = stringResource(R.string.playlists)
 
     val visibleTabs = remember(
-      isShortsEnabled, enableTabYou, enableTabRecents, enableTabPlaylists,
+      isShortsEnabled, enableTabRecents, enableTabPlaylists,
       bottomNavOrder,
-      homeLabel, shortsLabel, youLabel, recentsLabel, playlistsLabel
+      homeLabel, shortsLabel, recentsLabel, playlistsLabel
     ) {
       val rawTabs = buildList {
         add(
@@ -221,26 +217,17 @@ object MainScreen : Screen {
             }
           )
         }
-        if (!enableTabYou) {
-          if (enableTabRecents) {
+        if (enableTabRecents) {
             add(
               VisibleTab("recents", recentsLabel, Icons.Filled.History) {
                 RecentlyPlayedScreen.Content()
               }
             )
           }
-          if (enableTabPlaylists) {
-            add(
-              VisibleTab("playlists", playlistsLabel, Icons.AutoMirrored.Filled.PlaylistPlay) {
-                PlaylistScreen.Content()
-              }
-            )
-          }
-        }
-        if (enableTabYou) {
+        if (enableTabPlaylists) {
           add(
-            VisibleTab("you", youLabel, Icons.Filled.AccountCircle) {
-              YouScreen.Content()
+            VisibleTab("playlists", playlistsLabel, Icons.AutoMirrored.Filled.PlaylistPlay) {
+              PlaylistScreen.Content()
             }
           )
         }
@@ -390,7 +377,7 @@ object MainScreen : Screen {
               }
 
               visibleTabs.forEachIndexed { index, tab ->
-                val isYouTabWithCustomAvatar = tab.id == "you" && customAvatarBitmap != null
+                val isYouTabWithCustomAvatar = false
                 NavigationBarItem(
                   modifier = Modifier.offset(y = 2.dp),
                   icon = {

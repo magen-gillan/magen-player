@@ -1469,7 +1469,6 @@
     <string name="web_share_require_token_enabled_desc">يتطلب ?t= رمز لعرض الملفات</string>
     <string name="web_share_require_token_disabled_desc">وصول مفتوح (سريع ويسير)</string>
     <string name="web_share_received_title">تسلمت (%1$d)</string>
-    <string name="web_share_received_path">تنزيل/مشغل REX</string>
     <string name="web_share_copy_link">نسخ الرابط</string>
     <string name="web_share_link_copied">نُسخ الرابط في الحافظة</string>
     <string name="web_share_no_network">شغّل نقطة الاتصال أو اتصل بشبكة واي-فاي للمشاركة</string>

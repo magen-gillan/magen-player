@@ -1554,7 +1554,6 @@
     <string name="web_share_require_token_enabled_desc">Requires ?t= token to view files</string>
     <string name="web_share_require_token_disabled_desc">Open access (fast &amp; easy)</string>
     <string name="web_share_received_title">Received (%1$d)</string>
-    <string name="web_share_received_path">Download/Magen Player</string>
     <string name="web_share_copy_link">Copy Link</string>
     <string name="web_share_link_copied">Link copied to clipboard</string>
     <string name="web_share_no_network">Turn on Hotspot or connect to Wi-Fi to share</string>

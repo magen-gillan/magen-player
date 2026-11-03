@@ -11,7 +11,7 @@
     <string name="pref_appearance_category_bottom_nav">Guias de navegação inferiores</string>
     <string name="pref_appearance_tab_home_title">Início / Arquivos</string>
     <string name="pref_appearance_tab_home_summary">Mostrar pastas locais e explorador de arquivos</string>
-    <string name="pref_appearance_tab_shorts_title">Shorts Rex</string>
+    <string name="pref_appearance_tab_shorts_title">Magen Shorts</string>
     <string name="pref_appearance_tab_shorts_summary">Alternar feeds de vídeo verticais em ritmo acelerado</string>
     <string name="pref_appearance_tab_recents_title">Jogado recentemente</string>
     <string name="pref_appearance_tab_recents_summary">Retome rapidamente sessões de vídeo anteriores</string>
@@ -795,7 +795,7 @@
     <string name="pref_category_playback_controls">Reprodução e controles</string>
     <string name="pref_category_file_management">Gerenciamento de arquivos</string>
     <string name="pref_category_media_settings">Configurações de mídia</string>
-    <string name="pref_category_rexshorts">Shorts Rex</string>
+    <string name="pref_category_rexshorts">Magen Shorts</string>
     <string name="pref_category_rexshorts_settings">Configurações de Magen Shorts</string>
     <string name="pref_category_rexshorts_settings_desc">Gerenciar ativar/desativar, embaralhar e conteúdo bloqueado</string>
     <string name="pref_category_advanced_about">Avançado e Sobre</string>
