@@ -1,0 +1,317 @@
+package com.magen.player.repository
+
+import com.magen.player.database.dao.NetworkConnectionDao
+import java.util.concurrent.ConcurrentHashMap
+
+import com.magen.player.domain.network.ConnectionStatus
+import com.magen.player.domain.network.NetworkConnection
+import com.magen.player.domain.network.NetworkFile
+import com.magen.player.domain.network.NetworkProtocol
+import com.magen.player.ui.browser.networkstreaming.clients.NetworkClient
+import com.magen.player.ui.browser.networkstreaming.clients.NetworkClientFactory
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
+/**
+ * Repository for managing network connections and file browsing
+ */
+class NetworkRepository(
+  private val dao: NetworkConnectionDao,
+) {
+  // Active network clients
+  private val activeClients = ConcurrentHashMap<Long, NetworkClient>()
+
+  // Connection statuses
+  private val _connectionStatuses = MutableStateFlow<Map<Long, ConnectionStatus>>(emptyMap())
+  val connectionStatuses: StateFlow<Map<Long, ConnectionStatus>> = _connectionStatuses.asStateFlow()
+
+  /**
+   * Get all saved connections as a Flow
+   */
+  fun getAllConnections(): Flow<List<NetworkConnection>> = dao.getAllConnections()
+
+  /**
+   * Get connections that should auto-connect on launch
+   */
+  suspend fun getAutoConnectConnections(): List<NetworkConnection> = dao.getAutoConnectConnections()
+
+  /**
+   * Get a connection by ID
+   */
+  suspend fun getConnectionById(id: Long): NetworkConnection? = dao.getConnectionById(id)
+
+  /**
+   * Find the saved SMB connection that owns `smb://[host]/[share]/…`, or null if none is saved.
+   *
+   * There is no query for this, so the (short) list is matched in Kotlin. Host names and SMB share
+   * names are case-insensitive, and the saved share may or may not carry surrounding slashes.
+   */
+  suspend fun findSmbConnection(
+    host: String,
+    share: String,
+  ): NetworkConnection? {
+    fun normalizeHost(raw: String): String {
+      val trimmed = raw.trim().removePrefix("smb://").trimEnd('/')
+      return when {
+        trimmed.startsWith('[') && trimmed.contains(']') -> trimmed.substringAfter('[').substringBefore(']')
+        trimmed.count { it == ':' } > 1 -> trimmed
+        else -> trimmed.substringBefore(':')
+      }
+    }
+
+    val cleanHost = normalizeHost(host)
+    val cleanShare = share.trim('/')
+    val smbConnections = dao.getAllConnectionsList().filter {
+      it.protocol == NetworkProtocol.SMB &&
+        normalizeHost(it.host).equals(cleanHost, ignoreCase = true)
+    }
+
+    return smbConnections.firstOrNull {
+      it.path.trim('/').equals(cleanShare, ignoreCase = true)
+    } ?: smbConnections.firstOrNull {
+      it.path.trim('/').isEmpty()
+    }?.copy(path = cleanShare)
+  }
+
+  /**
+   * Strips stray whitespace from the fields that address the server.
+   *
+   * A pasted or fat-fingered space in the username authenticates as a different (non-existent)
+   * account, which surfaces as a confusing "share not found" rather than a login failure. The
+   * password is deliberately left alone — spaces can be part of a real one.
+   */
+  private fun NetworkConnection.trimmed(): NetworkConnection =
+    copy(
+      name = name.trim(),
+      host = host.trim(),
+      username = username.trim(),
+      path = path.trim(),
+    )
+
+  /**
+   * Add a new connection
+   */
+  suspend fun addConnection(connection: NetworkConnection): Long = dao.insert(connection.trimmed())
+
+  /**
+   * Update an existing connection
+   */
+  suspend fun updateConnection(connection: NetworkConnection) {
+    dao.update(connection.trimmed())
+    // Disconnect and remove cached client if it exists
+    // This ensures the next connection uses the updated credentials
+    activeClients[connection.id]?.let { client ->
+      try {
+        client.disconnect()
+      } catch (e: Exception) {
+        // Ignore errors during cleanup
+      }
+      activeClients.remove(connection.id)
+      // Update status to disconnected
+      updateConnectionStatus(
+        connection.id,
+        ConnectionStatus(
+          connectionId = connection.id,
+          isConnected = false,
+          isConnecting = false,
+        ),
+      )
+    }
+  }
+
+  /**
+   * Delete a connection
+   */
+  suspend fun deleteConnection(connection: NetworkConnection) {
+    dao.delete(connection)
+    // Clean up connection status
+    _connectionStatuses.value -= connection.id
+    // Disconnect if active
+    activeClients[connection.id]?.let { client ->
+      try {
+        client.disconnect()
+      } catch (e: Exception) {
+        // Ignore errors during cleanup
+      }
+      activeClients.remove(connection.id)
+    }
+  }
+
+  /**
+   * Connect to a network share
+   */
+  suspend fun connect(connection: NetworkConnection): Result<Unit> {
+    // Update status to connecting
+    updateConnectionStatus(
+      connection.id,
+      ConnectionStatus(
+        connectionId = connection.id,
+        isConnecting = true,
+      ),
+    )
+
+    return try {
+      // Create client for this connection
+      val client = NetworkClientFactory.createClient(connection)
+
+      // Attempt to connect
+      client.connect().onSuccess {
+        // Store the active client
+        activeClients[connection.id] = client
+
+        // Update last connected time
+        dao.updateLastConnected(connection.id, System.currentTimeMillis())
+
+        // Update status to connected
+        updateConnectionStatus(
+          connection.id,
+          ConnectionStatus(
+            connectionId = connection.id,
+            isConnected = true,
+            isConnecting = false,
+          ),
+        )
+      }.onFailure { e ->
+        // Update status with error
+        updateConnectionStatus(
+          connection.id,
+          ConnectionStatus(
+            connectionId = connection.id,
+            isConnected = false,
+            isConnecting = false,
+            error = e.message ?: "Connection failed",
+          ),
+        )
+        throw e
+      }
+      Result.success(Unit)
+    } catch (e: Exception) {
+      // Update status with error
+      updateConnectionStatus(
+        connection.id,
+        ConnectionStatus(
+          connectionId = connection.id,
+          isConnected = false,
+          isConnecting = false,
+          error = e.message ?: "Connection failed",
+        ),
+      )
+      Result.failure(e)
+    }
+  }
+
+  /**
+   * Disconnect from a network share
+   */
+  suspend fun disconnect(connection: NetworkConnection): Result<Unit> =
+    try {
+      // Get and disconnect the client
+      activeClients[connection.id]?.let { client ->
+        client.disconnect()
+        activeClients.remove(connection.id)
+      }
+
+      // Update status to disconnected
+      updateConnectionStatus(
+        connection.id,
+        ConnectionStatus(
+          connectionId = connection.id,
+          isConnected = false,
+          isConnecting = false,
+        ),
+      )
+      Result.success(Unit)
+    } catch (e: Exception) {
+      // Even if disconnect fails, update status
+      updateConnectionStatus(
+        connection.id,
+        ConnectionStatus(
+          connectionId = connection.id,
+          isConnected = false,
+          isConnecting = false,
+          error = e.message,
+        ),
+      )
+      Result.failure(e)
+    }
+
+  /**
+   * List files in a directory on a network share
+   */
+  suspend fun listFiles(
+    connection: NetworkConnection,
+    path: String,
+  ): Result<List<NetworkFile>> =
+    try {
+      if (connection.id <= 0) {
+        val client = NetworkClientFactory.createClient(connection)
+        try {
+          client.connect().getOrThrow()
+          client.listFiles(path)
+        } finally {
+          client.disconnect()
+        }
+      } else {
+        // Always fetch the latest connection from database to ensure we have current credentials
+        val dbConnection = dao.getConnectionById(connection.id)
+        val latestConnection = dbConnection?.copy(
+          path = connection.path.takeIf { it.isNotBlank() && it != "/" } ?: dbConnection.path,
+          port = connection.port.takeIf { it > 0 } ?: dbConnection.port,
+        ) ?: connection
+
+        // Check if we have an active client
+        val existingClient = activeClients[connection.id]
+
+        // If no client exists, or if connection details have changed, create a new one
+        val client = if (existingClient == null || !existingClient.isConnected() || existingClient.connection.path != latestConnection.path) {
+          existingClient?.disconnect()
+          // Create new client with latest connection settings
+          NetworkClientFactory.createClient(latestConnection).also { newClient ->
+            newClient.connect().getOrThrow()
+            activeClients[connection.id] = newClient
+          }
+        } else {
+          existingClient
+        }
+
+        // List files
+        client.listFiles(path)
+      }
+    } catch (e: Exception) {
+      Result.failure(e)
+    }
+
+  /**
+   * Get an active client for a connection
+   */
+  fun getActiveClient(connectionId: Long): NetworkClient? = activeClients[connectionId]
+
+  /**
+   * Check if a connection is active
+   */
+  fun isConnected(connectionId: Long): Boolean = activeClients.containsKey(connectionId)
+
+  /**
+   * Disconnect all active connections
+   */
+  suspend fun disconnectAll() {
+    activeClients.values.forEach { client ->
+      try {
+        client.disconnect()
+      } catch (e: Exception) {
+        // Ignore errors during cleanup
+      }
+    }
+    activeClients.clear()
+    _connectionStatuses.value = emptyMap()
+  }
+
+  private fun updateConnectionStatus(
+    connectionId: Long,
+    status: ConnectionStatus,
+  ) {
+    _connectionStatuses.value += (connectionId to status)
+  }
+}

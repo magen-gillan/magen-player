@@ -1,0 +1,156 @@
+package com.magen.player.utils.history
+
+import android.net.Uri
+import com.magen.player.database.entities.RecentlyPlayedEntity
+import com.magen.player.domain.playbackstate.repository.PlaybackStateRepository
+import com.magen.player.domain.recentlyplayed.repository.RecentlyPlayedRepository
+import com.magen.player.preferences.AdvancedPreferences
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
+import org.koin.java.KoinJavaComponent.inject
+
+/**
+ * Legacy wrapper for HistoryManager to maintain backward compatibility.
+ * Delegates all operations to a centralized HistoryManager instance.
+ */
+object RecentlyPlayedOps {
+  private val repository: RecentlyPlayedRepository by inject(RecentlyPlayedRepository::class.java)
+  private val playbackStateRepository: PlaybackStateRepository by inject(PlaybackStateRepository::class.java)
+  private val preferences: AdvancedPreferences by inject(AdvancedPreferences::class.java)
+
+  // Lazy delegation to HistoryManager
+  private val historyManager by lazy {
+    HistoryManager(
+      context = org.koin.core.context.GlobalContext.get().get(),
+      recentlyPlayedRepository = repository,
+      playbackStateRepository = playbackStateRepository,
+      advancedPreferences = preferences,
+      scope = kotlinx.coroutines.CoroutineScope(Dispatchers.IO)
+    )
+  }
+
+  suspend fun addRecentlyPlayed(
+    filePath: String,
+    fileName: String,
+    videoTitle: String? = null,
+    duration: Long = 0,
+    fileSize: Long = 0,
+    width: Int = 0,
+    height: Int = 0,
+    launchSource: String? = null,
+    playlistId: Int? = null,
+    isAudio: Boolean = false,
+    artist: String = "",
+    album: String = "",
+  ) {
+    historyManager.addRecentlyPlayed(
+      filePath, fileName, videoTitle, duration, fileSize,
+      width, height, launchSource, playlistId, isAudio, artist, album
+    )
+  }
+
+  fun recordPlaybackStart(
+    uri: Uri,
+    fileName: String,
+    launchSource: String? = null,
+    playlistId: Int? = null,
+  ) {
+    historyManager.recordPlaybackStart(
+      uri = uri,
+      fileName = fileName,
+      launchSource = launchSource ?: "direct_mini_player",
+      playlistId = playlistId,
+    )
+  }
+
+  fun updateCurrentMediaMetadata(fileName: String) {
+    historyManager.updateCurrentMediaMetadata(fileName)
+  }
+
+  suspend fun clearAll() {
+    historyManager.clearAll()
+  }
+
+  suspend fun updateVideoTitle(
+    filePath: String,
+    videoTitle: String,
+  ) {
+    repository.updateVideoTitle(filePath, videoTitle)
+  }
+
+  suspend fun updateVideoMetadata(
+    filePath: String,
+    videoTitle: String?,
+    duration: Long,
+    fileSize: Long,
+    width: Int,
+    height: Int,
+  ) {
+    repository.updateVideoMetadata(filePath, videoTitle, duration, fileSize, width, height)
+  }
+
+  suspend fun getLastPlayed(): String? = historyManager.getLastPlayed()
+
+  suspend fun getLastPlayedEntity(): RecentlyPlayedEntity? = historyManager.getLastPlayedEntity()
+
+  suspend fun hasRecentlyPlayed(): Boolean = historyManager.getLastPlayed() != null
+
+  suspend fun getRecentlyPlayed(limit: Int = 50): List<RecentlyPlayedEntity> {
+    return historyManager.getRecentlyPlayed(limit)
+  }
+
+  fun fileExists(path: String): Boolean = historyManager.fileExists(path)
+
+  fun isNonFileUri(path: String): Boolean = historyManager.isNonFileUri(path)
+
+  @OptIn(ExperimentalCoroutinesApi::class)
+  fun observeLastPlayedPath(): Flow<String?> = historyManager.observeLastPlayedPath()
+
+  fun observeLastPlayedPathsForHighlight(): Flow<Set<String>> {
+    return repository.observeRecentlyPlayed(50).map { list ->
+      val autoRemove = preferences.autoRemoveDeletedFromHistory.get()
+      val filteredList = list.filter { 
+        !(it.filePath.endsWith(".m3u") || it.filePath.endsWith(".m3u8")) &&
+        (!autoRemove || historyManager.isNonFileUri(it.filePath) || historyManager.fileExists(it.filePath))
+      }
+      val newestHighlight = filteredList.firstOrNull { it.launchSource != "mark_as" } ?: return@map emptySet()
+      
+      if (newestHighlight.launchSource == "mark_as_last_played") {
+        val newestTimestamp = newestHighlight.timestamp
+        filteredList.filter { 
+          it.launchSource == "mark_as_last_played" && 
+          kotlin.math.abs(it.timestamp - newestTimestamp) <= 5000 
+        }.map { it.filePath }.toSet()
+      } else {
+        setOf(newestHighlight.filePath)
+      }
+    }
+  }
+
+  fun observeRecentlyPlayedPaths(limit: Int = 100): Flow<Set<String>> {
+    return repository.observeRecentlyPlayed(limit).map { list -> 
+      val autoRemove = preferences.autoRemoveDeletedFromHistory.get()
+      list.filter { !autoRemove || historyManager.isNonFileUri(it.filePath) || historyManager.fileExists(it.filePath) }
+          .map { it.filePath }
+          .toSet() 
+    }
+  }
+
+  suspend fun onVideoDeleted(filePath: String) {
+    historyManager.onVideoDeleted(filePath)
+  }
+
+  suspend fun markAs(filePath: String, fileName: String, duration: Long, state: MarkAsState) {
+    historyManager.markAs(filePath, fileName, duration, state)
+  }
+
+  suspend fun onVideoRenamed(
+    oldPath: String,
+    newPath: String,
+  ) {
+    historyManager.onVideoRenamed(oldPath, newPath)
+  }
+}
