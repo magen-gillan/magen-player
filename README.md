@@ -24,6 +24,25 @@
 > [!NOTE]
 > **Repository moved**: from `sfsakhawat999/MagenPlayer` to [MagenPlayer/Magen-Player](https://github.com/MagenPlayer/Magen-Player). Old links will redirect automatically.
 
+> [!IMPORTANT]
+> **This is the magen-gillan fork | هذه نسخة magen-gillan المخصصة** — based on REX Player / libmpv, with **Arabic subtitle support**, **MagenShorts**, and custom branding. Download builds **from this fork's releases**, not the upstream links below.
+> **هذا المستودع نسخة مشتقة معدّة بواسطة magen-gillan مبنية على REX Player/libmpv مع دعم الترجمات العربية وMagenShorts وهوية مخصصة. حمّل الإصدارات من إصدارات هذا المستودع.**
+
+---
+
+## 📥 Download from this fork | التحميل من هذه النسخة
+
+**Latest release | أحدث إصدار: [v5.5.1](https://github.com/magen-gillan/magen-player/releases/tag/v5.5.1)**
+
+| Build | Link |
+|---|---|
+| arm64-v8a (most modern phones) | [magen-player-v5.5.1-arm64-v8a.apk](https://github.com/magen-gillan/magen-player/releases/download/v5.5.1/magen-player-v5.5.1-arm64-v8a.apk) |
+| Universal (all architectures) | [magen-player-v5.5.1-universal.apk](https://github.com/magen-gillan/magen-player/releases/download/v5.5.1/magen-player-v5.5.1-universal.apk) |
+
+Every release also ships a `.sha256` checksum file for verification.
+
+---
+
 Magen Player is an advanced, customizable video player for Android. It combines the versatility of libmpv with a modern Jetpack Compose interface and unique user-centric features.
 
 ---
@@ -77,6 +96,20 @@ Magen Player is an advanced, customizable video player for Android. It combines 
 Translations can be managed using **[Droidlate](https://github.com/estiaksoyeb/Droidlate)** ([PyPI](https://pypi.org/project/droidlate/)) — a local, web-based UI designed for editing Android `strings.xml` translation files.
 
 If you would like to contribute to translating Magen Player into your language, please refer to the [Translation Contribution Guide](CONTRIBUTING.md#translation-contributions) for step-by-step instructions on running Droidlate locally.
+
+---
+
+## المميزات | Features بالعربية
+
+مشغل فيديو متقدم وأندرويد مبني على libmpv مع واجهة Jetpack Compose حديثة:
+
+- تشغيل متقدم عبر **libmpv** مع إيماءات قابلة للتخصيص، تنقل بين الإطارات، تكبير وتحريك.
+- استعراض الملفات المحلية وتنظيم قوائم التشغيل وتتبع ما تم مشاهدته، مع وضع **MagenShorts**.
+- بث الوسائط من **SMB وWebDAV وFTP والروابط المباشرة** عبر تطبيق Magen Ytdlp المرافق.
+- **دعم الترجمات العربية** وتخصيص المشغل بتحكم بتصميم زجاجي وتبويبات ديناميكية وضبط HDR إلى SDR.
+- الاتصال بـ **Jellyfin** ومشاركة الملفات مع الأجهزة القريبة عبر الشبكة المحلية.
+
+التحميل: جدول الإصدارات أعلاه (v5.5.1) من [إصدارات هذا المستودع](https://github.com/magen-gillan/magen-player/releases).
 
 ---
 
