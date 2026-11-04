@@ -331,12 +331,6 @@
     <string name="pref_about_donate_paypal_summary">Apoyar al desarrollador en PayPal</string>
     <string name="pref_about_donate_upi">UPI</string>
 
-    <string name="pref_about_telegram_title">Telegram</string>
-    <string name="pref_about_telegram_channel">Canal de Telegram</string>
-    <string name="pref_about_telegram_channel_summary">Únete a nuestro canal para estar al tanto de actualizaciones y novedades</string>
-    <string name="pref_about_telegram_group">Grupo de chat de Telegram</string>
-    <string name="pref_about_telegram_group_summary">Interactúa y conversa con la comunidad</string>
-
     <string name="player_sheets_add_ext_sub">Añadir subtítulos externos</string>
     <string name="player_sheets_add_ext_audio">Añadir pistas de audio externas</string>
     <string name="player_sheets_tracks_off">Desactivado</string>
@@ -790,9 +784,6 @@
     <string name="folders_count">Carpetas (%1$d)</string>
     <string name="media_count">Multimedia (%1$d)</string>
     <string name="drag_to_reorder">Arrastra para reordenar</string>
-    <string name="community_links">Enlaces de la comunidad</string>
-    <string name="community_hub">Centro de comunidad</string>
-    <string name="connect_social_media">Conéctate con nosotros en las redes sociales</string>
     <string name="sort_and_view_options">Opciones de clasificación y visualización</string>
     <string name="view_options">Ver opciones</string>
     <string name="pref_category_ui_appearance">Interfaz de usuario y apariencia</string>
@@ -1251,10 +1242,6 @@
     <string name="pref_rescan_started_toast">Se inició el nuevo escaneo de la biblioteca multimedia</string>
     <string name="pref_cache_cleared_toast">Caché de metadatos borrada</string>
     <string name="media_info_folder_path">Ruta de la carpeta</string>
-    <string name="community_already_joined">Ya me uní</string>
-    <string name="community_never_show_again">Nunca volver a mostrar</string>
-    <string name="community_not_now">Ahora no</string>
-    <string name="community_already_joined_message">También puedes encontrar estos enlaces a la comunidad en Preferencias → Acerca de.</string>
     <string name="btn_label_quality">Calidad de video</string>
     <string name="video_quality">Calidad de video</string>
     <string name="video_quality_auto">Automático</string>

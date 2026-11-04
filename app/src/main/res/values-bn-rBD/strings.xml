@@ -302,11 +302,6 @@
     <string name="pref_about_donate_paypal">পেপ্যাল</string>
     <string name="pref_about_donate_paypal_summary">পেপ্যালে ডেভেলপারকে সমর্থন করুন</string>
     <string name="pref_about_donate_upi">UPI</string>
-    <string name="pref_about_telegram_title">টেলিগ্রাম</string>
-    <string name="pref_about_telegram_channel">টেলিগ্রাম চ্যানেল</string>
-    <string name="pref_about_telegram_channel_summary">আপডেট এবং খবরের জন্য আমাদের চ্যানেলে যোগ দিন</string>
-    <string name="pref_about_telegram_group">টেলিগ্রাম চ্যাট গ্রুপ</string>
-    <string name="pref_about_telegram_group_summary">কমিউনিটির সাথে আলোচনা করুন এবং চ্যাট করুন</string>
     <string name="player_sheets_add_ext_sub">বাহ্যিক সাবটাইটেল যোগ করুন</string>
     <string name="player_sheets_add_ext_audio">বাহ্যিক অডিও ট্র্যাক যোগ করুন</string>
     <string name="player_sheets_tracks_off">বন্ধ</string>
@@ -799,13 +794,6 @@
     <string name="folders_count">ফোল্ডার (%1$d)</string>
     <string name="media_count">মিডিয়া (%1$d)</string>
     <string name="drag_to_reorder">পুনরায় সাজাতে টেনে আনুন</string>
-    <string name="community_links">কমিউনিটি লিংক</string>
-    <string name="community_hub">কমিউনিটি হাব</string>
-    <string name="connect_social_media">সোশ্যাল মিডিয়ায় আমাদের সাথে যোগাযোগ করুন</string>
-    <string name="community_already_joined">ইতিমধ্যে যোগদান করেছেন</string>
-    <string name="community_never_show_again">আর কখনো দেখাবেন না</string>
-    <string name="community_not_now">এখন নয়</string>
-    <string name="community_already_joined_message">এছাড়াও আপনি পছন্দসমূহ → সম্পর্ক থেকে এই সম্প্রদায়ের লিঙ্কগুলি খুঁজে পেতে পারেন।</string>
     <string name="sort_and_view_options">বাছাই করুন এবং বিকল্পগুলি দেখুন</string>
     <string name="view_options">বিকল্পগুলি দেখুন</string>
     <string name="pref_category_ui_appearance">UI এবং চেহারা</string>

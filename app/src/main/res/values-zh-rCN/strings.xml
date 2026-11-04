@@ -342,12 +342,6 @@
     <string name="pref_about_donate_paypal_summary">通过 PayPal 支持开发者</string>
     <string name="pref_about_donate_upi">UPI</string>
 
-    <string name="pref_about_telegram_title">电报社群</string>
-    <string name="pref_about_telegram_channel">电报通知频道</string>
-    <string name="pref_about_telegram_channel_summary">加入频道获取版本更新与资讯</string>
-    <string name="pref_about_telegram_group">电报交流群</string>
-    <string name="pref_about_telegram_group_summary">和其他用户交流讨论</string>
-
     <string name="player_sheets_add_ext_sub">加载外部字幕</string>
     <string name="player_sheets_add_ext_audio">加载外置音轨</string>
     <string name="player_sheets_tracks_off">关闭</string>
@@ -840,9 +834,6 @@
     <string name="folders_count">文件夹（%1$d）</string>
     <string name="media_count">媒体（%1$d）</string>
     <string name="drag_to_reorder">拖动调整顺序</string>
-    <string name="community_links">社区链接</string>
-    <string name="community_hub">社区中心</string>
-    <string name="connect_social_media">前往社交平台关注我们</string>
 
     <!-- Sort Dialog Strings -->
     <string name="sort_and_view_options">排序与视图设置</string>

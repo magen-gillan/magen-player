@@ -408,14 +408,6 @@
     <string name="pref_about_donate_upi">UPI</string>
     <string name="pref_about_donate_upi_id" translatable="false">aadiinarvekar@upi</string>
 
-    <string name="pref_about_telegram_title">Telegram</string>
-    <string name="pref_about_telegram_channel">Telegram Channel</string>
-    <string name="pref_about_telegram_channel_summary">Join our channel for updates and news</string>
-    <string name="pref_about_telegram_group">Telegram Chat Group</string>
-    <string name="pref_about_telegram_group_summary">Discuss and chat with the community</string>
-    <string name="pref_about_telegram_url" translatable="false">https://t.me/MagenPlayer</string>
-    <string name="pref_about_telegram_chat_url" translatable="false">https://t.me/MagenPlayer_chat</string>
-
     <string name="player_sheets_add_ext_sub">Add external subtitles</string>
     <string name="player_sheets_add_ext_audio">Add external audio tracks</string>
     <string name="player_sheets_tracks_off">Off</string>
@@ -542,8 +534,6 @@
     <string name="toast_sleep_timer_ended">Sleep timer ended</string>
     <string name="volume_slider_absolute_value" translatable="false">%d</string>
     <string name="value_percentage_int" translatable="false">%d%%</string>
-
-    <string name="github_repo_url" translatable="false">https://github.com/MagenPlayer/Magen-Player</string>
     <string name="swap_the_volume_and_brightness_slider">Swap volume and brightness slider</string>
     <string name="pref_player_display_reduce_player_animation">Reduce player animation</string>
     <string name="pref_player_display_hide_player_control_time">Hide player control time</string>
@@ -993,13 +983,6 @@
     <string name="pref_pins_isolate_title">Separate pins per view</string>
     <string name="pref_pins_isolate_summary">Keep a separate set of pinned folders and files for the tree view and the folder view. When off, both views share the same pins.</string>
     <string name="drag_to_reorder">Drag to reorder</string>
-    <string name="community_links">Community Links</string>
-    <string name="community_hub">Community Hub</string>
-    <string name="connect_social_media">Connect with us on social media</string>
-    <string name="community_already_joined">Already joined</string>
-    <string name="community_never_show_again">Never show again</string>
-    <string name="community_not_now">Not now</string>
-    <string name="community_already_joined_message">You can also find these community links in Preferences → About.</string>
 
     <!-- Sort Dialog Strings -->
     <string name="sort_and_view_options">Sort &amp; View Options</string>

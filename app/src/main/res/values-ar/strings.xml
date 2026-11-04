@@ -334,12 +334,6 @@
     <string name="pref_about_donate_paypal_summary">ادعم المطوِّر على باي بال</string>
     <string name="pref_about_donate_upi">UPI</string>
 
-    <string name="pref_about_telegram_title">تيليغرام</string>
-    <string name="pref_about_telegram_channel">قناة تيليغرام</string>
-    <string name="pref_about_telegram_channel_summary">انضم إلى قناتنا للتحديثات والأخبار</string>
-    <string name="pref_about_telegram_group">مجموعة دردشة تيليغرام</string>
-    <string name="pref_about_telegram_group_summary">ناقش وتحدث مع المجتمع</string>
-
     <string name="player_sheets_add_ext_sub">إضافة ترجمات خارجية</string>
     <string name="player_sheets_add_ext_audio">إضافة مسارات صوتية خارجية</string>
     <string name="player_sheets_tracks_off">إيقاف</string>
@@ -783,9 +777,6 @@
     <string name="folders_count">المجلدات (%1$d)</string>
     <string name="media_count">الوسائط (%1$d)</string>
     <string name="drag_to_reorder">اسحب لإعادة الترتيب</string>
-    <string name="community_links">روابط المجتمع</string>
-    <string name="community_hub">مركز المجتمع</string>
-    <string name="connect_social_media">تواصل معنا على وسائل التواصل الاجتماعي</string>
     <string name="sort_and_view_options">خيارات الفرز والعرض</string>
     <string name="view_options">خيارات العرض</string>
     <string name="pref_category_ui_appearance">الواجهة والمظهر</string>
@@ -1300,9 +1291,6 @@
     <string name="pref_player_remember_long_press_speed_title">تذكر السرعة المعدلة</string>
     <string name="pref_player_remember_long_press_speed_summary">استخدم سرعة التمرير الأخيرة للضغطات المطولة اللاحقة</string>
     <string name="pref_subtitles_force_ltr_summary">فرض الاتجاه من اليسار إلى اليمين للترجمات</string>
-    <string name="community_already_joined">انضممت بالفعل</string>
-    <string name="community_not_now">‫ليس الآن‬</string>
-    <string name="community_already_joined_message">يمكنك أيضًا العثور على روابط المجتمع هذه في التفضيلات → حول.</string>
     <string name="generic_off">إيقاف</string>
     <string name="system_default">الإعدادات الافتراضية للنظام</string>
     <string name="pref_appearance_language_summary">تغيير لغة عرض التطبيق</string>
@@ -1318,7 +1306,6 @@
     <string name="player_resume_prompt_title">استئناف التشغيل ؟</string>
     <string name="player_resume_prompt_message_with_duration">لقد شاهدت سابقًا ما يصل إلى %1$s من %2$s.</string>
     <string name="pref_subtitles_force_ltr_title">فرض اتجاه من اليسار إلى اليمين</string>
-    <string name="community_never_show_again">لا تظهر مرة أخرى</string>
     <string name="pref_appearance_language_title">لغة التطبيق</string>
     <string name="storage_access_granted_desc">مُنح الإذن. MagenPlayer جاهز لاكتشاف وتشغيل وسائطك.</string>
     <string name="welcome_skip_permission">المتابعة دون الوصول إلى التخزين</string>

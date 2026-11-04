@@ -331,11 +331,6 @@
     <string name="pref_about_donate_paypal">PayPal</string>
     <string name="pref_about_donate_paypal_summary">Dukung pengembang di PayPal</string>
     <string name="pref_about_donate_upi">UPI</string>
-    <string name="pref_about_telegram_title">Telegram</string>
-    <string name="pref_about_telegram_channel">Saluran Telegram</string>
-    <string name="pref_about_telegram_channel_summary">Bergabunglah dengan saluran kami untuk pembaruan dan berita</string>
-    <string name="pref_about_telegram_group">Grup Obrolan Telegram</string>
-    <string name="pref_about_telegram_group_summary">Berdiskusi dan ngobrol dengan komunitas</string>
     <string name="player_sheets_add_ext_sub">Tambahkan subtitle eksternal</string>
     <string name="player_sheets_add_ext_audio">Tambahkan trek audio eksternal</string>
     <string name="player_sheets_tracks_off">Mati</string>
@@ -786,13 +781,6 @@
     <string name="folders_count">Folder (%1$d)</string>
     <string name="media_count">Media (%1$d)</string>
     <string name="drag_to_reorder">Seret untuk mengubah urutan </string>
-    <string name="community_links">Tautan Komunitas</string>
-    <string name="community_hub">Pusat Komunitas</string>
-    <string name="connect_social_media">Terhubung dengan kami di media sosial</string>
-    <string name="community_already_joined">Sudah bergabung</string>
-    <string name="community_never_show_again">Jangan pernah tampilkan lagi</string>
-    <string name="community_not_now">Tidak sekarang</string>
-    <string name="community_already_joined_message">Anda juga dapat menemukan tautan komunitas ini di Preferensi → Tentang.</string>
     <string name="sort_and_view_options">Sortir &amp; Lihat Opsi</string>
     <string name="view_options">Lihat Opsi</string>
     <string name="pref_category_ui_appearance">Antarmuka &amp; Tampilan</string>

@@ -1,6 +1,5 @@
 package com.magen.player.ui.preferences
 
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.widget.ImageView
 import android.widget.Toast
@@ -52,7 +51,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.net.toUri
 import com.magen.player.BuildConfig
 import com.magen.player.R
 import com.magen.player.presentation.Screen
@@ -67,10 +65,7 @@ import me.zhanghai.compose.preference.ProvidePreferenceLocals
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.Serializable
 import org.koin.compose.koinInject
-import com.magen.player.preferences.AppearancePreferences
 import com.magen.player.preferences.preference.collectAsState
-import com.magen.player.ui.utils.TelegramIcon
-import com.magen.player.ui.utils.CommunityIcon
 import com.magen.player.MainActivity
 import com.magen.player.LocalUpdateViewModel
 import com.magen.player.utils.update.UpdateViewModel
@@ -89,7 +84,6 @@ object AboutScreen : Screen {
     val clipboardManager = LocalClipboardManager.current
     val updateViewModel = LocalUpdateViewModel.current
     val updateState by (updateViewModel?.updateState ?: MutableStateFlow(UpdateViewModel.UpdateState.Idle)).collectAsState()
-    val preferences = koinInject<AppearancePreferences>()
     
     val packageManager: PackageManager = context.packageManager
     val packageInfo = packageManager.getPackageInfo(context.packageName, 0)
@@ -244,32 +238,6 @@ object AboutScreen : Screen {
                       )
                     }
 
-                    Button(
-                      onClick = {
-                        context.startActivity(
-                          Intent(
-                            Intent.ACTION_VIEW,
-                            context.getString(R.string.github_repo_url).toUri(),
-                          ),
-                        )
-                      },
-                      modifier =
-                        Modifier
-                          .weight(1f)
-                          .height(56.dp),
-                      shape = RoundedCornerShape(16.dp),
-                      colors =
-                        ButtonDefaults.buttonColors(
-                          containerColor = btnContainer,
-                          contentColor = btnContent,
-                        ),
-                    ) {
-                      Text(
-                        text = "GitHub",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                      )
-                    }
                   }
 
                   Spacer(modifier = Modifier.height(20.dp))
@@ -310,67 +278,6 @@ object AboutScreen : Screen {
               }
             }
           }
-
-          Spacer(Modifier.height(8.dp))
-
-          PreferenceSectionHeader(title = stringResource(id = R.string.pref_about_telegram_title))
-          GroupedListColumn {
-            GroupedPreferenceCard(position = GroupPosition.FIRST) {
-              Preference(
-                title = { Text(text = stringResource(id = R.string.pref_about_telegram_channel)) },
-                summary = {
-                  Text(
-                    text = stringResource(id = R.string.pref_about_telegram_channel_summary),
-                    color = MaterialTheme.colorScheme.outline,
-                  )
-                },
-                icon = {
-                  Icon(
-                    imageVector = TelegramIcon,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                  )
-                },
-                onClick = {
-                  context.startActivity(
-                    Intent(
-                      Intent.ACTION_VIEW,
-                      context.getString(R.string.pref_about_telegram_url).toUri(),
-                    ),
-                  )
-                },
-              )
-            }
-
-            GroupedPreferenceCard(position = GroupPosition.LAST) {
-              Preference(
-                title = { Text(text = stringResource(id = R.string.pref_about_telegram_group)) },
-                summary = {
-                  Text(
-                    text = stringResource(id = R.string.pref_about_telegram_group_summary),
-                    color = MaterialTheme.colorScheme.outline,
-                  )
-                },
-                icon = {
-                  Icon(
-                    imageVector = TelegramIcon,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                  )
-                },
-                onClick = {
-                  context.startActivity(
-                    Intent(
-                      Intent.ACTION_VIEW,
-                      context.getString(R.string.pref_about_telegram_chat_url).toUri(),
-                    ),
-                  )
-                },
-              )
-            }
-          }
-
-          Spacer(Modifier.height(8.dp))
 
           // Updates Section
           if (BuildConfig.ENABLE_UPDATE_FEATURE) {

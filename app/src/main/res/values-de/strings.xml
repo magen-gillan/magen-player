@@ -336,11 +336,6 @@
     <string name="pref_about_donate_paypal">PayPal</string>
     <string name="pref_about_donate_paypal_summary">Unterstütze den Entwickler auf PayPal</string>
     <string name="pref_about_donate_upi">UPI</string>
-    <string name="pref_about_telegram_title">Telegramm</string>
-    <string name="pref_about_telegram_channel">Telegrammkanal</string>
-    <string name="pref_about_telegram_channel_summary">Trete unserem Kanal bei, um Updates und Neuigkeiten zu erhalten</string>
-    <string name="pref_about_telegram_group">Telegram-Chat-Gruppe</string>
-    <string name="pref_about_telegram_group_summary">Diskutieren und chatten Sie mit der Community</string>
     <string name="player_sheets_add_ext_sub">Externe Untertitel</string>
     <string name="player_sheets_add_ext_audio">Externe Audiospuren hinzufügen</string>
     <string name="player_sheets_tracks_off">Aus</string>
@@ -801,13 +796,6 @@
     <string name="folders_count">Ordner (%1$d)</string>
     <string name="media_count">Medien (%1$d)</string>
     <string name="drag_to_reorder">Zum Neuanordnen ziehen</string>
-    <string name="community_links">Community-Links</string>
-    <string name="community_hub">Community-Hub</string>
-    <string name="connect_social_media">Vernetze dich mit uns in den sozialen Medien</string>
-    <string name="community_already_joined">Bereits beigetreten</string>
-    <string name="community_never_show_again">Nie wieder zeigen</string>
-    <string name="community_not_now">Nicht jetzt</string>
-    <string name="community_already_joined_message">Diese Community-Links finden sie auch unter „Einstellungen“ → „Info“.</string>
     <string name="sort_and_view_options">Sortier- und Anzeigeoptionen</string>
     <string name="view_options">Optionen anzeigen</string>
     <string name="pref_category_ui_appearance">Benutzeroberfläche und Erscheinungsbild</string>
