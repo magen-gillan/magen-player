@@ -1,13 +1,10 @@
 package com.magen.player.ui.welcome
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
@@ -95,21 +93,6 @@ object WelcomeScreen : Screen {
 
     var isGranted by remember {
       mutableStateOf(PermissionUtils.isStoragePermissionGranted(context))
-    }
-
-    val appIconBitmap = remember(context) {
-      try {
-        val drawable = context.packageManager.getApplicationIcon(context.packageName)
-        val width = drawable.intrinsicWidth.takeIf { it > 0 } ?: 192
-        val height = drawable.intrinsicHeight.takeIf { it > 0 } ?: 192
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
-        bitmap.asImageBitmap()
-      } catch (_: Exception) {
-        null
-      }
     }
 
     // Re-check permission status when app resumes from system settings dialog
@@ -237,18 +220,26 @@ object WelcomeScreen : Screen {
         horizontalAlignment = Alignment.CenterHorizontally,
       ) {
         item {
-          // App Logo
-          if (appIconBitmap != null) {
+          // Brand logo and character artwork
+          Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+          ) {
             Image(
-              bitmap = appIconBitmap,
-              contentDescription = null,
-              modifier = Modifier
-                .size(80.dp)
-                .clip(RoundedCornerShape(20.dp)),
+              painter = painterResource(R.drawable.magen_gillan_logo),
+              contentDescription = stringResource(R.string.welcome_logo_description),
+              modifier = Modifier.size(104.dp),
+              contentScale = ContentScale.Fit,
+            )
+            Image(
+              painter = painterResource(R.drawable.alisha_chibi),
+              contentDescription = stringResource(R.string.welcome_character_description),
+              modifier = Modifier.size(88.dp).clip(RoundedCornerShape(22.dp)),
+              contentScale = ContentScale.Fit,
             )
           }
 
-          Spacer(modifier = Modifier.height(20.dp))
+          Spacer(modifier = Modifier.height(16.dp))
 
           Text(
             text = stringResource(R.string.welcome_title),
