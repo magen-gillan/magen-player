@@ -1301,6 +1301,8 @@
     <string name="welcome_language_section_title">اللغة المفضلة</string>
     <string name="welcome_language_section_desc">اختر لغة العرض خاصتك</string>
     <string name="storage_access_granted">مُنح الوصول إلى التخزين</string>
+    <string name="welcome_permission_mood_granted">شكرًا لك! اليشيا سعيدة ومستعدة لاستكشاف فيديوهاتك.</string>
+    <string name="welcome_permission_mood_denied">تبدو اليشيا حزينة قليلًا. يمكنك المتابعة أو السماح بالوصول إلى الوسائط لاحقًا.</string>
     <string name="welcome_grant_permission">منح الإذن</string>
     <string name="welcome_get_started">ابدأ الآن</string>
     <string name="pref_player_resume_mode_ask">اسأل في كل مرة</string>

@@ -53,6 +53,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,6 +71,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import kotlinx.serialization.Serializable
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import com.magen.player.BuildConfig
 import com.magen.player.R
@@ -88,6 +91,7 @@ object WelcomeScreen : Screen {
     val context = LocalContext.current
     val backstack = LocalBackStack.current
     val appearancePreferences = koinInject<AppearancePreferences>()
+    val coroutineScope = rememberCoroutineScope()
     var showLanguageDialog by remember { mutableStateOf(false) }
     var showExplanationDialog by remember { mutableStateOf(false) }
 
@@ -127,7 +131,10 @@ object WelcomeScreen : Screen {
     ) {
       isGranted = PermissionUtils.isStoragePermissionGranted(context)
       if (isGranted) {
-        navigateToMain()
+        coroutineScope.launch {
+          delay(900)
+          navigateToMain()
+        }
       }
     }
 
@@ -221,10 +228,24 @@ object WelcomeScreen : Screen {
       ) {
         item {
           // Brand logo and character artwork
-          Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
+          Box(
+            modifier = Modifier.fillMaxWidth().height(220.dp).clip(RoundedCornerShape(24.dp)),
+            contentAlignment = Alignment.Center,
           ) {
+            Image(
+              painter = painterResource(R.drawable.alisha_control_room),
+              contentDescription = null,
+              modifier = Modifier.fillMaxSize(),
+              contentScale = ContentScale.Crop,
+            )
+            Surface(
+              modifier = Modifier.fillMaxSize(),
+              color = MaterialTheme.colorScheme.surface.copy(alpha = 0.48f),
+            ) {}
+            Row(
+              horizontalArrangement = Arrangement.spacedBy(16.dp),
+              verticalAlignment = Alignment.CenterVertically,
+            ) {
             Image(
               painter = painterResource(R.drawable.magen_gillan_logo),
               contentDescription = stringResource(R.string.welcome_logo_description),
@@ -232,11 +253,14 @@ object WelcomeScreen : Screen {
               contentScale = ContentScale.Fit,
             )
             Image(
-              painter = painterResource(R.drawable.alisha_chibi),
+              painter = painterResource(
+                if (isGranted) R.drawable.alisha_happy else R.drawable.alisha_sad
+              ),
               contentDescription = stringResource(R.string.welcome_character_description),
               modifier = Modifier.size(88.dp).clip(RoundedCornerShape(22.dp)),
               contentScale = ContentScale.Fit,
             )
+            }
           }
 
           Spacer(modifier = Modifier.height(16.dp))
@@ -259,6 +283,46 @@ object WelcomeScreen : Screen {
           )
 
           Spacer(modifier = Modifier.height(28.dp))
+        }
+
+        item {
+          Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+              containerColor = if (isGranted) {
+                MaterialTheme.colorScheme.primaryContainer
+              } else {
+                MaterialTheme.colorScheme.secondaryContainer
+              },
+            ),
+            shape = RoundedCornerShape(20.dp),
+          ) {
+            Row(
+              modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp),
+              verticalAlignment = Alignment.CenterVertically,
+              horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+              Text(
+                text = if (isGranted) "👋 ✨" else "👋",
+                style = MaterialTheme.typography.headlineSmall,
+              )
+              Text(
+                text = stringResource(
+                  if (isGranted) R.string.welcome_permission_mood_granted
+                  else R.string.welcome_permission_mood_denied
+                ),
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = if (isGranted) {
+                  MaterialTheme.colorScheme.onPrimaryContainer
+                } else {
+                  MaterialTheme.colorScheme.onSecondaryContainer
+                },
+              )
+            }
+          }
+
+          Spacer(modifier = Modifier.height(16.dp))
         }
 
         item {

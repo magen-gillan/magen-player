@@ -1446,6 +1446,8 @@
     <string name="welcome_language_section_desc">Select your display language</string>
     <string name="storage_access_granted">Storage Access Granted</string>
     <string name="storage_access_granted_desc">Permission is granted. MagenPlayer is ready to discover and play your media.</string>
+    <string name="welcome_permission_mood_granted">Thanks! Alisha is happy and ready to explore your videos.</string>
+    <string name="welcome_permission_mood_denied">Alisha looks a little sad. You can still continue, or allow media access later.</string>
     <string name="welcome_grant_permission">Grant Permission</string>
     <string name="welcome_get_started">Get Started</string>
     <string name="welcome_skip_permission">Continue without storage access</string>
