@@ -318,6 +318,9 @@ class MPVView(
       "sub-pos" to MPVLib.MpvFormat.MPV_FORMAT_INT64,
       "secondary-sub-scale" to MPVLib.MpvFormat.MPV_FORMAT_DOUBLE,
       "secondary-sub-pos" to MPVLib.MpvFormat.MPV_FORMAT_INT64,
+      // Consumed via propInt["secondary-sid"] (subtitle settings panels); missing here
+      // froze the secondary-subtitle UI state after an mpv destroy/recreate cycle.
+      "secondary-sid" to MPVLib.MpvFormat.MPV_FORMAT_INT64,
       "sub-bold" to MPVLib.MpvFormat.MPV_FORMAT_FLAG,
       "sub-italic" to MPVLib.MpvFormat.MPV_FORMAT_FLAG,
       "sub-justify" to MPVLib.MpvFormat.MPV_FORMAT_STRING,

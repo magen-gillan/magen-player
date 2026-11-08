@@ -120,6 +120,11 @@ fun ShortsPlayerHost(
             fileLoadedJob?.cancel()
             fileLoadedJob = null
             MPVLib.removeObserver(observer)
+            // Restore process-global mpv properties while the core is still alive so
+            // shorts-only settings (loop-file=inf / speed) do not leak into the regular
+            // player after leaving the shorts feed.
+            runCatching { MPVLib.setPropertyString("loop-file", "no") }
+            runCatching { MPVLib.setPropertyFloat("speed", 1.0f) }
             MPVLifecycleLock.onTeardownStart()
             try {
                 mpvView.destroy()

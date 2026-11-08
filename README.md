@@ -32,12 +32,11 @@
 
 ## 📥 Download from this fork | التحميل من هذه النسخة
 
-**Latest release | أحدث إصدار: [v5.5.1](https://github.com/magen-gillan/magen-player/releases/tag/v5.5.1)**
+**Latest release | أحدث إصدار: [v5.5.3](https://github.com/magen-gillan/magen-player/releases/tag/v5.5.3)**
 
 | Build | Link |
 |---|---|
-| arm64-v8a (most modern phones) | [magen-player-v5.5.1-arm64-v8a.apk](https://github.com/magen-gillan/magen-player/releases/download/v5.5.1/magen-player-v5.5.1-arm64-v8a.apk) |
-| Universal (all architectures) | [magen-player-v5.5.1-universal.apk](https://github.com/magen-gillan/magen-player/releases/download/v5.5.1/magen-player-v5.5.1-universal.apk) |
+| arm64-v8a (most modern phones) | [magen-player-v5.5.3-arm64-v8a.apk](https://github.com/magen-gillan/magen-player/releases/download/v5.5.3/magen-player-v5.5.3-arm64-v8a.apk) |
 
 Every release also ships a `.sha256` checksum file for verification.
 

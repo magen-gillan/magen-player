@@ -12,6 +12,7 @@ import org.koin.android.ext.koin.androidContext
 import java.util.concurrent.TimeUnit
 
 import com.magen.player.ui.browser.miniplayer.MiniPlayerStateManager
+import com.magen.player.domain.ytdl.YtDlClient
 
 val domainModule = module {
     single {
@@ -28,6 +29,8 @@ val domainModule = module {
     single { PlaybackManager(get()) }
     single { MiniPlayerStateManager() }
     single { HeadlessPlaybackController(androidContext()) }
+    // Was missing: PlayerActivity crashes with NoDefinitionFoundException on inject()
+    single { YtDlClient(androidContext(), get()) }
 }
 
 

@@ -631,11 +631,26 @@ object CopyPasteOps {
     videos: List<Video>,
     destinationPath: String,
   ): List<String> {
-    val movedPaths = performScopedCopyOperation(context, videos, destinationPath)
+    // Only operate on files the copy step will actually copy. The copy operation
+    // silently skips sources already in the destination folder; deleting the full
+    // unfiltered list afterwards destroyed those files without ever copying them.
+    val validVideos =
+      videos.filter { video ->
+        val sameDir = File(video.path).parent == destinationPath
+        if (sameDir) {
+          Log.w(TAG, "Source and destination are the same, skipping: ${video.displayName}")
+        }
+        !sameDir
+      }
+    if (validVideos.isEmpty()) {
+      throw IllegalArgumentException("No valid files to move")
+    }
+
+    val movedPaths = performScopedCopyOperation(context, validVideos, destinationPath)
 
     val contentUrisToDelete =
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        videos
+        validVideos
           .filter { it.uri.scheme == "content" }
           .map { it.uri }
       } else {
@@ -649,7 +664,7 @@ object CopyPasteOps {
       }
     }
 
-    videos.forEachIndexed { index, video ->
+    validVideos.forEachIndexed { index, video ->
       val deleted =
         if (video.uri.scheme == "content") {
           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -666,6 +681,7 @@ object CopyPasteOps {
         throw IOException("Failed to delete source after move: ${video.displayName}")
       }
 
+      // Indices now align: movedPaths[i] corresponds to validVideos[i].
       val newPath = movedPaths.getOrNull(index)
       if (newPath != null) {
         RecentlyPlayedOps.onVideoRenamed(video.path, newPath)

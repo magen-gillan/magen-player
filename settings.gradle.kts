@@ -8,6 +8,8 @@ pluginManagement {
       }
     }
     mavenCentral()
+    maven(url = "https://maven.aliyun.com/repository/public")
+    maven(url = "https://maven.aliyun.com/repository/google")
     gradlePluginPortal()
   }
 }
@@ -20,6 +22,8 @@ dependencyResolutionManagement {
     google()
     mavenLocal()
     mavenCentral()
+    maven(url = "https://maven.aliyun.com/repository/public")
+    maven(url = "https://maven.aliyun.com/repository/google")
     maven(url = "https://mpvrex.github.io/mpvRex-libmpv")
     maven(url = "https://www.jitpack.io") {
       content {

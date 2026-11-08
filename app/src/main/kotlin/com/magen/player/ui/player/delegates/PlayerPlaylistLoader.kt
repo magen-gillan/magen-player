@@ -146,7 +146,9 @@ class PlayerPlaylistLoader(
     }
 
     val uri = playlist[index]
-    if (uri.scheme.equals("smb", ignoreCase = true)) {
+    // scheme is platform-typed and null for local M3U entries resolved by Uri.parse —
+    // .equals on a null receiver used to NPE the whole playlist.
+    if (uri.scheme?.equals("smb", ignoreCase = true) == true) {
       val token = ++smbResolveToken
       activity.lifecycleScope.launch {
         val stream = withContext(Dispatchers.IO) {

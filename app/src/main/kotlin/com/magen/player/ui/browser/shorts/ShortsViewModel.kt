@@ -105,7 +105,10 @@ class ShortsViewModel(
                     metadataCache,
                     browserPreferences,
                 ).collect { video ->
-                    if (if (favoritesOnly) video.path !in loved else video.path in loved) return@collect
+                    // In the main feed, loved shorts must stay visible (they used to be
+                    // dropped entirely, which hid videos the user liked). Only the
+                    // favorites-only feed filters to loved items.
+                    if (favoritesOnly && video.path !in loved) return@collect
                     // The first item must be able to render before discovery finishes,
                     // otherwise the spinner from #450 comes straight back.
                     if (received.isEmpty()) {
@@ -119,12 +122,15 @@ class ShortsViewModel(
                         return@collect
                     }
                     received.add(video)
-                    _shorts.value = withInitialFirst(received)
+                    // Sort on every emission so the feed never re-shuffles when discovery
+                    // completes (the one-shot sort at the end used to teleport the pager
+                    // several pages away mid-swipe).
+                    _shorts.value = withInitialFirst(sortShorts(received))
                     _totalShortsCount.value = received.size
                 }
 
-                // Discovery done: pin the requested video to the front, then interleave
-                // loved items through the remaining feed.
+                // Discovery done: pin the requested video to the front. The list now
+                // matches the last emission (already sorted), so the pager stays put.
                 val initial = pendingInitialVideo
                 pendingInitialVideo = null
                 val sorted = sortShorts(received)

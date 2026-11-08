@@ -10,6 +10,8 @@ import com.magen.player.database.repository.MediaPlayCountRepository
 import com.magen.player.database.repository.PlaybackStateRepositoryImpl
 import com.magen.player.database.repository.PlaylistRepository
 import com.magen.player.database.repository.RecentlyPlayedRepositoryImpl
+import com.magen.player.repository.NetworkRepository
+import com.magen.player.database.dao.NetworkConnectionDao
 import com.magen.player.domain.playbackstate.repository.PlaybackStateRepository
 import com.magen.player.domain.bookmark.repository.BookmarkRepository
 import com.magen.player.domain.recentlyplayed.repository.RecentlyPlayedRepository
@@ -658,4 +660,8 @@ single {
     }
 
     singleOf(::MediaPlayCountRepository)
+
+    // Was missing: NetworkBrowserScreen crashes with NoDefinitionFoundException on inject()
+    single { get<MagenPlayerDatabase>().networkConnectionDao() }
+    single { NetworkRepository(get<MagenPlayerDatabase>().networkConnectionDao()) }
   }

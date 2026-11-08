@@ -196,7 +196,9 @@ class VideoListViewModel(
 
     val videosWithInfo =
       videos.map { video ->
-        val playbackState = playbackStates.find { it.mediaTitle == video.displayName }
+        // Match by path or display name (consistent with the other browsers); matching
+        // by display name only mixed up same-named files in different folders.
+        val playbackState = playbackStates.find { it.mediaTitle == video.path || it.mediaTitle == video.displayName }
 
         // Map saved orientation to video
         val videoWithOrientation = if (playbackState?.savedOrientation != null) {

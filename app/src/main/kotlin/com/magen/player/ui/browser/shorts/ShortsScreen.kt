@@ -222,17 +222,47 @@ data class ShortsScreen(
                 var isManuallyPaused by remember { mutableStateOf(false) }
                 var isFreeModeEnabled by remember { mutableStateOf(false) }
                 
-                // Compute once: the feed now grows while the user watches, so keying this
-                // on `shorts` would restart the pager on every appended page.
-                val initialIndex = remember {
-                    viewModel.getInitialPageIndex(initialVideoPath)
-                }
+                // The initial page is resolved once the target video has actually been
+                // discovered (see the restore effect below). Computing it from a 1-item
+                // snapshot silently broke "resume last watched short".
                 val pagerState = rememberPagerState(
-                    initialPage = initialIndex.coerceIn(0, (shorts.size - 1).coerceAtLeast(0)),
+                    initialPage = 0,
                     pageCount = { 
                         if (shorts.isNotEmpty()) shorts.size + 1 else 0 
                     }
                 )
+
+                // Restore the last watched short once its page exists in the feed.
+                var restoredInitialPage by remember { mutableStateOf(false) }
+                LaunchedEffect(shorts) {
+                    if (restoredInitialPage || shorts.isEmpty()) return@LaunchedEffect
+                    if (pagerState.currentPage != 0 || pagerState.isScrollInProgress) {
+                        // The user started browsing before the target was discovered.
+                        restoredInitialPage = true
+                        return@LaunchedEffect
+                    }
+                    val targetIndex = viewModel.getInitialPageIndex(initialVideoPath)
+                    if (targetIndex > 0) {
+                        pagerState.scrollToPage(targetIndex)
+                    }
+                    restoredInitialPage = true
+                }
+
+                // Keep the video the user is watching anchored at the current page while
+                // the feed grows / re-sorts / shrinks underneath the pager. Without this,
+                // insertions before the current index swap the on-screen video (the
+                // "104 jumps to 107" skip).
+                var settledVideoPath by remember { mutableStateOf<String?>(null) }
+                var loadedVideoPath by remember { mutableStateOf<String?>(null) }
+                LaunchedEffect(shorts) {
+                    val anchor = settledVideoPath ?: return@LaunchedEffect
+                    val currentIdx = pagerState.settledPage
+                    if (currentIdx < shorts.size && shorts[currentIdx].path == anchor) return@LaunchedEffect
+                    val anchoredIdx = shorts.indexOfFirst { it.path == anchor }
+                    if (anchoredIdx >= 0 && anchoredIdx != currentIdx) {
+                        pagerState.scrollToPage(anchoredIdx)
+                    }
+                }
                 val lifecycleOwner = LocalLifecycleOwner.current
                 val density = LocalDensity.current
                 val coroutineScope = rememberCoroutineScope()
@@ -351,12 +381,19 @@ data class ShortsScreen(
                         if (mpvView != null && shorts.isNotEmpty()) {
                             if (pagerState.settledPage < shorts.size) {
                                 val video = shorts[pagerState.settledPage]
-                                MPVLib.command("loadfile", video.path)
+                                // Guard against reloading the same file (e.g. after the
+                                // anchor correction scrolls the pager): loadfile always
+                                // restarts from 0, which would restart the same video.
+                                if (loadedVideoPath != video.path) {
+                                    MPVLib.command("loadfile", video.path)
+                                    loadedVideoPath = video.path
+                                }
                                 MPVLib.setPropertyString("loop-file", if (autoSwipe) "no" else "inf")
                                 MPVLib.setPropertyBoolean("pause", false)
                                 isManuallyPaused = false
                                 viewModel.syncPlaybackSpeed()
-                                
+
+                                settledVideoPath = video.path
                                 viewModel.onShortSettled(video)
                             } else {
                                 MPVLib.setPropertyBoolean("pause", true)
@@ -1143,22 +1180,9 @@ private fun ShortPageItem(
                     TextButton(
                         onClick = {
                             showDeleteConfirmation = false
-                            val currentList = viewModel.shorts.value
-                            val currentIndex = currentList.indexOf(video)
-                            val nextVideo = if (currentIndex != -1 && currentIndex < currentList.size - 1) {
-                                currentList[currentIndex + 1]
-                            } else if (currentIndex > 0) {
-                                currentList[currentIndex - 1]
-                            } else {
-                                null
-                            }
-                            
-                            if (nextVideo != null) {
-                                MPVLib.command("loadfile", nextVideo.path)
-                            } else {
-                                MPVLib.command("stop")
-                            }
-                            
+                            // No manual loadfile here: once the deleted item leaves the
+                            // feed, the settle effect loads the next video by itself. The
+                            // manual loadfile used to race it and double-load.
                             viewModel.deleteShort(video)
                         }
                     ) {

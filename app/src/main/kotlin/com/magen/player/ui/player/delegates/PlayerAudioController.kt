@@ -94,7 +94,9 @@ class PlayerAudioController(
               .build(),
           ).setOnAudioFocusChangeListener(audioFocusChangeListener)
           .setAcceptsDelayedFocusGain(true)
-          .setWillPauseWhenDucked(true)
+          // false so AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK is actually delivered — the
+          // duck branch above was dead code with true (system pauses instead).
+          .setWillPauseWhenDucked(false)
           .build()
       if (autoplayOnOpen) {
         requestAudioFocus()

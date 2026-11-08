@@ -1056,11 +1056,11 @@ fun GestureHandler(
                     // Threshold for triggering sub seek (e.g., 50 pixels)
                     if (abs(deltaX) > 50f) {
                       if (deltaX > 0) {
-                        // Swipe Right -> Previous Subtitle
-                        viewModel.leftSubSeek()
-                      } else {
-                        // Swipe Left -> Next Subtitle
+                        // Swipe Right -> Next subtitle (matches horizontal seek direction)
                         viewModel.rightSubSeek()
+                      } else {
+                        // Swipe Left -> Previous subtitle
+                        viewModel.leftSubSeek()
                       }
                       hasTriggeredSubSeek = true
                       haptics.performHapticFeedback(HapticFeedbackType.LongPress)
