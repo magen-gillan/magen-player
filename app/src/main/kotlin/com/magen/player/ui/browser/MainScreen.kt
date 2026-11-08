@@ -186,14 +186,19 @@ object MainScreen : Screen {
       androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions()
     ) { }
     LaunchedEffect(Unit) {
-      val missing = com.magen.player.utils.permission.PermissionUtils
-        .getRequiredRuntimePermissions()
-        .filter {
-          androidx.core.content.ContextCompat.checkSelfPermission(context, it) !=
-            android.content.pm.PackageManager.PERMISSION_GRANTED
-        }
-      if (missing.isNotEmpty()) {
-        permissionCatchUpLauncher.launch(missing.toTypedArray())
+      // Catch-up is notifications-only on purpose: media access is handled by the
+      // welcome screen (runtime dialog + "All files access" toggle), and re-asking for
+      // media on every start would nag — or re-open the photo-selector for users who
+      // deliberately picked a limited set.
+      if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.TIRAMISU) {
+        return@LaunchedEffect
+      }
+      val notificationsGranted = androidx.core.content.ContextCompat.checkSelfPermission(
+        context,
+        android.Manifest.permission.POST_NOTIFICATIONS,
+      ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+      if (!notificationsGranted) {
+        permissionCatchUpLauncher.launch(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS))
       }
     }
 

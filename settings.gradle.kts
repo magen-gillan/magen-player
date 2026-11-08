@@ -1,5 +1,21 @@
 pluginManagement {
   repositories {
+    // Fast mirrors that don't rate-limit this environment (repo.maven.apache.org 429s,
+    // maven.aliyun.com intermittently 502s). JitPack-hosted groups are excluded: the
+    // mirrors proxy their POMs but not their AARs, which breaks resolution.
+    maven(url = "https://mirrors.cloud.tencent.com/nexus/repository/maven-public/") {
+      content { excludeGroupByRegex("com\\.github..*"); excludeGroupByRegex("io\\.github..*") }
+    }
+    maven(url = "https://repo.huaweicloud.com/repository/maven/") {
+      content { excludeGroupByRegex("com\\.github..*"); excludeGroupByRegex("io\\.github..*") }
+    }
+    maven(url = "https://maven.aliyun.com/repository/public") {
+      content { excludeGroupByRegex("com\\.github..*"); excludeGroupByRegex("io\\.github..*") }
+    }
+    maven(url = "https://maven.aliyun.com/repository/google")
+    maven(url = "https://maven.aliyun.com/repository/gradle-plugin") {
+      content { excludeGroupByRegex("com\\.github..*"); excludeGroupByRegex("io\\.github..*") }
+    }
     google {
       content {
         includeGroupByRegex("com\\.android.*")
@@ -8,9 +24,6 @@ pluginManagement {
       }
     }
     mavenCentral()
-    maven(url = "https://maven.aliyun.com/repository/public")
-    maven(url = "https://maven.aliyun.com/repository/google")
-    maven(url = "https://maven.aliyun.com/repository/gradle-plugin")
     gradlePluginPortal()
   }
 }
@@ -20,9 +33,18 @@ plugins {
 dependencyResolutionManagement {
   repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
   repositories {
-    // Aliyun mirrors first: they mirror Maven Central + Google and are not rate-limited
+    // Mirrors first: they proxy Maven Central + Google and are not rate-limited
     // from this environment (repo.maven.apache.org returns 429 under load).
-    maven(url = "https://maven.aliyun.com/repository/public")
+    // JitPack-hosted groups excluded: mirrors serve their POMs but 404 their AARs.
+    maven(url = "https://mirrors.cloud.tencent.com/nexus/repository/maven-public/") {
+      content { excludeGroupByRegex("com\\.github..*"); excludeGroupByRegex("io\\.github..*") }
+    }
+    maven(url = "https://repo.huaweicloud.com/repository/maven/") {
+      content { excludeGroupByRegex("com\\.github..*"); excludeGroupByRegex("io\\.github..*") }
+    }
+    maven(url = "https://maven.aliyun.com/repository/public") {
+      content { excludeGroupByRegex("com\\.github..*"); excludeGroupByRegex("io\\.github..*") }
+    }
     maven(url = "https://maven.aliyun.com/repository/google")
     google()
     mavenLocal()

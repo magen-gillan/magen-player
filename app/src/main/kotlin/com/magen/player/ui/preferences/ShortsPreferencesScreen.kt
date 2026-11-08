@@ -28,6 +28,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.clickable
@@ -35,12 +37,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.TextButton
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -83,9 +90,31 @@ object ShortsPreferencesScreen : Screen {
         
         var showFolderSelector by remember { mutableStateOf(false) }
         var allFolders by remember { mutableStateOf<List<com.magen.player.domain.media.model.MediaFolder>>(emptyList()) }
-        
-        LaunchedEffect(Unit) {
+        var foldersLoading by remember { mutableStateOf(false) }
+        val folderScope = rememberCoroutineScope()
+
+        // Reload every time the picker opens. The old one-shot load ran once on screen
+        // entry and could race the cold-start media scan, leaving the list empty — and
+        // since the dialog was gated on a non-empty list, tapping the setting silently
+        // did nothing ("as if I never pressed it").
+        LaunchedEffect(showFolderSelector) {
+            if (!showFolderSelector) return@LaunchedEffect
+            foldersLoading = true
+            // The scanner caches its tree for 3 minutes: a cache built before media access
+            // was granted would keep serving an empty list. Drop it so the refresh really
+            // re-scans.
+            com.magen.player.utils.storage.CoreMediaScanner.clearCache()
             allFolders = com.magen.player.utils.storage.CoreMediaScanner.getFlatMediaFolders(context)
+            foldersLoading = false
+        }
+
+        fun refreshFolders() {
+            folderScope.launch {
+                foldersLoading = true
+                com.magen.player.utils.storage.CoreMediaScanner.clearCache()
+                allFolders = com.magen.player.utils.storage.CoreMediaScanner.getFlatMediaFolders(context)
+                foldersLoading = false
+            }
         }
 
         Scaffold(
@@ -296,7 +325,7 @@ object ShortsPreferencesScreen : Screen {
             }
         }
 
-        if (showFolderSelector && allFolders.isNotEmpty()) {
+        if (showFolderSelector) {
             var selectedFolders by remember { mutableStateOf(shortsSourceFolders) }
             AlertDialog(
                 onDismissRequest = { showFolderSelector = false },
@@ -309,6 +338,33 @@ object ShortsPreferencesScreen : Screen {
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(bottom = 12.dp)
                         )
+                        if (allFolders.isEmpty()) {
+                            // Empty state instead of a silent no-op: tell the user why the
+                            // list is empty and offer a manual re-scan.
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(min = 120.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                            ) {
+                                if (foldersLoading) {
+                                    CircularProgressIndicator(modifier = Modifier.size(28.dp))
+                                } else {
+                                    Text(
+                                        text = stringResource(R.string.pref_sourced_folders_empty),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.outline,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.padding(horizontal = 8.dp),
+                                    )
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    TextButton(onClick = { refreshFolders() }) {
+                                        Text(stringResource(R.string.generic_refresh))
+                                    }
+                                }
+                            }
+                        } else {
                         LazyColumn(modifier = Modifier.heightIn(max = 300.dp)) {
                             items(allFolders) { folder ->
                                 val isChecked = selectedFolders.contains(folder.path)
@@ -346,6 +402,7 @@ object ShortsPreferencesScreen : Screen {
                                     }
                                 }
                             }
+                        }
                         }
                     }
                 },

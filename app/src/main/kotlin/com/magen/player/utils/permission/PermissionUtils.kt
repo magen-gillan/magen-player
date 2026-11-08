@@ -101,17 +101,19 @@ object PermissionUtils {
    * Every runtime permission the app needs, so they can all be requested in a single
    * system dialog instead of the user hunting through Android Settings one by one.
    *
+   * NOTE: READ_MEDIA_VISUAL_USER_SELECTED is deliberately NOT requested. Asking for it
+   * alongside READ_MEDIA_VIDEO shows the system dialog with a "Select photos" option;
+   * a user tapping it ends up with a partial grant whose MediaStore view is nearly
+   * empty (no folders, no shorts) while the app reports "granted". Full media access
+   * on non-scoped builds goes through "All files access" instead — see
+   * [hasFullStorageAccess] / [requestStorageAccess].
+   *
    * Media access + notifications are requested together; "All files access" (a settings
    * toggle, not a runtime permission) is requested separately via [requestStorageAccess].
    */
   fun getRequiredRuntimePermissions(): Array<String> {
     val permissions = mutableListOf<String>()
     when {
-      Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE -> {
-        permissions += android.Manifest.permission.READ_MEDIA_VIDEO
-        permissions += android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
-      }
-
       Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ->
         permissions += android.Manifest.permission.READ_MEDIA_VIDEO
 
@@ -127,6 +129,29 @@ object PermissionUtils {
     }
     return permissions.toTypedArray()
   }
+
+  /**
+   * True when the app can read the whole library the way its file operations expect
+   * (favorites move, rename, delete): "All files access" on non-scoped Android 11+
+   * builds, the runtime storage permission everywhere else.
+   */
+  fun hasFullStorageAccess(context: Context): Boolean =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !BuildConfig.SCOPED_STORAGE_ONLY) {
+      android.os.Environment.isExternalStorageManager()
+    } else {
+      isStoragePermissionGranted(context)
+    }
+
+  /**
+   * True when only a scoped/partial media grant is present on a build that prefers
+   * "All files access". The UI should keep steering the user to the All-files toggle
+   * instead of silently running with a MediaStore view that can be nearly empty.
+   */
+  fun isLimitedMediaAccess(context: Context): Boolean =
+    Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
+      !BuildConfig.SCOPED_STORAGE_ONLY &&
+      !android.os.Environment.isExternalStorageManager() &&
+      isStoragePermissionGranted(context)
 
   /**
    * Launch system storage permission request (All Files Access settings on Android 11+ non-playstore, or runtime permission).

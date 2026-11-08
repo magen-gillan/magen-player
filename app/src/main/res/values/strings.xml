@@ -1024,6 +1024,8 @@
     <string name="pref_blocked_videos_summary">View and manage blocked shorts</string>
     <string name="pref_select_sourced_folders">Select Sourced Folders</string>
     <string name="pref_select_sourced_folders_desc">Choose directories to source shorts from. If none are selected, shorts will be sourced from all folders.</string>
+    <string name="pref_sourced_folders_empty">No folders found yet. The media library may still be scanning, or media access has not been granted.</string>
+    <string name="generic_refresh">Refresh</string>
 
     <!-- Update features -->
     <string name="pref_category_updates">Updates</string>

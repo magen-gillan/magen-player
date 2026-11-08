@@ -86,6 +86,10 @@ class ShortsViewModel(
 
             if (forceRefresh) {
                 browserPreferences.lastWatchedShortPath.set("")
+                // A scanner tree cached before media access was granted keeps serving an
+                // empty folder list, which makes the whole feed come back empty — drop it
+                // so the forced reload really re-scans.
+                com.magen.player.utils.storage.CoreMediaScanner.clearCache()
             }
 
             try {

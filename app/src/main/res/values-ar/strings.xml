@@ -812,6 +812,8 @@
     <string name="pref_blocked_videos_summary">عرض وإدارة المقاطع القصيرة المحظورة</string>
     <string name="pref_select_sourced_folders">اختيار المجلدات المصدر</string>
     <string name="pref_select_sourced_folders_desc">اختر المجلدات التي تُجلب المقاطع القصيرة منها. إذا لم تختر أي مجلد، ستُجلب من جميع المجلدات.</string>
+    <string name="pref_sourced_folders_empty">لم يتم العثور على مجلدات بعد. قد تكون المكتبة لا تزال تُفحص، أو لم يتم منح صلاحية الوصول إلى الوسائط.</string>
+    <string name="generic_refresh">تحديث</string>
     <string name="pref_category_updates">التحديثات</string>
     <string name="pref_about_auto_check_updates">التحقق التلقائي من التحديثات</string>
     <string name="pref_about_auto_check_updates_summary">التحقق من الإصدارات الجديدة عند بدء التشغيل</string>

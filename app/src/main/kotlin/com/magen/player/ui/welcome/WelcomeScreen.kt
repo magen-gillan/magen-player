@@ -49,6 +49,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -108,7 +109,7 @@ object WelcomeScreen : Screen {
     var showLanguageDialog by remember { mutableStateOf(false) }
 
     var isGranted by remember {
-      mutableStateOf(PermissionUtils.isStoragePermissionGranted(context))
+      mutableStateOf(PermissionUtils.hasFullStorageAccess(context))
     }
 
     // Re-check permission status when app resumes from system permission screens
@@ -116,7 +117,7 @@ object WelcomeScreen : Screen {
       val lifecycleOwner = context as? LifecycleOwner
       val observer = LifecycleEventObserver { _, event ->
         if (event == Lifecycle.Event.ON_RESUME) {
-          isGranted = PermissionUtils.isStoragePermissionGranted(context)
+          isGranted = PermissionUtils.hasFullStorageAccess(context)
         }
       }
       lifecycleOwner?.lifecycle?.addObserver(observer)
@@ -141,9 +142,16 @@ object WelcomeScreen : Screen {
     // One-shot request of EVERY runtime permission the app needs (media + notifications).
     val permissionsLauncher = rememberLauncherForActivityResult(
       ActivityResultContracts.RequestMultiplePermissions()
-    ) { grants ->
-      isGranted = PermissionUtils.isStoragePermissionGranted(context)
+    ) { _ ->
+      isGranted = PermissionUtils.hasFullStorageAccess(context)
       when {
+        // Non-scoped Android 11+ builds: a scoped media grant alone leaves the app with
+        // a MediaStore view that can be nearly empty (no folders, no shorts) and breaks
+        // the direct file operations (favorites move, rename, delete). Steer to the
+        // "All files access" toggle instead — the reliable v5.5.2 flow.
+        PermissionUtils.isLimitedMediaAccess(context) ->
+          PermissionUtils.requestStorageAccess(context) {}
+
         isGranted -> coroutineScope.launch {
           delay(600)
           navigateToMain()
@@ -163,16 +171,17 @@ object WelcomeScreen : Screen {
           androidx.core.content.ContextCompat.checkSelfPermission(context, it) !=
             android.content.pm.PackageManager.PERMISSION_GRANTED
         }
-      if (needed.isEmpty()) {
-        // Everything already granted at runtime; if storage still reads as denied the
-        // missing piece is the "All files access" settings toggle.
-        if (isGranted) {
-          navigateToMain()
-        } else {
-          PermissionUtils.requestStorageAccess(context) {}
-        }
-      } else {
+      if (needed.isNotEmpty()) {
         permissionsLauncher.launch(needed.toTypedArray())
+        return
+      }
+      when {
+        PermissionUtils.isLimitedMediaAccess(context) ->
+          PermissionUtils.requestStorageAccess(context) {}
+
+        isGranted -> navigateToMain()
+
+        else -> PermissionUtils.requestStorageAccess(context) {}
       }
     }
 
@@ -188,6 +197,9 @@ object WelcomeScreen : Screen {
         ),
     ) {
       val contentWidth = if (maxWidth > 520.dp) 480.dp else maxWidth
+      // Capture before entering nested scopes: inside the scrollable Column the
+      // BoxWithConstraints receivers are no longer implicit.
+      val screenMaxHeight = maxHeight
 
       Column(
         modifier = Modifier
@@ -239,19 +251,25 @@ object WelcomeScreen : Screen {
         }
 
         // ---- Hero image with overlaid title ----
+        // The reference design gives the hero the leftover screen height (flex:1).
+        // A weight() inside a verticalScroll Column collapses to its min height (the
+        // column measures children with unbounded height), which is why the hero used
+        // to render as a short banner — so size it from the parent BoxWithConstraints.
+        val heroHeight = (screenMaxHeight * 0.52f).coerceIn(300.dp, 680.dp)
         Box(
           modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 150.dp)
-            .weight(1f, fill = false)
+            .height(heroHeight)
             .clip(RoundedCornerShape(26.dp))
             .border(1.dp, Line, RoundedCornerShape(26.dp)),
         ) {
           Image(
-            painter = painterResource(R.drawable.alisha_control_room),
+            painter = painterResource(R.drawable.alisha_hero),
             contentDescription = stringResource(R.string.welcome_character_description),
             modifier = Modifier.matchParentSize(),
             contentScale = ContentScale.Crop,
+            // object-position: 50% 16% in the design — keep Alisha's face in frame.
+            alignment = BiasAlignment(0f, -0.68f),
           )
           Box(
             modifier = Modifier
