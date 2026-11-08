@@ -1,18 +1,20 @@
 package com.magen.player.ui.welcome
 
-import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,8 +24,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
@@ -35,21 +35,14 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,23 +51,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import kotlinx.serialization.Serializable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import org.koin.compose.koinInject
-import com.magen.player.BuildConfig
 import com.magen.player.R
 import com.magen.player.preferences.AppearancePreferences
 import com.magen.player.presentation.Screen
@@ -83,23 +76,42 @@ import com.magen.player.ui.utils.LocalBackStack
 import com.magen.player.utils.locale.LocaleHelper
 import com.magen.player.utils.permission.PermissionUtils
 
+/**
+ * Welcome screen following the "MagenPlayer – Welcome screen" design.
+ *
+ * Fixed dark palette (independent of the app theme, like the reference design):
+ * bg #0A1020, radial highlight #17315F, cards #121A2E, borders #22304F,
+ * text #EEF3FF, muted #9AACCB, accent #6EA2FF.
+ */
 @Serializable
 object WelcomeScreen : Screen {
 
+  // Design tokens from the HTML reference
+  private val Bg = Color(0xFF0A1020)
+  private val BgHighlight = Color(0xFF17315F)
+  private val Card = Color(0xFF121A2E)
+  private val Line = Color(0xFF22304F)
+  private val TextPrimary = Color(0xFFEEF3FF)
+  private val TextMuted = Color(0xFF9AACCB)
+  private val Accent = Color(0xFF6EA2FF)
+  private val NoteBg = Color(0xFF1B2745)
+  private val IconCircle = Color(0xFF1F2C4B)
+  private val GoStart = Color(0xFFA9C4FF)
+  private val GoEnd = Color(0xFF7FA8FF)
+
   @Composable
   override fun Content() {
-    val context = LocalContext.current
+    val context = androidx.compose.ui.platform.LocalContext.current
     val backstack = LocalBackStack.current
     val appearancePreferences = koinInject<AppearancePreferences>()
     val coroutineScope = rememberCoroutineScope()
     var showLanguageDialog by remember { mutableStateOf(false) }
-    var showExplanationDialog by remember { mutableStateOf(false) }
 
     var isGranted by remember {
       mutableStateOf(PermissionUtils.isStoragePermissionGranted(context))
     }
 
-    // Re-check permission status when app resumes from system settings dialog
+    // Re-check permission status when app resumes from system permission screens
     DisposableEffect(Unit) {
       val lifecycleOwner = context as? LifecycleOwner
       val observer = LifecycleEventObserver { _, event ->
@@ -126,371 +138,330 @@ object WelcomeScreen : Screen {
       }
     }
 
-    val permissionLauncher = rememberLauncherForActivityResult(
-      ActivityResultContracts.RequestPermission()
-    ) {
+    // One-shot request of EVERY runtime permission the app needs (media + notifications).
+    val permissionsLauncher = rememberLauncherForActivityResult(
+      ActivityResultContracts.RequestMultiplePermissions()
+    ) { grants ->
       isGranted = PermissionUtils.isStoragePermissionGranted(context)
-      if (isGranted) {
-        coroutineScope.launch {
-          delay(900)
+      when {
+        isGranted -> coroutineScope.launch {
+          delay(600)
           navigateToMain()
+        }
+
+        // Runtime media permission still missing on an "All files access" build: send the
+        // user to the dedicated settings toggle, which is the only way to grant it.
+        else -> PermissionUtils.requestStorageAccess(context) {
+          // Scoped builds land here directly; nothing more to request.
         }
       }
     }
 
-    Scaffold(
-      modifier = Modifier.fillMaxSize(),
-      containerColor = MaterialTheme.colorScheme.background,
-      bottomBar = {
-        // Pinned sticky bottom container that respects system navigation bars
-        Surface(
-          modifier = Modifier.fillMaxWidth(),
-          color = MaterialTheme.colorScheme.surfaceContainer,
-          tonalElevation = 8.dp,
-          shadowElevation = 8.dp,
-        ) {
-          Column(
-            modifier = Modifier
-              .fillMaxWidth()
-              .navigationBarsPadding()
-              .padding(horizontal = 24.dp, vertical = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-          ) {
-            FilledTonalButton(
-              onClick = {
-                if (isGranted) {
-                  navigateToMain()
-                } else {
-                  PermissionUtils.requestStorageAccess(context) {
-                    permissionLauncher.launch(PermissionUtils.getStoragePermission())
-                  }
-                }
-              },
-              modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-              shape = RoundedCornerShape(16.dp),
-              colors = ButtonDefaults.filledTonalButtonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-              ),
-            ) {
-              Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-              ) {
-                Icon(
-                  imageVector = if (isGranted) Icons.Filled.Check else Icons.AutoMirrored.Filled.ArrowForward,
-                  contentDescription = null,
-                  modifier = Modifier.size(20.dp),
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                Text(
-                  text = if (isGranted) {
-                    stringResource(R.string.welcome_get_started)
-                  } else {
-                    stringResource(R.string.welcome_grant_permission)
-                  },
-                  style = MaterialTheme.typography.titleMedium,
-                  fontWeight = FontWeight.Bold,
-                )
-              }
-            }
-
-            if (!isGranted) {
-              Spacer(modifier = Modifier.height(8.dp))
-              TextButton(
-                onClick = { navigateToMain() },
-                modifier = Modifier.fillMaxWidth(),
-              ) {
-                Text(
-                  text = stringResource(R.string.welcome_skip_permission),
-                  style = MaterialTheme.typography.bodyMedium,
-                  color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-              }
-            }
-          }
+    fun requestAllPermissions() {
+      val needed = PermissionUtils.getRequiredRuntimePermissions()
+        .filter {
+          androidx.core.content.ContextCompat.checkSelfPermission(context, it) !=
+            android.content.pm.PackageManager.PERMISSION_GRANTED
         }
-      },
-    ) { paddingValues ->
-      LazyColumn(
-        modifier = Modifier
-          .fillMaxSize()
-          .padding(paddingValues),
-        contentPadding = PaddingValues(
-          top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + 16.dp,
-          bottom = 24.dp,
-          start = 24.dp,
-          end = 24.dp,
+      if (needed.isEmpty()) {
+        // Everything already granted at runtime; if storage still reads as denied the
+        // missing piece is the "All files access" settings toggle.
+        if (isGranted) {
+          navigateToMain()
+        } else {
+          PermissionUtils.requestStorageAccess(context) {}
+        }
+      } else {
+        permissionsLauncher.launch(needed.toTypedArray())
+      }
+    }
+
+    BoxWithConstraints(
+      modifier = Modifier
+        .fillMaxSize()
+        .background(
+          Brush.verticalGradient(
+            0f to BgHighlight.copy(alpha = 0.85f),
+            0.45f to Bg,
+            1f to Bg,
+          )
         ),
-        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+      val contentWidth = if (maxWidth > 520.dp) 480.dp else maxWidth
+
+      Column(
+        modifier = Modifier
+          .width(contentWidth)
+          .align(Alignment.TopCenter)
+          .fillMaxHeight()
+          .padding(
+            top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding(),
+            start = 18.dp,
+            end = 18.dp,
+          )
+          .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
       ) {
-        item {
-          // Brand logo and character artwork
+        Spacer(modifier = Modifier.height(2.dp))
+
+        // ---- Header: logo badge + app name ----
+        Row(
+          verticalAlignment = Alignment.CenterVertically,
+          horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
           Box(
-            modifier = Modifier.fillMaxWidth().height(220.dp).clip(RoundedCornerShape(24.dp)),
+            modifier = Modifier
+              .size(64.dp)
+              .clip(RoundedCornerShape(18.dp))
+              .background(Color.White),
             contentAlignment = Alignment.Center,
           ) {
             Image(
-              painter = painterResource(R.drawable.alisha_control_room),
-              contentDescription = null,
-              modifier = Modifier.fillMaxSize(),
-              contentScale = ContentScale.Crop,
-            )
-            Surface(
-              modifier = Modifier.fillMaxSize(),
-              color = MaterialTheme.colorScheme.surface.copy(alpha = 0.48f),
-            ) {}
-            Row(
-              horizontalArrangement = Arrangement.spacedBy(16.dp),
-              verticalAlignment = Alignment.CenterVertically,
-            ) {
-            Image(
               painter = painterResource(R.drawable.magen_gillan_logo),
               contentDescription = stringResource(R.string.welcome_logo_description),
-              modifier = Modifier.size(104.dp),
+              modifier = Modifier.size(56.dp),
               contentScale = ContentScale.Fit,
             )
-            Image(
-              painter = painterResource(
-                if (isGranted) R.drawable.alisha_happy else R.drawable.alisha_sad
-              ),
-              contentDescription = stringResource(R.string.welcome_character_description),
-              modifier = Modifier.size(88.dp).clip(RoundedCornerShape(22.dp)),
-              contentScale = ContentScale.Fit,
-            )
-            }
           }
+          Column {
+            Text(
+              text = stringResource(R.string.app_name),
+              fontSize = 18.sp,
+              fontWeight = FontWeight.Bold,
+              color = TextPrimary,
+            )
+            Text(
+              text = stringResource(R.string.welcome_by_line),
+              fontSize = 12.sp,
+              color = TextMuted,
+            )
+          }
+        }
 
-          Spacer(modifier = Modifier.height(16.dp))
-
+        // ---- Hero image with overlaid title ----
+        Box(
+          modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 150.dp)
+            .weight(1f, fill = false)
+            .clip(RoundedCornerShape(26.dp))
+            .border(1.dp, Line, RoundedCornerShape(26.dp)),
+        ) {
+          Image(
+            painter = painterResource(R.drawable.alisha_control_room),
+            contentDescription = stringResource(R.string.welcome_character_description),
+            modifier = Modifier.matchParentSize(),
+            contentScale = ContentScale.Crop,
+          )
+          Box(
+            modifier = Modifier
+              .matchParentSize()
+              .background(
+                Brush.verticalGradient(
+                  0.62f to Color.Transparent,
+                  1f to Color(0xC80A1020),
+                )
+              )
+          )
           Text(
             text = stringResource(R.string.welcome_title),
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.ExtraBold,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurface,
-          )
-
-          Spacer(modifier = Modifier.height(8.dp))
-
-          Text(
-            text = stringResource(R.string.welcome_subtitle),
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-          )
-
-          Spacer(modifier = Modifier.height(28.dp))
-        }
-
-        item {
-          Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-              containerColor = if (isGranted) {
-                MaterialTheme.colorScheme.primaryContainer
-              } else {
-                MaterialTheme.colorScheme.secondaryContainer
-              },
-            ),
-            shape = RoundedCornerShape(20.dp),
-          ) {
-            Row(
-              modifier = Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 16.dp),
-              verticalAlignment = Alignment.CenterVertically,
-              horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-              Text(
-                text = if (isGranted) "👋 ✨" else "👋",
-                style = MaterialTheme.typography.headlineSmall,
-              )
-              Text(
-                text = stringResource(
-                  if (isGranted) R.string.welcome_permission_mood_granted
-                  else R.string.welcome_permission_mood_denied
-                ),
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = if (isGranted) {
-                  MaterialTheme.colorScheme.onPrimaryContainer
-                } else {
-                  MaterialTheme.colorScheme.onSecondaryContainer
-                },
-              )
-            }
-          }
-
-          Spacer(modifier = Modifier.height(16.dp))
-        }
-
-        item {
-          // Language Picker Card
-          val currentLanguage = remember { LocaleHelper.getCurrentLanguage(context) }
-          Card(
             modifier = Modifier
-              .fillMaxWidth()
-              .clip(RoundedCornerShape(20.dp))
-              .clickable { showLanguageDialog = true },
-            colors = CardDefaults.cardColors(
-              containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-            ),
-            shape = RoundedCornerShape(20.dp),
-          ) {
-            Row(
-              modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-              verticalAlignment = Alignment.CenterVertically,
-            ) {
-              Surface(
-                modifier = Modifier.size(44.dp),
-                shape = CircleShape,
-                color = MaterialTheme.colorScheme.secondaryContainer,
-              ) {
-                Box(
-                  modifier = Modifier.fillMaxSize(),
-                  contentAlignment = Alignment.Center,
-                ) {
-                  Icon(
-                    imageVector = Icons.Filled.Language,
-                    contentDescription = null,
-                    modifier = Modifier.size(24.dp),
-                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                  )
-                }
-              }
-
-              Spacer(modifier = Modifier.width(16.dp))
-
-              Column(modifier = Modifier.weight(1f)) {
-                Text(
-                  text = stringResource(R.string.welcome_language_section_title),
-                  style = MaterialTheme.typography.labelMedium,
-                  color = MaterialTheme.colorScheme.primary,
-                  fontWeight = FontWeight.SemiBold,
-                )
-                Text(
-                  text = if (currentLanguage.code.isEmpty()) {
-                    stringResource(R.string.system_default)
-                  } else {
-                    "${currentLanguage.nativeName} (${currentLanguage.localizedName})"
-                  },
-                  style = MaterialTheme.typography.titleMedium,
-                  fontWeight = FontWeight.Bold,
-                  color = MaterialTheme.colorScheme.onSurface,
-                )
-              }
-
-              TextButton(onClick = { showLanguageDialog = true }) {
-                Text(
-                  text = stringResource(R.string.browse),
-                  fontWeight = FontWeight.SemiBold,
-                )
-              }
-            }
-          }
-
-          Spacer(modifier = Modifier.height(16.dp))
+              .align(Alignment.BottomStart)
+              .padding(18.dp),
+            fontSize = 21.sp,
+            fontWeight = FontWeight.Bold,
+            lineHeight = 26.sp,
+            color = TextPrimary,
+          )
         }
 
-        item {
-          // Storage Permission Card (Dynamic status & descriptions)
-          Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-              containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        // ---- Lead ----
+        Text(
+          text = stringResource(R.string.welcome_subtitle),
+          fontSize = 13.sp,
+          lineHeight = 20.sp,
+          color = TextMuted,
+        )
+
+        // ---- Mood note ----
+        Row(
+          modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(NoteBg)
+            .padding(horizontal = 14.dp, vertical = 10.dp),
+          horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+          Text(text = "👋", fontSize = 18.sp)
+          Text(
+            text = stringResource(
+              if (isGranted) R.string.welcome_permission_mood_granted
+              else R.string.welcome_permission_mood_denied
             ),
-            shape = RoundedCornerShape(20.dp),
-          ) {
-            Column(
-              modifier = Modifier.padding(20.dp),
-              verticalArrangement = Arrangement.spacedBy(14.dp),
-            ) {
-              Row(
-                verticalAlignment = Alignment.CenterVertically,
-              ) {
-                Surface(
-                  modifier = Modifier.size(40.dp),
-                  shape = CircleShape,
-                  color = if (isGranted) {
-                    MaterialTheme.colorScheme.primaryContainer
-                  } else {
-                    MaterialTheme.colorScheme.secondaryContainer
-                  },
-                ) {
-                  Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                  ) {
-                    Icon(
-                      imageVector = if (isGranted) Icons.Filled.Check else Icons.Filled.Folder,
-                      contentDescription = null,
-                      modifier = Modifier.size(22.dp),
-                      tint = if (isGranted) {
-                        MaterialTheme.colorScheme.onPrimaryContainer
-                      } else {
-                        MaterialTheme.colorScheme.onSecondaryContainer
-                      },
-                    )
-                  }
-                }
-
-                Spacer(modifier = Modifier.width(12.dp))
-
-                Text(
-                  text = if (isGranted) {
-                    stringResource(R.string.storage_access_granted)
-                  } else {
-                    stringResource(R.string.storage_access_required)
-                  },
-                  style = MaterialTheme.typography.titleMedium,
-                  fontWeight = FontWeight.Bold,
-                  color = MaterialTheme.colorScheme.onSurface,
-                )
-              }
-
-              Text(
-                text = if (isGranted) {
-                  stringResource(R.string.storage_access_granted_desc)
-                } else if (BuildConfig.SCOPED_STORAGE_ONLY) {
-                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    stringResource(R.string.permission_required_photos_videos)
-                  } else {
-                    stringResource(R.string.permission_required_storage)
-                  }
-                } else {
-                  stringResource(R.string.permission_required_all_files)
-                },
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-              )
-
-              if (!isGranted) {
-                // Why is this needed? link
-                TextButton(
-                  onClick = { showExplanationDialog = true },
-                  modifier = Modifier.align(Alignment.CenterHorizontally),
-                ) {
-                  Icon(
-                    imageVector = Icons.Outlined.Info,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp),
-                  )
-                  Spacer(modifier = Modifier.width(6.dp))
-                  Text(
-                    text = stringResource(R.string.why_do_i_see_this),
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium,
-                  )
-                }
-              }
-            }
-          }
-
-          Spacer(modifier = Modifier.height(16.dp))
+            fontSize = 12.5.sp,
+            lineHeight = 19.sp,
+            color = TextPrimary,
+          )
         }
+
+        // ---- Language row ----
+        val currentLanguage = remember { LocaleHelper.getCurrentLanguage(context) }
+        Row(
+          modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(Card)
+            .border(1.dp, Line, RoundedCornerShape(16.dp))
+            .clickable { showLanguageDialog = true }
+            .padding(horizontal = 14.dp, vertical = 10.dp),
+          verticalAlignment = Alignment.CenterVertically,
+          horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+          Box(
+            modifier = Modifier
+              .size(36.dp)
+              .clip(CircleShape)
+              .background(IconCircle),
+            contentAlignment = Alignment.Center,
+          ) {
+            Icon(
+              imageVector = Icons.Filled.Language,
+              contentDescription = null,
+              tint = TextPrimary,
+              modifier = Modifier.size(19.dp),
+            )
+          }
+          Column(modifier = Modifier.weight(1f)) {
+            Text(
+              text = stringResource(R.string.welcome_language_section_title),
+              fontSize = 11.sp,
+              color = Accent,
+              fontWeight = FontWeight.Medium,
+            )
+            Text(
+              text = if (currentLanguage.code.isEmpty()) {
+                stringResource(R.string.system_default)
+              } else {
+                "${currentLanguage.nativeName} (${currentLanguage.localizedName})"
+              },
+              fontSize = 15.sp,
+              fontWeight = FontWeight.SemiBold,
+              color = TextPrimary,
+            )
+          }
+          Text(
+            text = stringResource(R.string.browse),
+            fontSize = 13.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = Accent,
+            modifier = Modifier.clickable { showLanguageDialog = true },
+          )
+        }
+
+        // ---- Storage permission row ----
+        Row(
+          modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(Card)
+            .border(1.dp, Line, RoundedCornerShape(16.dp))
+            .padding(horizontal = 14.dp, vertical = 10.dp),
+          verticalAlignment = Alignment.Top,
+          horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+          Box(
+            modifier = Modifier
+              .size(36.dp)
+              .clip(CircleShape)
+              .background(IconCircle),
+            contentAlignment = Alignment.Center,
+          ) {
+            Icon(
+              imageVector = if (isGranted) Icons.Filled.Check else Icons.Filled.Folder,
+              contentDescription = null,
+              tint = if (isGranted) Accent else TextPrimary,
+              modifier = Modifier.size(19.dp),
+            )
+          }
+          Column {
+            Text(
+              text = stringResource(
+                if (isGranted) R.string.storage_access_granted
+                else R.string.storage_access_required
+              ),
+              fontSize = 14.sp,
+              fontWeight = FontWeight.SemiBold,
+              color = TextPrimary,
+            )
+            Text(
+              text = if (isGranted) {
+                stringResource(R.string.storage_access_granted_desc)
+              } else {
+                stringResource(R.string.permission_required_all_files)
+              },
+              fontSize = 12.sp,
+              lineHeight = 18.sp,
+              color = TextMuted,
+            )
+          }
+        }
+
+        Spacer(modifier = Modifier.height(2.dp))
+      }
+
+      // ---- Sticky actions ----
+      Column(
+        modifier = Modifier
+          .width(contentWidth)
+          .align(Alignment.BottomCenter)
+          .navigationBarsPadding()
+          .padding(horizontal = 18.dp, vertical = 14.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+      ) {
+        Box(
+          modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(999.dp))
+            .background(Brush.linearGradient(listOf(GoStart, GoEnd)))
+            .clickable {
+              if (isGranted) navigateToMain() else requestAllPermissions()
+            },
+          contentAlignment = Alignment.Center,
+        ) {
+          Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(vertical = 14.dp),
+          ) {
+            Icon(
+              imageVector = if (isGranted) Icons.Filled.Check
+              else Icons.AutoMirrored.Filled.ArrowForward,
+              contentDescription = null,
+              tint = Bg,
+              modifier = Modifier.size(20.dp),
+            )
+            Text(
+              text = stringResource(
+                if (isGranted) R.string.welcome_get_started
+                else R.string.welcome_grant_permission
+              ),
+              fontSize = 15.sp,
+              fontWeight = FontWeight.Bold,
+              color = Bg,
+            )
+          }
+        }
+
+        Text(
+          text = stringResource(R.string.welcome_skip_permission),
+          fontSize = 13.sp,
+          color = TextMuted,
+          textAlign = TextAlign.Center,
+          modifier = Modifier
+            .fillMaxWidth()
+            .clickable { navigateToMain() }
+            .padding(vertical = 8.dp),
+        )
       }
     }
 
@@ -502,17 +473,19 @@ object WelcomeScreen : Screen {
 
       AlertDialog(
         onDismissRequest = { showLanguageDialog = false },
+        containerColor = Card,
+        titleContentColor = TextPrimary,
+        textContentColor = TextMuted,
         icon = {
           Icon(
             imageVector = Icons.Filled.Language,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
+            tint = Accent,
           )
         },
         title = {
           Text(
             text = stringResource(R.string.pref_appearance_language_title),
-            style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
           )
         },
@@ -546,15 +519,14 @@ object WelcomeScreen : Screen {
                 Column {
                   Text(
                     text = language.nativeName,
-                    style = MaterialTheme.typography.bodyLarge,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = TextPrimary,
                   )
                   if (language.code.isNotEmpty()) {
                     Text(
                       text = language.localizedName,
-                      style = MaterialTheme.typography.bodySmall,
-                      color = MaterialTheme.colorScheme.onSurfaceVariant,
+                      fontSize = 12.sp,
+                      color = TextMuted,
                     )
                   }
                 }
@@ -563,131 +535,37 @@ object WelcomeScreen : Screen {
           }
         },
         confirmButton = {
-          FilledTonalButton(
+          TextButton(
             onClick = {
               LocaleHelper.setAppLanguage(context, selectedCode)
               showLanguageDialog = false
-            },
-            shape = RoundedCornerShape(12.dp),
+            }
           ) {
-            Text(stringResource(R.string.generic_confirm))
+            Text(
+              text = stringResource(R.string.generic_confirm),
+              color = Accent,
+              fontWeight = FontWeight.SemiBold,
+            )
           }
         },
         dismissButton = {
           TextButton(onClick = { showLanguageDialog = false }) {
-            Text(stringResource(R.string.generic_cancel))
+            Text(
+              text = stringResource(R.string.generic_cancel),
+              color = TextMuted,
+            )
           }
         },
         shape = RoundedCornerShape(24.dp),
       )
     }
 
-    // Explanation Dialog
-    if (showExplanationDialog) {
-      val uriHandler = LocalUriHandler.current
-      val githubUrl = "https://github.com/MagenPlayer/Magen-Player"
-      val isPlayStoreBuild = BuildConfig.SCOPED_STORAGE_ONLY
-
-      AlertDialog(
-        onDismissRequest = { showExplanationDialog = false },
-        icon = {
-          Icon(
-            imageVector = Icons.Outlined.Info,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-          )
-        },
-        title = {
-          Text(
-            text = stringResource(R.string.why_this_permission_is_needed),
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-          )
-        },
-        text = {
-          Column(
-            modifier = Modifier
-              .heightIn(max = 400.dp)
-              .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-          ) {
-            if (isPlayStoreBuild) {
-              Text(
-                text = stringResource(R.string.permission_explanation_playstore_intro),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-              )
-              Text(
-                text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                  stringResource(R.string.permission_explanation_tiramisu_plus)
-                } else {
-                  stringResource(R.string.permission_explanation_pre_tiramisu)
-                },
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-              )
-              Text(
-                text = stringResource(R.string.permission_used_exclusively_for),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                fontWeight = FontWeight.Medium,
-              )
-              Text(
-                text = stringResource(R.string.permission_usage_bullet_list),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-              )
-            } else {
-              Text(
-                text = stringResource(R.string.permission_explanation_standard_intro),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-              )
-              Text(
-                text = stringResource(R.string.permission_security_policy_change),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-              )
-              Text(
-                text = stringResource(R.string.permission_privacy_assurance_standard),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-              )
-            }
-
-            Text(
-              text = stringResource(R.string.opensource_github_notice),
-              style = MaterialTheme.typography.bodyMedium,
-              color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-
-            Text(
-              text = githubUrl,
-              style = MaterialTheme.typography.bodyMedium,
-              color = MaterialTheme.colorScheme.primary,
-              fontWeight = FontWeight.Medium,
-              textDecoration = TextDecoration.Underline,
-              modifier = Modifier.clickable { uriHandler.openUri(githubUrl) },
-            )
-
-            Text(
-              text = stringResource(R.string.privacy_assurance_final),
-              style = MaterialTheme.typography.bodyMedium,
-              color = MaterialTheme.colorScheme.onSurfaceVariant,
-              fontWeight = FontWeight.Medium,
-            )
-          }
-        },
-        confirmButton = {
-          FilledTonalButton(
-            onClick = { showExplanationDialog = false },
-            shape = RoundedCornerShape(12.dp),
-          ) {
-            Text(stringResource(R.string.got_it))
-          }
-        },
-        shape = RoundedCornerShape(20.dp),
-      )
+    // Auto-advance once permission is granted (e.g. granted from system settings screen)
+    LaunchedEffect(isGranted) {
+      if (isGranted) {
+        delay(900)
+        navigateToMain()
+      }
     }
   }
 }

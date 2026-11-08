@@ -17,8 +17,8 @@ android {
     applicationId = "com.magen.player"
     minSdk = 26
     targetSdk = 36
-    versionCode = 218
-    versionName = "5.5.3"
+    versionCode = 219
+    versionName = "5.6.0"
 
     vectorDrawables {
       useSupportLibrary = true
@@ -113,8 +113,14 @@ android {
       excludes += "META-INF/NOTICE*"
       excludes += "META-INF/*.kotlin_module"
       excludes += "META-INF/versions/9/OSGI-INF/MANIFEST.MF"
+      // BouncyCastle PQC test vectors (post-quantum crypto data files) are never used
+      // at runtime by the WebDAV/SMB dependencies that pull them in.
+      excludes += "org/bouncycastle/pqc/**"
     }
     jniLibs {
+      // Compressed native libs inside the APK (legacy packaging): libmpv/ffmpeg/mediainfo
+      // .so files are ~52MB uncompressed. Compression roughly halves the download size;
+      // they are extracted to /data at install time, which every supported API level does.
       useLegacyPackaging = true
     }
   }

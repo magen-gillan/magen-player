@@ -20,6 +20,7 @@ import com.magen.player.domain.media.model.Video
 import com.magen.player.preferences.BrowserPreferences
 import com.magen.player.preferences.FoldersPreferences
 import com.magen.player.utils.media.MediaFormatter
+import com.magen.player.utils.media.MediaLibraryEvents
 import com.magen.player.utils.storage.FileFilterUtils
 import com.magen.player.utils.storage.FileTypeUtils
 import com.magen.player.utils.storage.StorageVolumeUtils
@@ -141,6 +142,26 @@ class HybridMediaIndexRepository(
     Log.d(TAG, "ensureFreshIfEmpty: availableCount=$count")
     if (count == 0) {
       ensureFresh()
+    }
+  }
+
+  /** True while the persistent index has never been populated (first launch). */
+  suspend fun isIndexEmpty(): Boolean = withContext(Dispatchers.IO) {
+    dao.getAvailableCount() == 0
+  }
+
+  /**
+   * Kicks a full index refresh into the background WITHOUT blocking the caller.
+   *
+   * Used on cold start: the folder list renders immediately from MediaStore while the
+   * persistent index is still being built; when the scan finishes every browser gets a
+   * [MediaLibraryEvents] ping and reloads with the complete data.
+   */
+  fun ensureFreshAsync() {
+    repositoryScope.launch {
+      Log.d(TAG, "ensureFreshAsync: background index scan started")
+      runCatching { ensureFresh() }
+      MediaLibraryEvents.notifyChanged()
     }
   }
 

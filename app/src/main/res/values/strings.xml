@@ -1439,6 +1439,7 @@
     <string name="pref_appearance_language_summary">Change the display language of the app</string>
 
     <string name="welcome_title">Welcome to MagenPlayer</string>
+    <string name="welcome_by_line">by Magen Gillan</string>
     <string name="welcome_subtitle">Play videos stored on your device. Shorts shows only videos saved locally, never videos from the internet.</string>
     <string name="welcome_logo_description">Magen Gillan logo</string>
     <string name="welcome_character_description">Alisha character</string>

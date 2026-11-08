@@ -47,17 +47,44 @@ object PermissionUtils {
   private const val FILE_ACCESS_TAG = "FileAccessRequest"
   
   /**
-   * Check if storage permission is currently granted.
+   * Check if storage/media permission is currently granted.
+   *
+   * On Android 11+ (non-scoped builds) "All files access" is the preferred grant, but a
+   * scoped media permission (READ_MEDIA_VIDEO / READ_EXTERNAL_STORAGE) is ALSO accepted:
+   * the entire media library (folder list, video lists, shorts) is built on MediaStore,
+   * which works fine with those permissions. Previously a user who granted "Photos and
+   * videos" from system settings was still shown the permission-denied screen forever.
    */
-  fun isStoragePermissionGranted(context: Context): Boolean =
-    if (!BuildConfig.SCOPED_STORAGE_ONLY && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-      android.os.Environment.isExternalStorageManager()
-    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      ContextCompat.checkSelfPermission(
-        context,
-        android.Manifest.permission.READ_MEDIA_VIDEO,
-      ) == PackageManager.PERMISSION_GRANTED
-    } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+  fun isStoragePermissionGranted(context: Context): Boolean {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+      if (!BuildConfig.SCOPED_STORAGE_ONLY && android.os.Environment.isExternalStorageManager()) {
+        return true
+      }
+      return when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE ->
+          ContextCompat.checkSelfPermission(
+            context,
+            android.Manifest.permission.READ_MEDIA_VIDEO,
+          ) == PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(
+              context,
+              android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED,
+            ) == PackageManager.PERMISSION_GRANTED
+
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ->
+          ContextCompat.checkSelfPermission(
+            context,
+            android.Manifest.permission.READ_MEDIA_VIDEO,
+          ) == PackageManager.PERMISSION_GRANTED
+
+        else ->
+          ContextCompat.checkSelfPermission(
+            context,
+            android.Manifest.permission.READ_EXTERNAL_STORAGE,
+          ) == PackageManager.PERMISSION_GRANTED
+      }
+    }
+    return if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
       ContextCompat.checkSelfPermission(
         context,
         android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -68,6 +95,38 @@ object PermissionUtils {
         android.Manifest.permission.READ_EXTERNAL_STORAGE,
       ) == PackageManager.PERMISSION_GRANTED
     }
+  }
+
+  /**
+   * Every runtime permission the app needs, so they can all be requested in a single
+   * system dialog instead of the user hunting through Android Settings one by one.
+   *
+   * Media access + notifications are requested together; "All files access" (a settings
+   * toggle, not a runtime permission) is requested separately via [requestStorageAccess].
+   */
+  fun getRequiredRuntimePermissions(): Array<String> {
+    val permissions = mutableListOf<String>()
+    when {
+      Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE -> {
+        permissions += android.Manifest.permission.READ_MEDIA_VIDEO
+        permissions += android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
+      }
+
+      Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ->
+        permissions += android.Manifest.permission.READ_MEDIA_VIDEO
+
+      Build.VERSION.SDK_INT <= Build.VERSION_CODES.P -> {
+        permissions += android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+        permissions += android.Manifest.permission.READ_EXTERNAL_STORAGE
+      }
+
+      else -> permissions += android.Manifest.permission.READ_EXTERNAL_STORAGE
+    }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      permissions += android.Manifest.permission.POST_NOTIFICATIONS
+    }
+    return permissions.toTypedArray()
+  }
 
   /**
    * Launch system storage permission request (All Files Access settings on Android 11+ non-playstore, or runtime permission).
@@ -217,28 +276,12 @@ object PermissionUtils {
       }
     }
 
-    // Wrap permission state to consider MANAGE_EXTERNAL_STORAGE on Android 11+
+    // Wrap permission state: consider the full grant matrix (All files access OR scoped
+    // media permission) so the browser is not blocked when only "Photos and videos"
+    // was granted from system settings.
     val effectivePermissionState =
       remember(permissionState.status, lifecycleTrigger) {
-        if (!BuildConfig.SCOPED_STORAGE_ONLY && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-          if (android.os.Environment.isExternalStorageManager()) {
-            object : PermissionState {
-              override val permission = permissionState.permission
-              override val status = PermissionStatus.Granted
-
-              override fun launchPermissionRequest() = permissionState.launchPermissionRequest()
-            }
-          } else {
-            object : PermissionState {
-              override val permission = permissionState.permission
-              override val status = PermissionStatus.Denied(false)
-
-              override fun launchPermissionRequest() = permissionState.launchPermissionRequest()
-            }
-          }
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
-          android.os.Environment.isExternalStorageManager()
-        ) {
+        if (isStoragePermissionGranted(context)) {
           object : PermissionState {
             override val permission = permissionState.permission
             override val status = PermissionStatus.Granted

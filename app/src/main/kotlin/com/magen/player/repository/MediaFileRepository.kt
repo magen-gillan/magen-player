@@ -18,6 +18,7 @@ import com.magen.player.preferences.BrowserPreferences
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import org.koin.core.context.GlobalContext
 import java.io.File
 
@@ -26,6 +27,8 @@ import java.io.File
  * Now refactored to delegate to specialized logic classes (Ops).
  */
 object MediaFileRepository {
+
+  private const val FOLDER_ENRICH_TIMEOUT_MS = 5_000L
 
   /**
    * Clears all caches
@@ -55,7 +58,13 @@ object MediaFileRepository {
         VideoScanUtils.scanFolder(context, bucketId, policy)
       }.getOrNull()?.takeIf { it.access == VideoScanUtils.FolderAccess.READABLE }?.videos.orEmpty()
       val indexed = koin.get<HybridMediaIndexRepository>().getVideosInFolder(bucketId)
-      koin.get<HybridMediaIndexRepository>().enrichFolderMetadata(bucketId)
+      // Bounded priority enrichment: opening a folder must never block on a long
+      // (or hung) metadata pass; leftover items are picked up by the background worker.
+      runCatching {
+        withTimeout(FOLDER_ENRICH_TIMEOUT_MS) {
+          koin.get<HybridMediaIndexRepository>().enrichFolderMetadata(bucketId)
+        }
+      }
       mergeFolderVideos(direct, indexed)
     }
 

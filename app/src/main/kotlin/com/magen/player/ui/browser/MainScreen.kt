@@ -180,6 +180,23 @@ object MainScreen : Screen {
     val bottomNavOrder by browserPreferences.bottomNavOrder.collectAsState()
     val customProfileImagePath by appearancePreferences.customProfileImagePath.collectAsState()
 
+    // One-shot catch-up: ask (once per process) for any runtime permission that is still
+    // missing — e.g. notifications for users who finished onboarding on an older build.
+    val permissionCatchUpLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
+      androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions()
+    ) { }
+    LaunchedEffect(Unit) {
+      val missing = com.magen.player.utils.permission.PermissionUtils
+        .getRequiredRuntimePermissions()
+        .filter {
+          androidx.core.content.ContextCompat.checkSelfPermission(context, it) !=
+            android.content.pm.PackageManager.PERMISSION_GRANTED
+        }
+      if (missing.isNotEmpty()) {
+        permissionCatchUpLauncher.launch(missing.toTypedArray())
+      }
+    }
+
     val customAvatarBitmap = remember(customProfileImagePath) {
       if (customProfileImagePath.isNotBlank()) {
         val file = java.io.File(customProfileImagePath)

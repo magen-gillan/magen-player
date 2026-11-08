@@ -1295,6 +1295,7 @@
     <string name="system_default">الإعدادات الافتراضية للنظام</string>
     <string name="pref_appearance_language_summary">تغيير لغة عرض التطبيق</string>
     <string name="welcome_title">mpvRx أهلا بكم في</string>
+    <string name="welcome_by_line">من Magen Gillan</string>
     <string name="welcome_subtitle">شغّل فيديوهات جهازك. يعرض Shorts الفيديوهات المخزنة محليًا فقط، ولا يجلب فيديوهات من الإنترنت.</string>
     <string name="welcome_logo_description">شعار Magen Gillan</string>
     <string name="welcome_character_description">شخصية أليشا</string>
