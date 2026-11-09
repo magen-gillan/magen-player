@@ -100,20 +100,26 @@ object ShortsPreferencesScreen : Screen {
         LaunchedEffect(showFolderSelector) {
             if (!showFolderSelector) return@LaunchedEffect
             foldersLoading = true
-            // The scanner caches its tree for 3 minutes: a cache built before media access
-            // was granted would keep serving an empty list. Drop it so the refresh really
-            // re-scans.
-            com.magen.player.utils.storage.CoreMediaScanner.clearCache()
-            allFolders = com.magen.player.utils.storage.CoreMediaScanner.getFlatMediaFolders(context)
-            foldersLoading = false
+            try {
+                // Hybrid-index-backed (same fast source as the main browser's folder
+                // list). The previous CoreMediaScanner.getFlatMediaFolders call built
+                // the full media tree — recursive volume walk + O(n^2) hierarchy — and
+                // could run for minutes, which is exactly the endless spinner that
+                // was reported from this dialog.
+                allFolders = com.magen.player.utils.media.ShortsDiscoveryOps.getSourceFolders(context)
+            } finally {
+                foldersLoading = false
+            }
         }
 
         fun refreshFolders() {
             folderScope.launch {
                 foldersLoading = true
-                com.magen.player.utils.storage.CoreMediaScanner.clearCache()
-                allFolders = com.magen.player.utils.storage.CoreMediaScanner.getFlatMediaFolders(context)
-                foldersLoading = false
+                try {
+                    allFolders = com.magen.player.utils.media.ShortsDiscoveryOps.getSourceFolders(context)
+                } finally {
+                    foldersLoading = false
+                }
             }
         }
 

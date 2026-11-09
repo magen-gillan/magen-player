@@ -54,6 +54,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -271,13 +272,17 @@ object WelcomeScreen : Screen {
             // object-position: 50% 16% in the design — keep Alisha's face in frame.
             alignment = BiasAlignment(0f, -0.68f),
           )
+          // Scrim: starts higher and ends almost opaque. The old 62%→0xC8 gradient
+          // left the title sitting on Alisha's bright white jacket, making
+          // "Welcome to MagenPlayer" nearly invisible.
           Box(
             modifier = Modifier
               .matchParentSize()
               .background(
                 Brush.verticalGradient(
-                  0.62f to Color.Transparent,
-                  1f to Color(0xC80A1020),
+                  0.40f to Color.Transparent,
+                  0.72f to Color(0x960A1020),
+                  1f to Color(0xF20A1020),
                 )
               )
           )
@@ -289,7 +294,16 @@ object WelcomeScreen : Screen {
             fontSize = 21.sp,
             fontWeight = FontWeight.Bold,
             lineHeight = 26.sp,
-            color = TextPrimary,
+            color = Color(0xFFFFFFFF),
+            // Soft drop shadow keeps the title legible even over bright artwork
+            // in the upper half of the text block.
+            style = androidx.compose.ui.text.TextStyle(
+              shadow = Shadow(
+                color = Color(0xF2000000),
+                blurRadius = 10f,
+                offset = androidx.compose.ui.geometry.Offset(0f, 2f),
+              ),
+            ),
           )
         }
 
@@ -425,15 +439,30 @@ object WelcomeScreen : Screen {
         }
 
         Spacer(modifier = Modifier.height(2.dp))
+
+        // Reserve room for the sticky action bar. Without this spacer the last cards
+        // scrolled underneath the fixed "Grant Permission" button and its skip link,
+        // which visually collided with (and made unreadable) the text below the hero.
+        Spacer(modifier = Modifier.height(172.dp))
       }
 
       // ---- Sticky actions ----
+      // A soft gradient mask behind the fixed bar: content scrolled underneath is
+      // faded out instead of visually colliding with the buttons. The extra top
+      // padding gives the fade room to reach near-opaque before the button starts.
       Column(
         modifier = Modifier
           .width(contentWidth)
           .align(Alignment.BottomCenter)
+          .background(
+            Brush.verticalGradient(
+              0f to Bg.copy(alpha = 0f),
+              0.25f to Bg.copy(alpha = 0.96f),
+              1f to Bg,
+            )
+          )
           .navigationBarsPadding()
-          .padding(horizontal = 18.dp, vertical = 14.dp),
+          .padding(start = 18.dp, end = 18.dp, top = 34.dp, bottom = 14.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
       ) {
         Box(

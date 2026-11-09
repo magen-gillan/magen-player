@@ -86,10 +86,6 @@ class ShortsViewModel(
 
             if (forceRefresh) {
                 browserPreferences.lastWatchedShortPath.set("")
-                // A scanner tree cached before media access was granted keeps serving an
-                // empty folder list, which makes the whole feed come back empty — drop it
-                // so the forced reload really re-scans.
-                com.magen.player.utils.storage.CoreMediaScanner.clearCache()
             }
 
             try {
@@ -177,15 +173,15 @@ class ShortsViewModel(
     private suspend fun loadBlockedShorts(): List<Video> {
         val blockedInDb = shortsMediaDao.getAllShortsMedia().filter { it.isBlocked }
         val configuredFoldersSet = browserPreferences.shortsSourceFolders.get()
-        val flatFolders = com.magen.player.utils.storage.CoreMediaScanner.getFlatMediaFolders(getApplication())
+        val flatFolders = ShortsDiscoveryOps.getSourceFolders(getApplication())
         val filteredFolders = if (configuredFoldersSet.isNotEmpty()) {
             flatFolders.filter { it.path in configuredFoldersSet }
         } else {
             flatFolders
         }
         val allVideos = filteredFolders.flatMap { folder ->
-            com.magen.player.utils.storage.VideoScanUtils.getVideosInFolder(getApplication(), folder.path)
-        }.filter { !it.isAudio }
+            ShortsDiscoveryOps.getVideosForShorts(getApplication(), folder.path)
+        }
 
         val blockedPathsSet = blockedInDb.map { it.path }.toSet()
         val blockedVideos = allVideos.filter { it.path in blockedPathsSet }

@@ -96,7 +96,7 @@ object CoreMediaScanner {
         blacklistedFolders: Set<String> = emptySet()
     ): List<MediaFolder> = withContext(Dispatchers.IO) {
         val allNodes = getOrBuildMediaTree(context, playbackStates, thresholdDays, blacklistedFolders)
-        
+
         // Filter for folders that have DIRECT media files
         allNodes.values
             .filter { it.directVideoCount > 0 || it.directAudioCount > 0 }
@@ -120,6 +120,65 @@ object CoreMediaScanner {
                     unwatchedVideoCount = node.directUnwatchedCount
                 )
             }.sortedBy { it.name.lowercase(Locale.getDefault()) }
+    }
+
+    /**
+     * FAST flat folder list backed by MediaStore only.
+     *
+     * [getFlatMediaFolders] builds the full tree: a MediaStore pass + a recursive walk
+     * of every external volume (depth 20) + an O(n^2) hierarchy pass. On devices with
+     * slow or large SD/OTG storage that walk alone can run for minutes, which froze
+     * shorts (feed + sourced-folder picker) behind an endless spinner. Shorts only
+     * needs folders with direct media, so this variant skips the volume walk and the
+     * hierarchy pass entirely.
+     */
+    suspend fun getFlatMediaFoldersQuick(
+        context: Context,
+        blacklistedFolders: Set<String> = emptySet()
+    ): List<MediaFolder> = withContext(Dispatchers.IO) {
+        val rawMediaByFolder = mutableMapOf<String, MutableList<ScannedItem>>()
+        scanMediaStore(context, rawMediaByFolder)
+
+        rawMediaByFolder
+            .filterKeys { it !in blacklistedFolders }
+            .map { (folderPath, items) ->
+                var videoCount = 0
+                var audioCount = 0
+                var videoSize = 0L
+                var audioSize = 0L
+                var videoDuration = 0L
+                var audioDuration = 0L
+                var latestModified = 0L
+                for (item in items) {
+                    if (item.dateModified > latestModified) latestModified = item.dateModified
+                    if (item.isAudio) {
+                        audioCount++
+                        audioSize += item.size
+                        audioDuration += item.duration
+                    } else {
+                        videoCount++
+                        videoSize += item.size
+                        videoDuration += item.duration
+                    }
+                }
+                MediaFolder(
+                    id = folderPath,
+                    name = File(folderPath).name,
+                    path = folderPath,
+                    videoCount = videoCount,
+                    audioCount = audioCount,
+                    totalSize = videoSize + audioSize,
+                    totalDuration = videoDuration + audioDuration,
+                    videoSize = videoSize,
+                    audioSize = audioSize,
+                    videoDuration = videoDuration,
+                    audioDuration = audioDuration,
+                    lastModified = latestModified,
+                    isRecursive = false,
+                )
+            }
+            .filter { it.videoCount > 0 || it.audioCount > 0 }
+            .sortedBy { it.name.lowercase(Locale.getDefault()) }
     }
 
     /**
