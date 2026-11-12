@@ -8,10 +8,10 @@
 <p><sub>Local-first Android video player powered by libmpv</sub></p>
 
 <p>
-  <img src="https://img.shields.io/github/v/release/magen-gillan/magen-player?style=flat-square&color=00C853&label=%D8%A7%D9%84%D8%A5%D8%B5%D8%AF%D8%A7%D8%B1" alt="الإصدار"/>
-  <img src="https://img.shields.io/badge/%D8%A3%D9%86%D8%AF%D8%B1%D9%88%D9%8A%D8%AF-8.0%2B-3DDC84?style=flat-square&logo=android&logoColor=white" alt="أندرويد 8.0+"/>
-  <img src="https://img.shields.io/badge/%D8%A8%D8%AF%D9%88%D9%86_%D8%A5%D8%B0%D9%86_%D8%A7%D9%84%D8%A5%D9%86%D8%AA%D8%B1%D9%86%D8%AA-2E7D32?style=flat-square" alt="بدون إذن الإنترنت"/>
-  <img src="https://img.shields.io/github/license/magen-gillan/magen-player?style=flat-square&color=FBC02D&label=%D8%A7%D9%84%D8%B1%D8%AE%D8%B5%D8%A9" alt="الرخصة"/>
+  <img src="https://img.shields.io/github/v/release/magen-gillan/magen-player?style=flat-square&color=00C853&label=latest%20release" alt="latest release"/>
+  <img src="https://img.shields.io/badge/Android-8.0%2B-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Android 8.0+"/>
+  <img src="https://img.shields.io/badge/No%20Internet%20Permission-2E7D32?style=flat-square" alt="No Internet Permission"/>
+  <img src="https://img.shields.io/github/license/magen-gillan/magen-player?style=flat-square&color=FBC02D&label=license" alt="license"/>
 </p>
 
 <br/>
