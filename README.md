@@ -1,39 +1,79 @@
+<div align="center">
+
+<img src="docs/logo_green.gif" alt="magen player" width="280"/>
+
 # magen player
 
-<p align="center">
-  <img src="app/src/main/ic_launcher-playstore.png" width="128" height="128" />
+<p><b>مشغّل فيديو محلي لأندرويد — سريع، خفيف، وبدون إنترنت</b></p>
+<p><sub>Local-first Android video player powered by libmpv</sub></p>
+
+<p>
+  <img src="https://img.shields.io/github/v/release/magen-gillan/magen-player?style=flat-square&color=00C853&label=%D8%A7%D9%84%D8%A5%D8%B5%D8%AF%D8%A7%D8%B1" alt="الإصدار"/>
+  <img src="https://img.shields.io/badge/%D8%A3%D9%86%D8%AF%D8%B1%D9%88%D9%8A%D8%AF-8.0%2B-3DDC84?style=flat-square&logo=android&logoColor=white" alt="أندرويد 8.0+"/>
+  <img src="https://img.shields.io/badge/%D8%A8%D8%AF%D9%88%D9%86_%D8%A5%D8%B0%D9%86_%D8%A7%D9%84%D8%A5%D9%86%D8%AA%D8%B1%D9%86%D8%AA-2E7D32?style=flat-square" alt="بدون إذن الإنترنت"/>
+  <img src="https://img.shields.io/github/license/magen-gillan/magen-player?style=flat-square&color=FBC02D&label=%D8%A7%D9%84%D8%B1%D8%AE%D8%B5%D8%A9" alt="الرخصة"/>
 </p>
 
-<p align="center"><b>Local-first Android video player powered by libmpv.</b></p>
+<br/>
 
-magen player is a customizable video player for Android with a Jetpack Compose interface. Media discovery, playback, playlists, and Shorts use files stored on the device. The application does not stream from websites or connect to remote media services.
+<a href="https://github.com/magen-gillan/magen-player/releases/latest/download/magen-player-arm64-v8a.apk">
+  <img src="docs/download-button.svg" alt="تحميل آخر نسخة APK" width="440"/>
+</a>
 
-## Features
+<p><a href="https://github.com/magen-gillan/magen-player/releases">تصفّح جميع الإصدارات</a></p>
 
-- Local video playback powered by libmpv, with customizable gestures, frame navigation, zoom, and pan.
-- Browse device folders, organize local playlists, and track watched videos.
-- Shorts mode with sorting and a local Favorites folder.
-- Glass-themed controls, configurable tabs, local subtitle files, and HDR-to-SDR tone mapping.
-- No internet permission or runtime network requests in the app.
+</div>
 
-## Build
+<div dir="rtl">
 
-The Release variant is configured for `arm64-v8a` to keep the device-specific APK smaller. Build it from this source tree with:
+## ما هو magen player؟
+
+مشغّل فيديو يعمل بالكامل على الجهاز، مبني على libmpv بواجهة Jetpack Compose. يكتشف الفيديوهات المخزّنة على الهاتف ويشغّلها دون أي اتصال بالإنترنت أو خدمات بعيدة — لا بثّ من المواقع ولا شبكات وسائط خارجية.
+
+## الميزات
+
+- تشغيل الفيديو المحلي عبر libmpv مع إيماءات قابلة للتخصيص، والتنقل بين الإطارات، والتكبير والتحريك.
+- تصفّح مجلدات الجهاز، وتنظيم قوائم تشغيل محلية، وتتبّع الفيديوهات المشاهدة.
+- وضع **الفيديوهات القصيرة** مع فرز فوري (الاسم بالترتيب الطبيعي أو الحجم أو تاريخ الإضافة) ومجلد **المفضلة** المحلي.
+- واجهة زجاجية أنيقة وتبويبات قابلة للتخصيص ودعم ملفات الترجمة المحلية وتعيين نغمات HDR إلى SDR.
+- **بدون إذن الإنترنت**: لا اتصال شبكي إطلاقًا داخل التطبيق.
+
+## التحميل والتثبيت
+
+1. اضغط زر التحميل الأخضر في الأعلى — ينزّل آخر نسخة `magen-player-arm64-v8a.apk` مباشرةً من الإصدار الأحدث.
+2. افتح الملف على الهاتف واسمح بالتثبيت من مصادر غير معروفة عند الطلب.
+3. إن كانت لديك نسخة أقدم فاحذفها أولًا ثم ثبّت النسخة الجديدة — توقيع التطبيق موحّد نهائيًا بدءًا من v5.5.4.
+4. للتحقق من سلامة الملف قارن بصمة `SHA-256` مع ملف `.sha256` المرفق مع كل إصدار.
+
+**متطلبات التشغيل:** أندرويد 8.0 فأحدث (minSdk 26) — معمارية `arm64-v8a` — حجم الملف حوالي 36 ميجابايت.
+
+## آخر التحديثات — v5.5.4
+
+- فتح **المفضلة** من وضع الفيديوهات القصيرة لم يعد يخرج من التطبيق؛ المفضلة تعمل بنفس وضع الفيديوهات القصيرة مع رسالة ودّية عند عدم وجود مفضلات.
+- الفرز بالحجم أو تاريخ الإضافة أو الاسم يُطبّق **فورًا** عند الاختيار.
+- الترتيب الطبيعي للاسم: 1، 2، … 10، 100، 800 بدل 1، 10، 100.
+- لم تعد الفيديوهات تتخطى عرض بعضها أثناء جلب معلوماتها.
+- أيقونة التطبيق تظهر **كاملة دون قصّ** (adaptive safe-zone).
+- أسماء المجلدات في عرض الشبكة لم تعد تختفي خلف شريط التنقل السفلي.
+
+## البناء من المصدر
 
 ```bash
 ./gradlew :app:assembleRelease
 ```
 
-Gradle dependencies must already be available in the local cache for a fully offline build.
+نسخة Release مُعدّة لمعمارية `arm64-v8a` للحصول على أصغر APK ممكن، وتتطلب توفّر تبعيات Gradle في الكاش المحلي للبناء دون اتصال.
 
-## Translations
+## الترجمات
 
-Android translations are stored in `app/src/main/res/values*/strings.xml`. See `CONTRIBUTING.md` for local contribution workflows.
+تُخزّن ترجمات الواجهة في `app/src/main/res/values*/strings.xml` — راجع `CONTRIBUTING.md` لسير العمل الخاص بالمساهمات المحلية.
 
-## Credits
+## الشكر والاعتمادات
 
-magen player is built on libmpv and draws on ideas and code from mpvEx, mpv-android, mpvKt, Next Player, and Gramophone. Their respective licenses and notices are preserved with the source.
+مبني على libmpv، ويستفيد من أفكار وشيفرات المشروعات: mpvEx وmpv-android وmpvKt وNext Player وGramophone — مع حفظ تراخيصها وإشعاراتها مع الشيفرة المصدرية.
 
-## License
+## الترخيص
 
-Distributed under the Apache License 2.0. See `LICENSE` for details.
+موزّع تحت رخصة Apache License 2.0 — انظر ملف `LICENSE`.
+
+</div>
