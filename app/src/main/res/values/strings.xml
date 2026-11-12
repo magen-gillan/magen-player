@@ -857,6 +857,7 @@
     <string name="shorts_favorite_saved_path_error">Video moved, but Shorts favorite history could not be updated.</string>
     <string name="shorts_favorite_original_path_unavailable">This older favorite has no saved original folder, so it cannot be restored automatically.</string>
     <string name="shorts_quick_delete_failed">Could not delete this video. Check storage access and try again.</string>
+    <string name="shorts_feed_load_failed">Failed to load shorts. Check storage access and try again.</string>
 
     <!-- Private Space Strings -->
     <string name="moving_to_private_space">Moving to private space…</string>

@@ -100,7 +100,11 @@ object MediaFileRepository {
     }
 
     return merged.values
-      .sortedBy { it.displayName.lowercase() }
+      .sortedWith { first, second ->
+        com.magen.player.utils.sort.SortUtils.NaturalOrderComparator.DEFAULT.compare(
+          first.displayName, second.displayName,
+        )
+      }
   }
 
   suspend fun getVideosForBuckets(context: Context, bucketIds: Set<String>): List<Video> =

@@ -351,12 +351,20 @@ data class ShortsScreen(
                     }
 
                     val currentVideoPath = shorts.getOrNull(pagerState.settledPage)?.path
+                    // Tracks the video mpv is actually playing so list updates that keep
+                    // the settled video in place (re-sorts, discovery appends) never
+                    // restart playback, and a transient index remap never loads a
+                    // different video than the one the user settled on.
+                    var currentLoadedShortPath by remember { mutableStateOf<String?>(null) }
                     LaunchedEffect(pagerState.settledPage, mpvView, currentVideoPath) {
                         if (mpvView != null && shorts.isNotEmpty()) {
                             if (pagerState.settledPage < shorts.size) {
                                 val video = shorts[pagerState.settledPage]
-                                MPVLib.command("loadfile", video.path)
-                                MPVLib.setPropertyString("loop-file", if (autoSwipe) "no" else "inf")
+                                if (video.path != currentLoadedShortPath) {
+                                    MPVLib.command("loadfile", video.path)
+                                    MPVLib.setPropertyString("loop-file", if (autoSwipe) "no" else "inf")
+                                    currentLoadedShortPath = video.path
+                                }
                                 MPVLib.setPropertyBoolean("pause", false)
                                 isManuallyPaused = false
                                 viewModel.syncPlaybackSpeed()
@@ -400,7 +408,13 @@ data class ShortsScreen(
                                     currentList[currentIndex - 1]
                                 } else null
                                 if (viewModel.deleteShort(video) && wasCurrent) {
-                                    if (nextVideo != null) MPVLib.command("loadfile", nextVideo.path) else MPVLib.command("stop")
+                                    if (nextVideo != null) {
+                                        MPVLib.command("loadfile", nextVideo.path)
+                                        currentLoadedShortPath = nextVideo.path
+                                    } else {
+                                        MPVLib.command("stop")
+                                        currentLoadedShortPath = null
+                                    }
                                 }
                             }
                         },

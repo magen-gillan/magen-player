@@ -1062,6 +1062,7 @@
     <string name="shorts_no_vertical_videos_found">لم يُعثر على فيديوهات قصيرة</string>
     <string name="shorts_favorite_original_path_unavailable">لا يتوفر مسار المجلد الأصلي لهذه المفضلة القديمة، لذلك لا يمكن إعادتها تلقائيًا.</string>
     <string name="shorts_quick_delete_failed">تعذر حذف هذا الفيديو. تحقق من صلاحية التخزين ثم حاول مجددًا.</string>
+    <string name="shorts_feed_load_failed">تعذر تحميل الفيديوهات القصيرة. تحقق من صلاحية التخزين ثم حاول مجددًا.</string>
     <string name="shorts_all_finished_title">انتهت جميع الفيديوهات</string>
     <string name="shorts_all_finished_message">شاهدت جميع الفيديوهات القصيرة المتاحة حالياً.</string>
 

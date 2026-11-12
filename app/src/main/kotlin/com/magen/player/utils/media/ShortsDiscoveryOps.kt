@@ -33,10 +33,11 @@ object ShortsDiscoveryOps {
         context: Context,
         shortsMediaDao: ShortsMediaDao,
         metadataCache: VideoMetadataCacheRepository,
-        browserPreferences: BrowserPreferences
+        browserPreferences: BrowserPreferences,
+        sortOrder: Comparator<Video>,
     ): List<Video> {
         val result = mutableListOf<Video>()
-        discoverShortsProgressively(context, shortsMediaDao, metadataCache, browserPreferences)
+        discoverShortsProgressively(context, shortsMediaDao, metadataCache, browserPreferences, sortOrder)
             .collect { result.add(it) }
         return result
     }
@@ -51,12 +52,19 @@ object ShortsDiscoveryOps {
      * 1. rows whose MediaStore resolution already proves they are shorts,
      * 2. rows with a store duration but no usable resolution (cheap retriever probe),
      * 3. everything else, via MediaInfo.
+     *
+     * Emissions follow [sortOrder]: a candidate is only sent once every candidate
+     * ahead of it has been resolved, so the UI list grows as an ordered prefix of the
+     * final feed. Without this, an item whose orientation probe is slow (e.g. video 8)
+     * would land after already-emitted neighbours (7, 9) and the pager would appear to
+     * skip it entirely.
      */
     fun discoverShortsProgressively(
         context: Context,
         shortsMediaDao: ShortsMediaDao,
         metadataCache: VideoMetadataCacheRepository,
         browserPreferences: BrowserPreferences,
+        sortOrder: Comparator<Video>,
     ): Flow<Video> = channelFlow {
         val configuredFolders = browserPreferences.shortsSourceFolders.get()
             .map { runCatching { File(it).canonicalPath }.getOrDefault(File(it).absolutePath) }
@@ -86,38 +94,54 @@ object ShortsDiscoveryOps {
                 .toSet(),
         )
 
-        // Paths already emitted or already disproved. Anything in here is skipped by
-        // later passes, which is what keeps the total MediaInfo work bounded by the
-        // files whose orientation genuinely could not be determined cheaply.
-        val resolved = HashSet<String>(allVideos.size)
+        // Final feed order is decided up-front from MediaStore-backed fields
+        // (name/size/date), which do not depend on the metadata passes below.
+        val orderedVideos = allVideos.sortedWith(sortOrder)
+        val resolvedVideos = HashMap<String, Video>(orderedVideos.size)
+        val acceptedVideos = HashSet<String>(orderedVideos.size)
+        var nextEmitIndex = 0
 
-        fun emitResolved(video: Video, width: Int, height: Int, durationMs: Long) {
-            if (!resolved.add(video.path)) return
-            if (elimination.isAccepted(video.path, width, height, durationMs)) {
-                trySend(video)
+        fun resolve(path: String, video: Video, width: Int, height: Int, durationMs: Long) {
+            if (resolvedVideos.containsKey(path)) return
+            resolvedVideos[path] = video
+            if (elimination.isAccepted(path, width, height, durationMs)) {
+                acceptedVideos.add(path)
+            }
+        }
+
+        fun flushResolved() {
+            while (nextEmitIndex < orderedVideos.size) {
+                val candidate = orderedVideos[nextEmitIndex]
+                val resolved = resolvedVideos[candidate.path] ?: break
+                nextEmitIndex++
+                if (candidate.path in acceptedVideos) {
+                    trySend(resolved)
+                }
             }
         }
 
         try {
             // --- Pass 1: orientation already known from MediaStore ---
-            for (video in allVideos) {
+            for (video in orderedVideos) {
                 val (w, h) = displayDimensions(video.width, video.height, video.rotation)
                 if (elimination.includeAllSourceVideos || w > 0 && h > 0) {
-                    emitResolved(video, w, h, video.duration)
+                    resolve(video.path, video, w, h, video.duration)
                 }
             }
+            flushResolved()
 
             // --- Pass 2: cheap probe on rows MediaStore already timed ---
-            val toProbe = allVideos.filter { it.path !in resolved && it.duration > 0 }
+            val toProbe = orderedVideos.filter { it.path !in resolvedVideos && it.duration > 0 }
             for (video in toProbe) {
                 val probed = metadataCache.probeResolution(video)
                 if (probed != null) {
-                    emitResolved(video, probed.first, probed.second, video.duration)
+                    resolve(video.path, video, probed.first, probed.second, video.duration)
+                    flushResolved()
                 }
             }
 
             // --- Pass 3: MediaInfo for everything still undecided ---
-            val undecided = allVideos.filter { it.path !in resolved }
+            val undecided = orderedVideos.filter { it.path !in resolvedVideos }
             val files = undecided.mapNotNull { video ->
                 val file = File(video.path)
                 if (file.exists()) Triple(file, video.uri, video.displayName) else null
@@ -126,7 +150,7 @@ object ShortsDiscoveryOps {
 
             metadataCache.walkMetadata(files) { path, metadata ->
                 val video = byPath[path] ?: return@walkMetadata
-                if (path in resolved) return@walkMetadata
+                if (resolvedVideos.containsKey(path)) return@walkMetadata
 
                 // If MediaInfo could not report a resolution but MediaStore already said
                 // portrait, keep the video instead of losing a valid short.
@@ -141,17 +165,19 @@ object ShortsDiscoveryOps {
                     w = rotated.first
                     h = rotated.second
                 } else {
-                    resolved.add(path)
+                    // Orientation undeterminable: resolve without accepting so later
+                    // candidates behind it can still be flushed.
+                    resolvedVideos[path] = video
+                    flushResolved()
                     return@walkMetadata
                 }
 
                 val durationMs = if (metadata.durationMs > 0) metadata.durationMs else video.duration
-                resolved.add(path)
-
-                if (elimination.isAccepted(path, w, h, durationMs)) {
-                    trySend(enrich(video, metadata))
-                }
+                resolve(path, enrich(video, metadata), w, h, durationMs)
+                flushResolved()
             }
+
+            flushResolved()
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {

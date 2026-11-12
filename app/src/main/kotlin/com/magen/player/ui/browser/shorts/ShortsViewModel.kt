@@ -3,6 +3,7 @@ package com.magen.player.ui.browser.shorts
 import android.app.Application
 import android.graphics.Bitmap
 import android.os.Environment
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
@@ -30,6 +31,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -77,6 +79,21 @@ class ShortsViewModel(
     private var currentLoadedMode: Pair<Boolean, Boolean>? = null
     private var loadJob: Job? = null
 
+    init {
+        // Keep the feed in sync when the sort preference changes from anywhere
+        // (e.g. a settings screen): the visible list re-sorts immediately.
+        viewModelScope.launch {
+            browserPreferences.shortsSortType.changes().collect { type ->
+                if (type != _sortType.value) {
+                    _sortType.value = type
+                    if (_shorts.value.isNotEmpty()) {
+                        _shorts.value = orderVideos(_shorts.value)
+                    }
+                }
+            }
+        }
+    }
+
     fun loadShorts(
         initialVideoPath: String? = null,
         blockedOnly: Boolean = false,
@@ -123,6 +140,7 @@ class ShortsViewModel(
                     shortsMediaDao,
                     metadataCache,
                     browserPreferences,
+                    sortOrder = currentComparator(),
                 ).collect { video ->
                     // The first item must be able to render before discovery finishes,
                     // otherwise the spinner from #450 comes straight back.
@@ -136,17 +154,38 @@ class ShortsViewModel(
                         pendingInitialVideo = video
                         return@collect
                     }
+                    // Discovery already emits in the selected sort order (ordered
+                    // prefix of the final feed), so appending keeps the list sorted
+                    // without reshuffling pages the user is currently browsing.
                     received.add(video)
-                    _shorts.value = orderVideos(withInitialFirst(received))
+                    _shorts.value = withInitialFirst(received)
                     _totalShortsCount.value = received.size
                 }
 
-                // Keep an explicitly requested start video first, then apply the selected sort.
+                // Keep an explicitly requested start video first; otherwise the feed
+                // is already sorted (with a final pass for tail consistency).
                 val initial = pendingInitialVideo
                 pendingInitialVideo = null
-                val ordered = if (initial != null) listOf(initial) + received.filter { it.path != initial.path } else received
-                _shorts.value = orderVideos(ordered)
+                val ordered = if (initial != null) {
+                    listOf(initial) + received.filter { it.path != initial.path }
+                } else {
+                    orderVideos(received)
+                }
+                _shorts.value = ordered
                 _totalShortsCount.value = ordered.size
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                // Loading must never take the whole app down (e.g. favorites or a
+                // scan hitting an unexpected state): surface an empty feed instead.
+                Log.e(TAG, "Failed to load shorts feed", e)
+                _shorts.value = emptyList()
+                _totalShortsCount.value = 0
+                Toast.makeText(
+                    getApplication(),
+                    getApplication<Application>().getString(R.string.shorts_feed_load_failed),
+                    Toast.LENGTH_LONG,
+                ).show()
             } finally {
                 _isLoading.value = false
             }
@@ -173,17 +212,27 @@ class ShortsViewModel(
         return currentPath?.let { path -> sorted.indexOfFirst { it.path == path }.takeIf { it >= 0 } } ?: 0
     }
 
-    private fun orderVideos(videos: List<Video>): List<Video> =
+    /** Comparator matching the currently selected shorts sort. */
+    private fun currentComparator(): Comparator<Video> =
         when (_sortType.value) {
-            ShortsSortType.Name -> videos.sortedWith { first, second ->
+            ShortsSortType.Name -> Comparator { first, second ->
                 SortUtils.NaturalOrderComparator.DEFAULT.compare(first.displayName, second.displayName)
             }
-            ShortsSortType.Size -> videos.sortedByDescending { it.size }
-            ShortsSortType.DateAdded -> videos.sortedByDescending { it.dateAdded }
+            ShortsSortType.Size -> compareByDescending<Video> { it.size }
+            ShortsSortType.DateAdded -> compareByDescending<Video> { it.dateAdded }
         }
 
+    private fun orderVideos(videos: List<Video>): List<Video> =
+        videos.sortedWith(currentComparator())
+
     /** Blocked-only feed; inherently a full scan, so it stays a single pass. */
-    private suspend fun loadBlockedShorts(): List<Video> {
+    private suspend fun loadBlockedShorts(): List<Video> = runCatching {
+        loadBlockedShortsInternal()
+    }.onFailure { error ->
+        Log.e(TAG, "Failed to load blocked shorts", error)
+    }.getOrDefault(emptyList())
+
+    private suspend fun loadBlockedShortsInternal(): List<Video> {
         val blockedInDb = shortsMediaDao.getAllShortsMedia().filter { it.isBlocked }
         val configuredFoldersSet = browserPreferences.shortsSourceFolders.get()
         val flatFolders = com.magen.player.utils.storage.CoreMediaScanner.getFlatMediaFolders(getApplication())
@@ -223,7 +272,13 @@ class ShortsViewModel(
         }
     }
 
-    private suspend fun loadFavoriteShorts(): List<Video> {
+    private suspend fun loadFavoriteShorts(): List<Video> = runCatching {
+        loadFavoriteShortsInternal()
+    }.onFailure { error ->
+        Log.e(TAG, "Failed to load favorite shorts", error)
+    }.getOrDefault(emptyList())
+
+    private suspend fun loadFavoriteShortsInternal(): List<Video> {
         val favoriteRecords = shortsMediaDao.getAllShortsMedia().filter { it.isLoved }
         if (favoriteRecords.isEmpty()) return emptyList()
         val parents = favoriteRecords.map { File(it.path) }
@@ -231,11 +286,15 @@ class ShortsViewModel(
             .mapNotNull { it.parent }
             .distinct()
         val videosByPath = parents.flatMap { parent ->
-            VideoScanUtils.getVideosInFolder(
-                getApplication(),
-                parent,
-                MediaScanPolicy(includeNoMediaContent = true),
-            )
+            runCatching {
+                VideoScanUtils.getVideosInFolder(
+                    getApplication(),
+                    parent,
+                    MediaScanPolicy(includeNoMediaContent = true),
+                )
+            }.onFailure { error ->
+                Log.e(TAG, "Failed to scan favorite folder: $parent", error)
+            }.getOrDefault(emptyList())
         }.associateBy { it.path }
         return favoriteRecords.mapNotNull { videosByPath[it.path] }
     }
@@ -427,6 +486,8 @@ class ShortsViewModel(
     }
 
     companion object {
+        private const val TAG = "ShortsViewModel"
+
         fun factory(application: Application) = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T = ShortsViewModel(application) as T

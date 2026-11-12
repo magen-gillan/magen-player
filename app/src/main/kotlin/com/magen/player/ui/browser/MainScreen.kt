@@ -443,7 +443,11 @@ object MainScreen : Screen {
           
           val navBarHeight = if (isNavBarVisible) 64.dp else 0.dp
           val miniPlayerHeight = if (miniPlayerState.isPlaybackActive) MiniPlayerDefaults.CompactHeight else 0.dp
-          val totalBottomPadding = navBarHeight + miniPlayerHeight
+          // The NavigationBar is 64dp + the system navigation-bar inset (gesture bar),
+          // so the content padding must include that inset as well — otherwise the
+          // names of the last grid/list row slide behind the bottom bar.
+          val navBarBottomInset = NavigationBarDefaults.windowInsets.asPaddingValues().calculateBottomPadding()
+          val totalBottomPadding = navBarHeight + miniPlayerHeight + navBarBottomInset
           
           CompositionLocalProvider(
             LocalNavigationBarHeight provides totalBottomPadding
