@@ -15,7 +15,6 @@ import `is`.xyz.mpv.Utils
 import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import com.magen.player.ui.player.PlayerActivity
 import com.magen.player.ui.player.PlayerActivity.Companion.TAG
@@ -24,7 +23,6 @@ import com.magen.player.ui.player.ResumePlaybackMode
 import com.magen.player.ui.player.openContentFd
 import com.magen.player.ui.player.resolveUri
 import com.magen.player.utils.media.FolderPlaylistOps
-import com.magen.player.utils.media.HttpUtils
 
 /**
  * Controller responsible for parsing incoming launch intents, content URIs,
@@ -62,16 +60,9 @@ class PlayerIntentHandler(
    */
   fun parsePathFromIntent(intent: Intent): String? =
     when (intent.action) {
-      Intent.ACTION_VIEW -> {
-        val data = intent.data
-        if (data?.scheme.equals("smb", ignoreCase = true)) {
-          intent.dataString ?: data.toString()
-        } else {
-          data?.resolveUri(activity)
-        }
-      }
+      Intent.ACTION_VIEW -> localPath(intent.data)
       Intent.ACTION_SEND -> parsePathFromSendIntent(intent)
-      else -> intent.getStringExtra("uri")
+      else -> localPath(intent.getStringExtra("uri")?.toUri())
     }
 
   /**
@@ -92,23 +83,9 @@ class PlayerIntentHandler(
       }
       uri?.resolveUri(activity)
     } else {
-      intent.getStringExtra(Intent.EXTRA_TEXT)?.let { rawText ->
-        val urlRegex = Regex("""https?://[^\s]+""")
-        val foundUrl = urlRegex.find(rawText)?.value
-        if (foundUrl != null) {
-          val titleCandidate = rawText.replace(foundUrl, "").trim()
-          if (titleCandidate.isNotBlank() && !intent.hasExtra("title")) {
-            intent.putExtra("title", titleCandidate)
-          }
-          foundUrl
-        } else {
-          val uri = rawText.trim().toUri()
-          if (uri.isHierarchical && !uri.isRelative) {
-            uri.resolveUri(activity)
-          } else {
-            null
-          }
-        }
+      intent.getStringExtra(Intent.EXTRA_TEXT)?.trim()?.let { text ->
+        val uri = text.toUri()
+        if (uri.scheme == null && text.startsWith('/')) text else localPath(uri)
       }
     }
 
@@ -140,34 +117,7 @@ class PlayerIntentHandler(
    * @return The extracted filename
    */
   fun extractFileNameFromUri(uri: Uri): String {
-    // For HTTP/HTTPS URLs, extract from path (will be updated async via HTTP headers)
-    if (HttpUtils.isNetworkStream(uri)) {
-      // Get the last path segment and decode URL encoding
-      val path = uri.path ?: return uri.host ?: "Network Stream"
-      val lastSegment = path.substringAfterLast("/")
-
-      if (lastSegment.isNotBlank()) {
-        // Decode URL encoding (e.g., %20 -> space)
-        return try {
-          java.net.URLDecoder.decode(lastSegment, "UTF-8")
-            .substringBefore("?") // Remove query parameters
-            .substringBefore("#") // Remove fragments (only for network streams)
-            .takeIf { it.isNotBlank() } ?: uri.host ?: "Network Stream"
-        } catch (e: Exception) {
-          lastSegment
-            .substringBefore("?")
-            .substringBefore("#")
-        }
-      }
-
-      // If no filename in path, use hostname
-      return uri.host ?: "Network Stream"
-    }
-
-    // For file:// and content:// URIs - preserve # characters as they're part of the filename
     val lastSegment = uri.lastPathSegment?.substringAfterLast("/") ?: uri.path ?: "Unknown Video"
-
-    // For local files, only decode URL encoding but preserve # characters
     return try {
       java.net.URLDecoder.decode(lastSegment, "UTF-8")
     } catch (e: Exception) {
@@ -181,33 +131,42 @@ class PlayerIntentHandler(
    * @param intent The intent to extract URI from
    * @return The extracted URI, or null if not found
    */
-  fun extractUriFromIntent(intent: Intent): Uri? =
-    if (intent.type == "text/plain" || intent.action == Intent.ACTION_SEND) {
-      val rawText = intent.getStringExtra(Intent.EXTRA_TEXT)
-      if (!rawText.isNullOrBlank()) {
-        val urlRegex = Regex("""https?://[^\s]+""")
-        val foundUrl = urlRegex.find(rawText)?.value
-        if (foundUrl != null) {
-          foundUrl.toUri()
-        } else {
-          rawText.trim().toUri()
-        }
+  fun extractUriFromIntent(intent: Intent): Uri? {
+    val candidate = if (intent.type == "text/plain" || intent.action == Intent.ACTION_SEND) {
+      val stream = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
       } else {
-        intent.data ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-          intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
-        } else {
-          @Suppress("DEPRECATION")
-          intent.getParcelableExtra(Intent.EXTRA_STREAM)
-        }
+        @Suppress("DEPRECATION")
+        intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
+      }
+      stream ?: intent.data ?: intent.getStringExtra(Intent.EXTRA_TEXT)?.trim()?.let { text ->
+        text.toUri().takeIf { it.scheme == "content" || it.scheme == "file" || (it.scheme == null && text.startsWith('/')) }
       }
     } else {
       intent.data ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
       } else {
         @Suppress("DEPRECATION")
-        intent.getParcelableExtra(Intent.EXTRA_STREAM)
+        intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
       }
     }
+    return candidate?.takeIf(::isLocalUri)
+  }
+
+  private fun isLocalUri(uri: Uri): Boolean = when (uri.scheme?.lowercase()) {
+    "content", "file" -> true
+    null -> uri.path?.startsWith('/') == true
+    else -> false
+  }
+
+  private fun localPath(uri: Uri?): String? {
+    if (uri == null || !isLocalUri(uri)) return null
+    return when (uri.scheme?.lowercase()) {
+      "content" -> uri.resolveUri(activity)
+      "file" -> uri.resolveUri(activity) ?: uri.path
+      else -> uri.path ?: uri.toString()
+    }
+  }
 
   /**
    * Queries the content resolver to get the display name for a URI.
@@ -238,28 +197,16 @@ class PlayerIntentHandler(
    * @return A playable URI string, or null if unable to resolve
    */
   fun getPlayableUri(intent: Intent): String? {
-    val uri = parsePathFromIntent(intent)
+    val source = parsePathFromIntent(intent)?.toUri()
       ?: (if (intent.action == Intent.ACTION_VIEW || intent.action == null) {
-        FolderPlaylistOps.extractExternalPlaylist(intent)?.let { playlist ->
-          playlist.items.getOrNull(playlist.initialIndex)?.let { firstUri ->
-            if (firstUri.scheme.equals("smb", ignoreCase = true)) {
-              firstUri.toString()
-            } else {
-              firstUri.resolveUri(activity) ?: firstUri.toString()
-            }
-          }
-        }
+        FolderPlaylistOps.extractExternalPlaylist(intent)?.items?.getOrNull(0)
       } else null)
       ?: return null
-
-    return when {
-      uri.startsWith("content://") -> uri.toUri().openContentFd(activity)
-      uri.startsWith("smb://", ignoreCase = true) -> {
-        runBlocking(Dispatchers.IO) {
-          FolderPlaylistOps.resolveSmbUri(uri)?.url
-        } ?: uri
-      }
-      else -> uri
+    if (!isLocalUri(source)) return null
+    return when (source.scheme?.lowercase()) {
+      "content" -> source.openContentFd(activity)
+      "file" -> source.resolveUri(activity) ?: source.path
+      else -> source.path ?: source.toString()
     }
   }
 
@@ -295,49 +242,6 @@ class PlayerIntentHandler(
     }
   }
 
-  /**
-   * Sets HTTP headers from intent extras for network playback.
-   */
-  fun setHttpHeadersFromExtras(extras: Bundle?) {
-    val headerMap = mutableMapOf<String, String>()
-
-    val uri = extractUriFromIntent(activity.intent)
-    if (uri != null && HttpUtils.isNetworkStream(uri)) {
-      HttpUtils.extractRefererDomain(uri)?.let { referer ->
-        headerMap["Referer"] = referer
-        Log.d(TAG, "Auto-detected Referer: $referer")
-      }
-    }
-
-    extras?.getStringArray("headers")?.let { headers ->
-      if (headers.size < 2) return@let
-
-      if (headers[0]?.startsWith("User-Agent", ignoreCase = true) == true) {
-        headers[1]?.let { ua ->
-          activity.safeSetPropertyString("user-agent", ua)
-        }
-      }
-
-      headers.asSequence()
-        .chunked(2)
-        .filter { it.size == 2 && !it[0].isNullOrBlank() && !it[1].isNullOrBlank() }
-        .forEach { (key, value) ->
-          headerMap[key!!] = value!!
-        }
-    }
-
-    if (headerMap.isNotEmpty()) {
-      val headersString = headerMap
-        .map { "${it.key}: ${it.value.replace(",", "\\,")}" }
-        .joinToString(",")
-
-      activity.safeSetPropertyString("http-header-fields", headersString)
-      Log.d(TAG, "Set HTTP headers: $headersString")
-    } else {
-      activity.safeSetPropertyString("http-header-fields", "")
-      Log.d(TAG, "Cleared HTTP headers")
-    }
-  }
 
   /**
    * Sets initial orientation synchronously from intent parameters or metadata cache
@@ -416,6 +320,8 @@ class PlayerIntentHandler(
 
     // If expanding active session without intent media, or if the exact same media is already active in foreground
     if (activity.isReady && (!hasIntentMedia || (isSameMedia && !activity.isInBackgroundPlayback && !activity.isManualBackgroundPlayback))) {
+      // PRELOAD-RESUME-STATE-V1: this intent did not start a new file load.
+      activity.pendingIntentExtras = false
       Log.d(TAG, "onNewIntent: current media already playing or expanding active session, restoring player without reload")
       activity.enableVideoAfterBackground()
       @Suppress("DEPRECATION")
@@ -522,28 +428,21 @@ class PlayerIntentHandler(
     activity.mediaIdentifier = activity.getMediaIdentifier(intent, fileName)
     activity.viewModel.setMediaTitle(fileName)
     activity.viewModel.setMediaIdentifier(activity.mediaIdentifier)
-    activity.jellyfinExternalInfo = com.magen.player.jellyfin.JellyfinExternalHelper.detect(intent)
-
     // Synchronously set orientation for the new file before displaying activity
     applyInitialOrientationFromIntent(intent)
 
-    // Set HTTP headers (including referer) BEFORE loading the new file
-    setHttpHeadersFromExtras(intent.extras)
-
     // Load the new file
     getPlayableUri(intent)?.let { uriStr ->
-      activity.switchActiveNetworkStream(uriStr)
-
-      val parsedUri = runCatching { Uri.parse(uriStr) }.getOrNull()
-      val fastDurationMs = if (parsedUri != null) activity.getFastDurationMsForUri(parsedUri) else 0L
+      val parsedUri = runCatching { Uri.parse(uriStr) }.getOrNull() ?: return@let
+      if (!isLocalUri(parsedUri)) return@let
+      val fastDurationMs = activity.getFastDurationMsForUri(parsedUri)
       val fastDurationSec = if (fastDurationMs > 0L) fastDurationMs / 1000f else null
-      val isNetwork = parsedUri != null && HttpUtils.isNetworkStream(parsedUri)
-      activity.viewModel.prepareForFileLoad(fastDurationSec, isNetwork = isNetwork)
+      activity.viewModel.prepareForFileLoad(fastDurationSec)
 
-      if (parsedUri != null && activity.isUriM3U(parsedUri)) {
+      if (activity.isUriM3U(parsedUri)) {
         activity.loadM3uPlaylistOrPlayDirectly(uriStr)
       } else {
-        activity.loadMediaOrResolveWebStream(uriStr)
+        activity.loadLocalMedia(uriStr)
       }
     }
   }

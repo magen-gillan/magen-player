@@ -51,7 +51,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import com.magen.player.ui.browser.sheets.PlayLinkSheet
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -194,7 +193,6 @@ fun MediaLibraryContent() {
   // FAB visibility state
   val isFabVisible = remember { mutableStateOf(true) }
   val isFabExpanded = remember { mutableStateOf(false) }
-  val showLinkDialog = remember { mutableStateOf(false) }
 
   val filePicker = rememberLauncherForActivityResult(
     contract = ActivityResultContracts.OpenDocument(),
@@ -465,15 +463,6 @@ fun MediaLibraryContent() {
             icon = { Icon(Icons.Filled.History, contentDescription = null) },
             text = { Text(text = stringResource(R.string.recently_played)) },
           )
-
-          FloatingActionButtonMenuItem(
-            onClick = {
-              isFabExpanded.value = false
-              showLinkDialog.value = true
-            },
-            icon = { Icon(Icons.Filled.Link, contentDescription = null) },
-            text = { Text(text = stringResource(R.string.open_link)) },
-          )
         }
       }
     }
@@ -609,12 +598,6 @@ fun MediaLibraryContent() {
         },
       )
     }
-
-    PlayLinkSheet(
-      isOpen = showLinkDialog.value,
-      onDismiss = { showLinkDialog.value = false },
-      onPlayLink = { url -> MediaUtils.playFile(url, context, "play_link") },
-    )
 
     AddToPlaylistDialog(
       isOpen = addToPlaylistDialogOpen.value,

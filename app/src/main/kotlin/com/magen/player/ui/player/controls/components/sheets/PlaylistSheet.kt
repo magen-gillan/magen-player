@@ -84,6 +84,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.ui.geometry.Offset
 import com.magen.player.presentation.components.PlayerSheet
+import com.magen.player.utils.storage.FileTypeUtils
 import com.magen.player.preferences.preference.collectAsState
 import com.magen.player.ui.theme.spacing
 import kotlinx.collections.immutable.ImmutableList
@@ -628,8 +629,15 @@ fun PlaylistTrackListItem(
         modifier = Modifier.weight(1f),
         verticalArrangement = Arrangement.spacedBy(4.dp),
       ) {
+        val displayTitle = remember(item.title) {
+          if (FileTypeUtils.isMediaFile(java.io.File(item.title))) {
+            item.title.substringBeforeLast('.')
+          } else {
+            item.title
+          }
+        }
         Text(
-          text = item.title,
+          text = displayTitle,
           style = MaterialTheme.typography.bodyMedium.copy(
             fontWeight = if (item.isPlaying) FontWeight.Bold else FontWeight.Normal,
             color = if (item.isPlaying) {

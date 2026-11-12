@@ -793,6 +793,7 @@ fun FolderSortDialog(
   val showAudioFiles by browserPreferences.showAudioFiles.collectAsState()
   val includeNoMediaContent by browserPreferences.includeNoMediaContent.collectAsState()
   val unlimitedNameLines by appearancePreferences.unlimitedNameLines.collectAsState()
+  val showFileExtension by browserPreferences.showFileExtension.collectAsState()
   val showVideoThumbnails by browserPreferences.showVideoThumbnails.collectAsState()
   val showSizeChip by browserPreferences.showSizeChip.collectAsState()
   val showResolutionChip by browserPreferences.showResolutionChip.collectAsState()
@@ -946,6 +947,11 @@ fun FolderSortDialog(
         onCheckedChange = { appearancePreferences.unlimitedNameLines.set(it) },
       ),
       VisibilityToggle(
+        label = stringResource(R.string.field_file_extension),
+        checked = showFileExtension,
+        onCheckedChange = { browserPreferences.showFileExtension.set(it) },
+      ),
+      VisibilityToggle(
         label = stringResource(R.string.path),
         checked = showFolderPath,
         onCheckedChange = { browserPreferences.showFolderPath.set(it) },
@@ -1033,6 +1039,7 @@ fun VideoSortDialog(
   val showDateChip by browserPreferences.showDateChip.collectAsState()
   val showSubtitleIndicator by browserPreferences.showSubtitleIndicator.collectAsState()
   val unlimitedNameLines by appearancePreferences.unlimitedNameLines.collectAsState()
+  val showFileExtension by browserPreferences.showFileExtension.collectAsState()
   val showFolderPath by browserPreferences.showFolderPath.collectAsState()
   val showTotalVideosChip by browserPreferences.showTotalVideosChip.collectAsState()
   val showTotalDurationChip by browserPreferences.showTotalDurationChip.collectAsState()
@@ -1173,6 +1180,11 @@ fun VideoSortDialog(
           onCheckedChange = { appearancePreferences.unlimitedNameLines.set(it) },
         ),
         VisibilityToggle(
+          label = stringResource(R.string.field_file_extension),
+          checked = showFileExtension,
+          onCheckedChange = { browserPreferences.showFileExtension.set(it) },
+        ),
+        VisibilityToggle(
           label = stringResource(R.string.path),
           checked = showFolderPath,
           onCheckedChange = { browserPreferences.showFolderPath.set(it) },
@@ -1250,6 +1262,7 @@ fun FileSystemSortDialog(
   val showProgressBar by browserPreferences.showProgressBar.collectAsState()
   val showSubtitleIndicator by browserPreferences.showSubtitleIndicator.collectAsState()
   val unlimitedNameLines by appearancePreferences.unlimitedNameLines.collectAsState()
+  val showFileExtension by browserPreferences.showFileExtension.collectAsState()
   val showAudioFiles by browserPreferences.showAudioFiles.collectAsState()
   val includeNoMediaContent by browserPreferences.includeNoMediaContent.collectAsState()
   val showTotalDurationChip by browserPreferences.showTotalDurationChip.collectAsState()
@@ -1397,6 +1410,11 @@ fun FileSystemSortDialog(
         onCheckedChange = { appearancePreferences.unlimitedNameLines.set(it) },
       ),
       VisibilityToggle(
+        label = stringResource(R.string.field_file_extension),
+        checked = showFileExtension,
+        onCheckedChange = { browserPreferences.showFileExtension.set(it) },
+      ),
+      VisibilityToggle(
         label = stringResource(R.string.path),
         checked = showFolderPath,
         onCheckedChange = { browserPreferences.showFolderPath.set(it) },
@@ -1447,53 +1465,5 @@ fun FileSystemSortDialog(
         onCheckedChange = { browserPreferences.showSubtitleIndicator.set(it) },
       ),
     )
-  )
-}
-
-/**
- * Sort options for a network share.
- *
- * Only title, date and size are offered: a folder listing over SMB carries name, timestamp and
- * size, but not duration, and probing every remote file for it would mean opening each one.
- */
-@Composable
-fun NetworkSortDialog(
-  isOpen: Boolean,
-  onDismiss: () -> Unit,
-) {
-  val browserPreferences = koinInject<BrowserPreferences>()
-  val sortType by browserPreferences.networkSortType.collectAsState()
-  val sortOrder by browserPreferences.networkSortOrder.collectAsState()
-
-  SortDialog(
-    isOpen = isOpen,
-    onDismiss = onDismiss,
-    title = stringResource(R.string.sort_and_view_options),
-    sortType = sortType.displayName,
-    onSortTypeChange = { typeName ->
-      FolderSortType.entries.find { it.displayName == typeName }?.let { newType ->
-        if (newType == sortType) {
-          val newOrder = if (sortOrder.isAscending) SortOrder.Descending else SortOrder.Ascending
-          browserPreferences.saveNetworkSortOrder(newType, newOrder)
-        } else {
-          browserPreferences.setNetworkSortType(newType)
-        }
-      }
-    },
-    sortOrderAsc = sortOrder.isAscending,
-    onSortOrderChange = { isAsc ->
-      val newOrder = if (isAsc) SortOrder.Ascending else SortOrder.Descending
-      browserPreferences.saveNetworkSortOrder(sortType, newOrder)
-    },
-    types = listOf(FolderSortType.Title.displayName, FolderSortType.Date.displayName, FolderSortType.Size.displayName),
-    typeLabels = listOf(stringResource(FolderSortType.Title.stringRes), stringResource(FolderSortType.Date.stringRes), stringResource(FolderSortType.Size.stringRes)),
-    icons = listOf(
-      Icons.Filled.Title,
-      Icons.Filled.CalendarToday,
-      Icons.Filled.SwapVert,
-    ),
-    showSortOptions = true,
-    enableViewModeOptions = false,
-    enableLayoutModeOptions = false,
   )
 }

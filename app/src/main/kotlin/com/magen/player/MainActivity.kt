@@ -3,9 +3,7 @@ package com.magen.player
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
-import android.content.Intent
 import androidx.activity.compose.BackHandler
-import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -41,10 +39,6 @@ import androidx.navigation3.ui.NavDisplay
 import com.magen.player.preferences.AppearancePreferences
 import com.magen.player.preferences.preference.collectAsState
 import com.magen.player.presentation.Screen
-import com.magen.player.repository.NetworkRepository
-import com.magen.player.utils.update.UpdateDialog
-import com.magen.player.utils.update.UpdateManager
-import com.magen.player.utils.update.UpdateViewModel
 import com.magen.player.ui.browser.MainScreen
 import com.magen.player.ui.theme.DarkMode
 import com.magen.player.ui.theme.MagenPlayerTheme
@@ -63,27 +57,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
-import androidx.compose.runtime.staticCompositionLocalOf
-
-val LocalUpdateViewModel = staticCompositionLocalOf<UpdateViewModel?> { null }
 
 /**
  * Main entry point for the application
  */
 class MainActivity : ComponentActivity() {
   private val appearancePreferences by inject<AppearancePreferences>()
-  private val networkRepository by inject<NetworkRepository>()
   private val miniPlayerStateManager by inject<MiniPlayerStateManager>()
   
-  // Create a coroutine scope tied to the activity lifecycle
-  private val activityScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-
   // Register the ActivityResultLauncher at class level
   private val mediaAccessLauncher = registerForActivityResult(
     ActivityResultContracts.StartIntentSenderForResult()
@@ -101,7 +83,6 @@ class MainActivity : ComponentActivity() {
     
     PermissionUtils.setMediaAccessLauncher(mediaAccessLauncher)
 
-
     setContent {
       // Set up theme and edge-to-edge display
       val dark by appearancePreferences.darkMode.collectAsState()
@@ -113,11 +94,6 @@ class MainActivity : ComponentActivity() {
           darkScrim = Color.Transparent.toArgb(),
         ) { isDarkMode },
       )
-
-      // Auto-connect to saved network connections
-      LaunchedEffect(Unit) {
-        autoConnectToNetworks()
-      }
 
       MagenPlayerTheme {
         Surface {
@@ -134,42 +110,6 @@ class MainActivity : ComponentActivity() {
       Log.e("MainActivity", "Error during onDestroy", e)
     }
   }
-
-  /**
-   * Auto-connect to network connections that are marked for auto-connection
-   */
-  private suspend fun autoConnectToNetworks() {
-    // Delay auto-connect to let UI settle first
-    kotlinx.coroutines.delay(500)
-    
-    // Use coroutineScope for properly structured concurrency
-    withContext(Dispatchers.IO) {
-      try {
-        val autoConnectConnections = networkRepository.getAutoConnectConnections()
-        autoConnectConnections.forEach { connection ->
-          withContext(Dispatchers.Main) {
-            Log.d("MainActivity", "Auto-connecting to: ${connection.name}")
-          }
-          networkRepository.connect(connection)
-            .onSuccess {
-              withContext(Dispatchers.Main) {
-                Log.d("MainActivity", "Auto-connected successfully: ${connection.name}")
-              }
-            }
-            .onFailure { e ->
-              withContext(Dispatchers.Main) {
-                Log.e("MainActivity", "Auto-connect failed for ${connection.name}: ${e.message}")
-              }
-            }
-        }
-      } catch (e: Exception) {
-        withContext(Dispatchers.Main) {
-          Log.e("MainActivity", "Error during auto-connect", e)
-        }
-      }
-    }
-  }
-
   /**
    * Navigator that handles screen transitions and provides shared states
    */
@@ -188,26 +128,6 @@ class MainActivity : ComponentActivity() {
 
     @Suppress("UNCHECKED_CAST")
     val typedBackstack = backstack as NavBackStack<Screen>
-
-    val currentVersion = if (UpdateManager.isPreviewBuild()) {
-      val count = BuildConfig.GIT_COUNT.takeIf { it > 0 }
-        ?: BuildConfig.VERSION_NAME.substringAfterLast('-', "").toIntOrNull()
-        ?: 0
-      "r$count"
-    } else {
-      BuildConfig.VERSION_NAME.replace("-dev", "")
-    }
-
-    // Conditionally initialize update feature based on build config
-    val updateViewModel: UpdateViewModel? = if (BuildConfig.ENABLE_UPDATE_FEATURE) {
-      viewModel(context as ComponentActivity)
-    } else {
-      null
-    }
-    val updateState by (updateViewModel?.updateState ?: MutableStateFlow(UpdateViewModel.UpdateState.Idle)).collectAsState()
-    val companionUpdateState by (updateViewModel?.companionUpdateState ?: MutableStateFlow(UpdateViewModel.UpdateState.Idle)).collectAsState()
-    val isDownloading by (updateViewModel?.isDownloading ?: MutableStateFlow(false)).collectAsState()
-    val downloadProgress by (updateViewModel?.downloadProgress ?: MutableStateFlow(0f)).collectAsState()
     val miniPlayerState by miniPlayerStateManager.state.collectAsState()
     val hideNavigationBar by MainScreen.shouldHideNavigationBar.collectAsState()
     val currentRoute = typedBackstack.lastOrNull()
@@ -244,7 +164,6 @@ class MainActivity : ComponentActivity() {
     // Provide shared states to all screens
     CompositionLocalProvider(
       LocalBackStack provides typedBackstack,
-      LocalUpdateViewModel provides updateViewModel,
       LocalNavigationBarHeight provides totalNavigationBarHeight
     ) {
       Box(modifier = Modifier.fillMaxSize()) {
@@ -297,7 +216,6 @@ class MainActivity : ComponentActivity() {
             .padding(bottom = animatedBottomPadding)
         )
       }
-
     }
   }
 }

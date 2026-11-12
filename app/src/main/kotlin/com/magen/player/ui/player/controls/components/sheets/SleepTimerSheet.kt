@@ -48,11 +48,9 @@ fun SleepTimerSheet(
   val presets = remember { listOf(15, 30, 45, 60, 90, 120) }
   val isRunning = remainingTime > 0
 
-  // The active time in minutes. Clamped to the slider minimum (5) — a running timer
-  // in its last minutes used to feed Slider a value below valueRange.start and crash
-  // with IllegalArgumentException.
+  // The active time in minutes
   val currentTimeMinutes = if (isRunning) {
-    (remainingTime / 60f).roundToInt().coerceAtLeast(5)
+    (remainingTime / 60f).roundToInt()
   } else {
     30
   }

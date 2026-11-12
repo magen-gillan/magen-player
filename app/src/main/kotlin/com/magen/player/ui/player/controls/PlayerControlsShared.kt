@@ -55,7 +55,6 @@ import androidx.compose.material.icons.filled.Headset
 import androidx.compose.material.icons.filled.HeadsetOff
 import androidx.compose.material.icons.filled.BlurOn
 import androidx.compose.material.icons.outlined.BlurOn
-import androidx.compose.material.icons.outlined.HighQuality
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material.icons.outlined.Memory
 import androidx.compose.ui.draw.rotate
@@ -1366,55 +1365,6 @@ fun RenderPlayerButton(
           isActive = isActive,
           modifier = Modifier.size(buttonSize),
         )
-      }
-    }
-
-    PlayerButton.VIDEO_QUALITY -> {
-      val availableQualities by viewModel.availableVideoQualities.collectAsState()
-      val currentQuality by viewModel.currentVideoQuality.collectAsState()
-
-      if (availableQualities.size > 1) {
-        val label = currentQuality?.shortLabel ?: stringResource(R.string.video_quality_auto)
-        Surface(
-          shape = itemShape,
-          color = surfaceColor,
-          contentColor = contentColor,
-          tonalElevation = 0.dp,
-          shadowElevation = 0.dp,
-          border = borderColor,
-          modifier = Modifier
-            .height(buttonSize)
-            .clip(itemShape)
-            .clickable(
-              interactionSource = remember { MutableInteractionSource() },
-              indication = ripple(bounded = true),
-              onClick = {
-                clickEvent()
-                onOpenSheet(Sheets.VideoQuality)
-              },
-            ),
-        ) {
-          Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraSmall),
-            modifier = Modifier.padding(
-              horizontal = MaterialTheme.spacing.small,
-              vertical = MaterialTheme.spacing.smaller,
-            ),
-          ) {
-            Icon(
-              imageVector = Icons.Outlined.HighQuality,
-              contentDescription = stringResource(R.string.video_quality),
-              modifier = Modifier.size(20.dp),
-            )
-            Text(
-              text = label,
-              maxLines = 1,
-              overflow = TextOverflow.Ellipsis,
-              style = MaterialTheme.typography.bodyMedium,
-            )
-          }
-        }
       }
     }
 

@@ -33,7 +33,7 @@ object LocaleHelper {
   )
 
   /**
-   * Dynamically discovers all languages that have actual MagenPlayer translations
+   * Dynamically discovers all languages that have actual magen player translations
    * in APK resource assets, automatically generating their native script names
    * without hardcoding and filtering out generic AndroidX/Material library locales.
    */
@@ -70,7 +70,7 @@ object LocaleHelper {
       ),
     )
 
-    // 2. Only include languages that have real MagenPlayer string resources
+    // 2. Only include languages that have real magen player string resources
     candidateTags.forEach { tag ->
       if (isAppTranslationAvailable(context, tag)) {
         val locale = getLocaleFromCode(tag)
@@ -186,7 +186,7 @@ object LocaleHelper {
   }
 
   /**
-   * Checks if MagenPlayer's own string resources actually provide translations for this locale
+   * Checks if magen player's own string resources actually provide translations for this locale
    * (filtering out dozens of system/AndroidX library languages).
    */
   private fun isAppTranslationAvailable(context: Context, tag: String): Boolean {

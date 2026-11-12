@@ -20,8 +20,6 @@
     <string name="pref_appearance_tab_recents_summary">Reanudar rápidamente sesiones de video anteriores</string>
     <string name="pref_appearance_tab_playlists_title">Listas de reproducción</string>
     <string name="pref_appearance_tab_playlists_summary">Mostrar listas de reproducción de video personalizadas locales</string>
-    <string name="pref_appearance_tab_network_title">Transmisión en red</string>
-    <string name="pref_appearance_tab_network_summary">Acceder a unidades SMB, FTP y WebDAV</string>
     <string name="pref_appearance_summary">Modo oscuro, Material You</string>
     <string name="pref_appearance_category_theme">Tema</string>
     <string name="pref_appearance_darkmode_system">Sistema</string>
@@ -47,8 +45,6 @@
     <string name="pref_appearance_unplayed_old_video_days_title">Límite de días para la etiqueta de video nuevo</string>
     <string name="pref_appearance_unplayed_old_video_days_summary">Los videos agregados dentro de los últimos %d dias sin historial de reproducción se marcarán como nuevos</string>
     <string name="pref_appearance_category_thumbnails">Miniatura</string>
-    <string name="pref_appearance_show_network_thumbnails_title">Mostrar miniaturas de red (Experimental)</string>
-    <string name="pref_appearance_show_network_thumbnails_summary">Generar miniaturas para transmisiones de red (Puede aumentar el uso de datos en redes móviles)</string>
     <string name="pref_appearance_theme_picker_label">Tema de la app</string>
     <string name="pref_appearance_auto_scroll_title">Desplazamiento automático al último reproducido</string>
     <string name="pref_appearance_auto_scroll_summary">Desplazarse automáticamente al último video reproducido al abrir listas de videos</string>
@@ -232,8 +228,6 @@
 
     <string name="pref_subtitles">Subtítulos</string>
     <string name="pref_subtitles_summary">Idiomas preferidos, fuentes y búsqueda</string>
-    <string name="pref_subtitle_search_title">Búsqueda de subtítulos en línea</string>
-    <string name="pref_subtitle_search_summary">Buscar y descargar subtítulos desde fuentes en línea</string>
     <string name="pref_custom_lua_title">Botones Lua personalizados</string>
     <string name="pref_custom_lua_summary">Gestionar botones personalizados del reproductor con código Lua</string>
     <string name="pref_preferred_languages">Idiomas preferidos</string>
@@ -247,8 +241,6 @@
     <string name="pref_subtitles_custom_picker_folder_title">Carpeta de selección predeterminada</string>
     <string name="pref_subtitles_custom_picker_folder_summary">Carpeta elegida para abrir al añadir subtítulos manualmente</string>
     <string name="pref_subtitles_save_location">Ubicación para guardar subtítulos</string>
-    <string name="pref_subtitles_search_online">Buscar subtítulos en línea…</string>
-    <string name="pref_subtitles_subdl_languages">Idiomas de subtítulos</string>
     <string name="all_languages">Todos (Filtrado selectivo)</string>
     <string name="pref_subtitles_clear_downloads">Borrar subtítulos descargados</string>
     <string name="pref_subtitles_clear_downloads_summary">Eliminar todos los archivos en la ubicación de guardado actual</string>
@@ -256,13 +248,6 @@
     <string name="toast_subtitles_cleared">Subtítulos descargados eliminados</string>
     <string name="pref_subtitles_searching">Buscando…</string>
     <string name="pref_subtitles_found">%d subtítulos encontrados</string>
-    <string name="pref_subtitles_online_search_title">Búsqueda de subtítulos en línea</string>
-    <string name="pref_subtitles_wyzie_api_key_title">Clave API de Wyzie</string>
-    <string name="pref_subtitles_wyzie_api_key_summary">Requerido para la búsqueda de subtítulos. Obtén la tuya en sub.wyzie.io/redeem</string>
-    <string name="pref_subtitles_wyzie_api_key_hint">Introduce la clave API</string>
-    <string name="pref_subtitles_wyzie_api_key_not_set">No establecida</string>
-    <string name="pref_subtitles_wyzie_api_key_masked">••••••••••••••••••••••</string>
-
     <string name="pref_audio">Audio</string>
     <string name="pref_audio_summary">Idiomas preferidos, canales de audio, corrección de tono</string>
     <string name="pref_audio_pitch_correction_title">Activar corrección de tono de audio</string>
@@ -325,10 +310,6 @@
     <string name="pref_about_summary">Agradecimientos, licencias</string>
     <string name="pref_about_oss_libraries">Bibliotecas</string>
     <string name="pref_about_donate_title">Donar</string>
-    <string name="pref_about_donate_kofi">Ko-fi</string>
-    <string name="pref_about_donate_kofi_summary">Apoyar al desarrollador en Ko-fi</string>
-    <string name="pref_about_donate_paypal">PayPal</string>
-    <string name="pref_about_donate_paypal_summary">Apoyar al desarrollador en PayPal</string>
     <string name="pref_about_donate_upi">UPI</string>
 
     <string name="player_sheets_add_ext_sub">Añadir subtítulos externos</string>
@@ -412,7 +393,7 @@
     <string name="player_aspect_stretch">Estirar</string>
 
     <string name="crash_screen_title">¡Oops!</string>
-    <string name="crash_screen_subtitle">Parece que %s experimentó un error inesperado. Considera compartir los registros de cierre (crash logs) en un problema de GitHub.</string>
+    <string name="crash_screen_subtitle">An unexpected error occurred in %s.</string>
     <string name="crash_screen_logs_title">Registros de error:</string>
     <string name="crash_screen_share">Compartir registros de error</string>
     <string name="crash_screen_restart">Reiniciar la app</string>
@@ -507,22 +488,15 @@
 
     <!-- M3U Playlist Strings -->
     <string name="playlist_add_m3u_title">Añadir lista de reproducción M3U</string>
-    <string name="playlist_add_m3u_description">Introduce la URL de un archivo de lista de reproducción M3U</string>
-    <string name="playlist_url_label">URL de la lista de reproducción</string>
-    <string name="playlist_url_placeholder">https://example.com/playlist.m3u</string>
-    <string name="playlist_url_hint">Soporta formatos .m3u and .m3u8</string>
     <string name="playlist_add_success">Lista de reproducción M3U añadida correctamente</string>
     <string name="playlist_add_error">Error al añadir la lista de reproducción M3U: %s</string>
     <string name="playlist_create_empty">Crear lista de reproducción vacía</string>
-    <string name="playlist_add_from_url">Añadir desde URL M3U/M3U8</string>
-    <string name="playlist_refresh_m3u">Actualizar lista de reproducción M3U</string>
     <string name="playlist_refresh_success">Lista de reproducción actualizada correctamente</string>
     <string name="playlist_refresh_error">Error al actualizar la lista de reproducción: %s</string>
     <string name="playlist_m3u_badge">M3U</string>
 
     <string name="open_file">Abrir archivo</string>
     <string name="recently_played">Reproducidos recientemente</string>
-    <string name="open_link">Abrir enlace</string>
     <string name="install">Instalar</string>
     <string name="download">Descargar</string>
     <string name="failed_load_audio_invalid_uri">Error al cargar el archivo de audio: URI no válida</string>
@@ -553,9 +527,7 @@
     <string name="remove">Quitar</string>
     <string name="add">Añadir</string>
     <string name="ignore">Ignorar</string>
-    <string name="check_for_updates_now">Buscar actualizaciones ahora</string>
     <string name="loading_detailed_information">Cargando información detallada…</string>
-    <string name="stream_url">URL de transmisión</string>
     <string name="export_complete">Exportación completada</string>
     <string name="import_complete">Importación completada</string>
     <string name="auto_picture_in_picture">Imagen en imagen automática</string>
@@ -564,17 +536,12 @@
     <string name="create_playlist">Crear lista de reproducción</string>
     <string name="add_connection">Añadir conexión</string>
     <string name="playlist_name">Nombre de la lista de reproducción</string>
-    <string name="playlist_url">URL de la lista de reproducción</string>
-    <string name="enter_url">Introduce la URL</string>
     <string name="new_name">Nombre nuevo</string>
     <string name="folder_name">Nombre de la carpeta</string>
-    <string name="video_url">URL del video</string>
     <string name="choose_local_m3u_file">Elegir archivo M3U local</string>
-    <string name="add_from_url">Añadir desde URL</string>
     <string name="home">Inicio</string>
     <string name="recents">Recientes</string>
     <string name="playlists">Listas</string>
-    <string name="network">Red</string>
     <string name="unit_seconds">Segundos</string>
     <string name="milliseconds">Milisegundos</string>
     <string name="name">Nombre</string>
@@ -663,21 +630,10 @@
     <string name="media_info_share_chooser_title">Compartir información multimedia</string>
     <string name="media_info_share_failed">No se pudo compartir: %1$s</string>
     <string name="media_info_default_file_name">Archivo multimedia</string>
-    <string name="network_connection_protocol_host">%1$s • %2$s:%3$s</string>
-    <string name="network_connection_edit">Editar</string>
-    <string name="network_connection_delete">Borrar</string>
-    <string name="network_connection_path_prefix">Ruta: %1$s</string>
-    <string name="network_connection_user_prefix">Usuario: %1$s</string>
-    <string name="network_connection_error_prefix">Error: %1$s</string>
-    <string name="network_connection_auto_connect">Conéctese automáticamente al iniciar la aplicación</string>
-    <string name="network_connection_connecting">Conectando</string>
-    <string name="network_connection_browse">Explorar</string>
-    <string name="network_connection_disconnect">Desconectar</string>
-    <string name="network_connection_connect">Conectar</string>
     <string name="no_playlists_found">No se encontraron listas de reproducción</string>
     <string name="try_different_search_term">Pruebe con un término de búsqueda diferente</string>
     <string name="no_playlists_yet">Aún no hay listas de reproducción</string>
-    <string name="no_playlists_yet_desc">Crea una lista de reproducción o agrega una desde una URL m3u</string>
+    <string name="no_playlists_yet_desc">Create a playlist or import a local M3U file.</string>
     <string name="empty_playlists_desc">Crea una lista de reproducción para que aparezca aquí</string>
     <string name="recently_played_disabled_title">Reproducido recientemente está deshabilitado</string>
     <string name="recently_played_disabled_message">Habilítelo en Configuración avanzada para realizar un seguimiento de su historial de reproducción</string>
@@ -698,8 +654,6 @@
     <string name="empty_folder_title">carpeta vacia</string>
     <string name="empty_folder_message">Esta carpeta no contiene vídeos ni subcarpetas.</string>
     <string name="search_all_videos">Buscar todos los vídeos…</string>
-    <string name="stream_link">Enlace de transmisión</string>
-    <string name="video_url_placeholder">https://ejemplo.com/video.mp4</string>
     <string name="paste">Pegar</string>
     <string name="play">Reproducir</string>
     <string name="no_videos_in_playlist">No hay vídeos en esta lista de reproducción.</string>
@@ -722,8 +676,6 @@
     <string name="moved_to_private_space">Se movio al espacio privado</string>
     <string name="moved_to_private_space_desc">Se movieron con éxito %1$d videos al espacio privado.\n\nPara acceder al espacio privado, mantenga presionado el nombre de la aplicación en la parte superior de la pantalla principal.</string>
     <string name="save">Guardar</string>
-    <string name="add_network_connection">Añadir conexión de red</string>
-    <string name="edit_network_connection">Editar conexión de red</string>
     <string name="add_to_playlist">Agregar a la lista de reproducción</string>
     <string name="adding_one_video_to_playlist">Agregar 1 video a la lista de reproducción</string>
     <string name="adding_n_videos_to_playlist">Agregando %1$d videos a la lista de reproducción</string>
@@ -755,10 +707,6 @@
     <string name="rename_item">Cambiar el nombre de %1$s</string>
     <string name="name_cannot_be_empty">El nombre no puede estar vacío</string>
     <string name="name_cannot_contain_invalid_chars">El nombre no puede contener / o \\</string>
-    <string name="play_link">Reproducir enlace</string>
-    <string name="invalid_url_protocol">Protocolo de URL no válido</string>
-    <string name="valid_url">URL válida</string>
-    <string name="invalid_url">URL no válida</string>
     <string name="playlist_created_successfully">Lista de reproducción creada con éxito</string>
     <string name="failed_create_playlist">No se pudo crear la lista de reproducción</string>
     <string name="m3u_playlist_added_successfully">Lista de reproducción M3U agregada exitosamente</string>
@@ -768,8 +716,6 @@
     <string name="playlist_options">Opciones de lista de reproducción</string>
     <string name="create_empty_playlist">Crear lista de reproducción vacía</string>
     <string name="create_blank_playlist_desc">Crea una nueva lista de reproducción en blanco</string>
-    <string name="add_m3u_playlist_from_url">Agregar lista de reproducción M3U desde URL</string>
-    <string name="import_playlist_url_desc">Importar una lista de reproducción desde una URL desde la web</string>
     <string name="more_options">Más opciones</string>
     <string name="move">Mover</string>
     <string name="mark_as">Marcar como</string>
@@ -784,18 +730,19 @@
     <string name="folders_count">Carpetas (%1$d)</string>
     <string name="media_count">Multimedia (%1$d)</string>
     <string name="drag_to_reorder">Arrastra para reordenar</string>
+    <string name="connect_social_media">Conéctate con nosotros en las redes sociales</string>
     <string name="sort_and_view_options">Opciones de clasificación y visualización</string>
     <string name="view_options">Ver opciones</string>
     <string name="pref_category_ui_appearance">Interfaz de usuario y apariencia</string>
     <string name="pref_category_file_management">Gestión de archivos</string>
     <string name="pref_category_playback_controls">Reproducción y controles</string>
     <string name="pref_category_media_settings">Configuración de medios</string>
-    <string name="pref_category_rexshorts">Magen Shorts</string>
-    <string name="pref_category_rexshorts_settings">Ajustes de Magen Shorts</string>
-    <string name="pref_category_rexshorts_settings_desc">Administrar contenido activado/desactivado, aleatorio y bloqueado</string>
+    <string name="pref_category_magen_shorts">Magen Shorts</string>
+    <string name="pref_category_magen_shorts_settings">Ajustes de Magen Shorts</string>
+    <string name="pref_category_magen_shorts_settings_desc">Administrar contenido activado/desactivado, aleatorio y bloqueado</string>
     <string name="pref_category_advanced_about">Avanzado y Acerca de</string>
-    <string name="pref_enable_rexshorts">Habilitar Magen Shorts</string>
-    <string name="pref_enable_rexshorts_summary">Mostrar la pestaña Shorts en la barra de navegación inferior</string>
+    <string name="pref_enable_magen_shorts">Habilitar Magen Shorts</string>
+    <string name="pref_enable_magen_shorts_summary">Mostrar la pestaña Shorts en la barra de navegación inferior</string>
     <string name="pref_auto_swipe_shorts">Deslizar automáticamente al siguiente short</string>
     <string name="pref_auto_swipe_shorts_summary">Pase automáticamente al siguiente short cuando finalice el actual</string>
     <string name="pref_enable_glass_shorts_controls">Controles de Shorts con efecto cristal</string>
@@ -826,12 +773,7 @@
     <string name="pref_blocked_videos_summary">Ver y administrar shorts bloqueados</string>
     <string name="pref_select_sourced_folders">Seleccionar carpetas de origen</string>
     <string name="pref_select_sourced_folders_desc">Elija directorios de los que obtener shorts. Si no se selecciona ninguno, los shorts se obtendrán de todas las carpetas.</string>
-    <string name="pref_category_updates">Actualizaciones</string>
-    <string name="pref_about_auto_check_updates">Verificación automática de actualizaciones</string>
-    <string name="pref_about_auto_check_updates_summary">Buscar nuevas versiones al iniciar</string>
-    <string name="pref_about_check_updates">Buscar actualizaciones</string>
     <string name="pref_about_checking">Verificando…</string>
-    <string name="pref_about_check_updates_summary">Buscar manualmente nuevas versiones en GitHub</string>
     <string name="btn_label_back">Flecha atrás</string>
     <string name="btn_label_title">Título del vídeo</string>
     <string name="btn_label_bookmarks">Capítulos / Marcadores</string>
@@ -869,16 +811,15 @@
     <string name="why_do_i_see_this">¿Por qué veo esto?</string>
     <string name="why_this_permission_is_needed">¿Por qué se necesita este permiso?</string>
     <string name="permission_used_exclusively_for">El permiso se utiliza exclusivamente para:</string>
-    <string name="permission_explanation_playstore_intro">MagenPlayer necesita acceso a sus archivos de video para proporcionar su funcionalidad principal como reproductor multimedia.</string>
+    <string name="permission_explanation_playstore_intro">magen player necesita acceso a sus archivos de video para proporcionar su funcionalidad principal como reproductor multimedia.</string>
     <string name="permission_usage_bullet_list">• Descubrir y mostrar sus archivos de vídeo\n• Reproducción de contenido multimedia\n• Cargar sus archivos de subtitulos</string>
-    <string name="permission_explanation_standard_intro">MagenPlayer siempre ha requerido permiso de acceso al almacenamiento, ya que es esencial que la aplicación encuentre todos los archivos multimedia y de subtítulos en su dispositivo, incluidos los que no son compatibles con el sistema.</string>
+    <string name="permission_explanation_standard_intro">magen player siempre ha requerido permiso de acceso al almacenamiento, ya que es esencial que la aplicación encuentre todos los archivos multimedia y de subtítulos en su dispositivo, incluidos los que no son compatibles con el sistema.</string>
     <string name="permission_security_policy_change">Sin embargo, debido a un cambio en la política de seguridad, las aplicaciones creadas para Android 11 y versiones posteriores ahora requieren permiso adicional para continuar accediendo a las mismas.</string>
     <string name="permission_privacy_assurance_standard">Tenga en cuenta que este permiso solo se utiliza para el descubrimiento automático de archivos multimedia/subtítulos en su dispositivo y no nos permitirá acceder a los archivos de datos privados almacenados por otras aplicaciones de ninguna manera.</string>
-    <string name="opensource_github_notice">MagenPlayer es un proyecto de código abierto. Puede revisar el código fuente y verificar cómo se utilizan los permisos visitando nuestro repositorio de GitHub en:</string>
     <string name="privacy_assurance_final">Tenga la seguridad de que su privacidad es nuestra máxima prioridad y no accedemos a sus archivos para otros fines ni los transferimos ni almacenamos en nuestros servidores. Permanecen seguros en su dispositivo.</string>
-    <string name="permission_required_photos_videos">MagenPlayer requiere permiso de \"Fotos y videos\" para acceder y reproducir sus archivos de video almacenados en su dispositivo.</string>
-    <string name="permission_required_storage">MagenPlayer requiere permiso de \"Almacenamiento\" para acceder y reproducir sus archivos multimedia almacenados en su dispositivo.</string>
-    <string name="permission_required_all_files">MagenPlayer requiere permiso de \"Acceso a todos los archivos\" para descubrir medios y subtítulos en su dispositivo debido a un cambio en la política de seguridad en Android 11 y versiones posteriores.</string>
+    <string name="permission_required_photos_videos">magen player requiere permiso de \"Fotos y videos\" para acceder y reproducir sus archivos de video almacenados en su dispositivo.</string>
+    <string name="permission_required_storage">magen player requiere permiso de \"Almacenamiento\" para acceder y reproducir sus archivos multimedia almacenados en su dispositivo.</string>
+    <string name="permission_required_all_files">magen player requiere permiso de \"Acceso a todos los archivos\" para descubrir medios y subtítulos en su dispositivo debido a un cambio en la política de seguridad en Android 11 y versiones posteriores.</string>
     <string name="permission_explanation_tiramisu_plus">En Android 13 y versiones posteriores, este permiso permite que la aplicación lea archivos de video desde el almacenamiento de su dispositivo, incluidas las carpetas Descargas, Películas y DCIM.</string>
     <string name="permission_explanation_pre_tiramisu">Este permiso permite que la aplicación lea archivos multimedia desde el almacenamiento de su dispositivo para reproducir videos y audio.</string>
     <string name="playlist_separator">• %1$s</string>
@@ -901,7 +842,6 @@
     <string name="config_editor_create_failed">No se pudo crear el archivo</string>
     <string name="pref_about_device_info">Información del dispositivo</string>
     <string name="pref_about_up_to_date">¡Estás al día!</string>
-    <string name="pref_about_check_updates_failed">No se pudo buscar actualizaciones</string>
     <string name="shuffle_on">Reproducción aleatoria activada</string>
     <string name="shuffle_off">Reproducción Aleatoria Apagado</string>
     <string name="mirrored">Espejo</string>
@@ -935,13 +875,6 @@
     <string name="generic_none">Ninguno</string>
     <string name="generic_custom">Personalizado</string>
     <string name="generic_edit_content_description">Editar %1$s</string>
-    <string name="network_recent_links">Enlaces recientes</string>
-    <string name="network_local_network">Red local</string>
-    <string name="network_empty_title">Sin conexiones de red</string>
-    <string name="network_empty_description">Agregue conexiones SMB, FTP o WebDAV para explorar archivos de red</string>
-    <string name="network_remove_link_action">Eliminar enlace</string>
-    <string name="pref_appearance_network_thumbnails_dialog_title">¿Habilitar miniaturas de red?</string>
-    <string name="pref_appearance_network_thumbnails_dialog_message">La generación de miniaturas para flujos de red (M3U/HTTP) puede aumentar significativamente el uso de datos en segundo plano y los tiempos de carga. ¿Continuar?</string>
     <string name="control_layout_edit_title_top_right">Editar arriba a la derecha</string>
     <string name="control_layout_edit_title_bottom_right">Editar en la esquina inferior derecha</string>
     <string name="control_layout_edit_title_bottom_left">Editar, abajo a la izquierda</string>
@@ -1022,7 +955,7 @@
     <string name="pref_advanced_config_cache_cleared">Caché de configuración borrado</string>
     <string name="pref_advanced_delete_thumbnails_summary">Eliminar todas las miniaturas de video guardadas en caché (se regenerarán al explorar carpetas)</string>
     <string name="pref_advanced_clear_thumbnail_cache_confirm_title">¿Borrar caché de miniaturas?</string>
-    <string name="pref_advanced_clear_thumbnail_cache_confirm_subtitle">Esto eliminará todas las miniaturas almacenadas en caché (local y de red) del almacenamiento y la memoria.</string>
+    <string name="pref_advanced_clear_thumbnail_cache_confirm_subtitle">This will delete all cached thumbnails from storage and memory.</string>
     <string name="pref_advanced_thumbnail_cache_cleared">Caché de miniaturas borrada</string>
     <string name="pref_advanced_remove_cached_fonts_summary">Eliminar todas las fuentes de subtítulos almacenadas en caché</string>
     <string name="pref_advanced_enable_media_info_title">Habilitar la actividad de información multimedia</string>
@@ -1042,18 +975,6 @@
     <string name="pref_player_show_seekbar_chapters_summary">Mostrar marcadores de capítulos en la barra de búsqueda</string>
     <string name="pref_player_show_seekbar_read_ahead_title">Mostrar contenido almacenado en el búfer</string>
     <string name="pref_player_show_seekbar_read_ahead_summary">Mostrar una indicación visual del contenido almacenado en el búfer en la barra de desplazamiento</string>
-    <string name="update_ready_to_install">Listo para instalar</string>
-    <string name="update_available_title">Actualización disponible</string>
-    <string name="update_current_version">Versión actual</string>
-    <string name="update_latest_version">Última versión</string>
-    <string name="update_release_date">Fecha de lanzamiento</string>
-    <string name="update_size">Tamaño</string>
-    <string name="update_release_notes">Notas de la versión</string>
-    <string name="update_downloading">Descargando…</string>
-    <string name="update_install">Instalar</string>
-    <string name="update_download">Descargar</string>
-    <string name="update_ignore">Ignorar</string>
-    <string name="update_cancel">Cancelar</string>
     <string name="player_sheets_tab_aesthetics">Estética</string>
     <string name="player_sheets_tab_gestures">Gestos</string>
     <string name="ambient_mode_on">Modo ambiente: ENCENDIDO</string>
@@ -1242,13 +1163,7 @@
     <string name="pref_rescan_started_toast">Se inició el nuevo escaneo de la biblioteca multimedia</string>
     <string name="pref_cache_cleared_toast">Caché de metadatos borrada</string>
     <string name="media_info_folder_path">Ruta de la carpeta</string>
-    <string name="btn_label_quality">Calidad de video</string>
     <string name="video_quality">Calidad de video</string>
-    <string name="video_quality_auto">Automático</string>
-    <string name="video_quality_not_available">No hay calidades de transmisión disponibles para este contenido multimedia</string>
-    <string name="video_quality_addon_outdated">Actualiza la aplicación complementaria Magen Ytdlp para habilitar el cambio de calidad</string>
-    <string name="video_quality_set_as_default">Establecer \"%1$s\" como predeterminado</string>
-    <string name="video_quality_default_saved">Calidad predeterminada establecida en %1$s</string>
     <string name="clip_export_title">Exportar clip</string>
     <string name="clip_export_fast_title">Rápido (copia sin pérdida)</string>
     <string name="clip_export_fast_desc">Copia instantánea de la transmisión con calidad 100 % original. Comienza en el fotograma clave más cercano.</string>
@@ -1258,7 +1173,6 @@
     <string name="clip_export_exact_tag">Precisión de fotograma</string>
     <string name="clip_export_duration">Duración: %s</string>
     <string name="generic_off">Desactivado</string>
-    <string name="network_share_unreachable">No se puede acceder al recurso compartido de red.</string>
     <string name="pref_player_autoplay_on_open">Reproducción automática al abrir</string>
     <string name="pref_player_autoplay_on_open_summary">Iniciar la reproducción automáticamente al abrir el archivo multimedia</string>
     <string name="pref_player_autoplay_on_open_summary_on">Iniciar la reproducción automáticamente al abrir el archivo multimedia</string>
@@ -1269,12 +1183,12 @@
     <string name="system_default">Configuración predeterminada del sistema</string>
     <string name="pref_appearance_language_title">Idioma de la aplicación</string>
     <string name="pref_appearance_language_summary">Cambiar el idioma de visualización de la aplicación</string>
-    <string name="welcome_title">Bienvenido a MagenPlayer</string>
+    <string name="welcome_title">Bienvenido a magen player</string>
     <string name="welcome_subtitle">Tu reproductor multimedia moderno, potente y personalizable.</string>
     <string name="welcome_language_section_title">Idioma preferido</string>
     <string name="welcome_language_section_desc">Selecciona el idioma de visualización</string>
     <string name="storage_access_granted">Acceso al almacenamiento concedido</string>
-    <string name="storage_access_granted_desc">Se ha otorgado el permiso. MagenPlayer está listo para detectar y reproducir tus archivos multimedia.</string>
+    <string name="storage_access_granted_desc">Se ha otorgado el permiso. magen player está listo para detectar y reproducir tus archivos multimedia.</string>
     <string name="welcome_grant_permission">Conceder permiso</string>
     <string name="welcome_get_started">Empezar</string>
     <string name="welcome_skip_permission">Continuar sin acceso al almacenamiento</string>
@@ -1326,19 +1240,6 @@
     <string name="playlist_most_played">Los más reproducidos</string>
     <string name="playlist_most_played_desc">Lista de reproducción dinámica de tus archivos multimedia más vistos</string>
     <string name="auto_playlist_badge">Automático</string>
-    <string name="web_share_title">Compartir en la web</string>
-    <string name="web_share_file">archivo</string>
-    <string name="web_share_files">archivos</string>
-    <string name="web_share_enable_notifications_title">Habilitar notificaciones</string>
-    <string name="web_share_enable_notifications_desc">Sigue compartiendo en segundo plano y vuelve a abrirlo cuando quieras</string>
-    <string name="web_share_allow">Permitir</string>
-    <string name="web_share_require_token_title">Se requiere un token de seguridad</string>
-    <string name="web_share_require_token_enabled_desc">Se requiere el token ?t= para ver los archivos</string>
-    <string name="web_share_require_token_disabled_desc">Acceso libre (rápido y fácil)</string>
-    <string name="web_share_received_title">Recibido (%1$d)</string>
-    <string name="web_share_copy_link">Copiar enlace</string>
-    <string name="web_share_link_copied">Enlace copiado al portapapeles</string>
-    <string name="web_share_step_2">Escanee el código QR o escriba la URL en cualquier navegador</string>
     <string name="sort_order_az">A-Z</string>
     <string name="sort_order_za">Z-A</string>
     <string name="sort_order_shortest">El más corto</string>
@@ -1348,9 +1249,4 @@
     <string name="view_mode">Modo de visualización</string>
     <string name="view_mode_tree">Árbol</string>
     <string name="video_grid">Cuadrícula de videos</string>
-    <string name="web_share_qr_desc">Escanear código QR</string>
-    <string name="web_share_no_network">Activa el punto de acceso o conéctate a una red Wi-Fi para compartir</string>
-    <string name="web_share_step_1">Conecta el teléfono receptor a este punto de acceso o a la red Wi-Fi</string>
-    <string name="web_share_stop_sharing">Dejar de compartir</string>
-
-</resources>
+    </resources>

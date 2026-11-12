@@ -18,7 +18,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FolderOpen
-import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
@@ -153,21 +152,16 @@ fun PlaylistActionSheet(
           verticalAlignment = Alignment.CenterVertically,
         ) {
           Icon(
-            imageVector = Icons.Filled.Link,
+            imageVector = Icons.Filled.FolderOpen,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(24.dp),
           )
           Column(modifier = Modifier.weight(1f)) {
             Text(
-              text = stringResource(R.string.add_m3u_playlist_from_url),
+              text = stringResource(R.string.choose_local_m3u_file),
               style = MaterialTheme.typography.bodyLarge,
               fontWeight = FontWeight.Medium,
-            )
-            Text(
-              text = stringResource(R.string.import_playlist_url_desc),
-              style = MaterialTheme.typography.bodySmall,
-              color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
           }
         }
@@ -252,7 +246,6 @@ fun PlaylistActionSheet(
 
   // M3U Playlist Dialog
   if (showM3UDialog) {
-    var playlistUrl by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
@@ -300,31 +293,6 @@ fun PlaylistActionSheet(
           )
 
           Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedTextField(
-              value = playlistUrl,
-              onValueChange = { playlistUrl = it },
-              label = { Text(stringResource(R.string.playlist_url)) },
-              singleLine = false,
-              maxLines = 3,
-              modifier = Modifier.fillMaxWidth(),
-              enabled = !isLoading
-            )
-
-            // OR divider
-            Row(
-              modifier = Modifier.fillMaxWidth(),
-              verticalAlignment = Alignment.CenterVertically,
-              horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-              androidx.compose.material3.HorizontalDivider(modifier = Modifier.weight(1f))
-              Text(
-                text = stringResource(R.string.or),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-              )
-              androidx.compose.material3.HorizontalDivider(modifier = Modifier.weight(1f))
-            }
-
             // Local file picker button
             OutlinedButton(
               onClick = {
@@ -354,50 +322,7 @@ fun PlaylistActionSheet(
             }
           }
 
-          val m3uSuccessMsg = stringResource(R.string.m3u_playlist_added_successfully)
-          val m3uFailMsg = stringResource(R.string.failed_add_m3u_playlist)
-          Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End,
-          ) {
-            TextButton(
-              onClick = { showM3UDialog = false },
-              enabled = !isLoading,
-              shape = MaterialTheme.shapes.extraLarge,
-            ) {
-              Text(stringResource(R.string.generic_cancel))
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-            Button(
-              onClick = {
-                if (playlistUrl.isNotBlank()) {
-                  isLoading = true
-                  coroutineScope.launch {
-                    val result = repository.createM3UPlaylist(playlistUrl.trim())
-                    result.onSuccess {
-                      android.widget.Toast.makeText(
-                        context,
-                        m3uSuccessMsg,
-                        android.widget.Toast.LENGTH_SHORT
-                      ).show()
-                    }.onFailure { error ->
-                      android.widget.Toast.makeText(
-                        context,
-                        "$m3uFailMsg: ${error.message}",
-                        android.widget.Toast.LENGTH_LONG
-                      ).show()
-                    }
-                    isLoading = false
-                    showM3UDialog = false
-                  }
-                }
-              },
-              enabled = playlistUrl.isNotBlank() && !isLoading,
-              shape = MaterialTheme.shapes.extraLarge,
-            ) {
-              Text(stringResource(R.string.add_from_url))
-            }
-          }
+
         }
       }
     }

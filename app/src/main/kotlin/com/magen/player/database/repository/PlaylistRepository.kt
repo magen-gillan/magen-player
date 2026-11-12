@@ -7,7 +7,6 @@ import com.magen.player.database.entities.PlaylistEntity
 import com.magen.player.database.entities.PlaylistItemEntity
 import com.magen.player.utils.media.M3UParser
 import com.magen.player.utils.media.M3UParseResult
-import com.magen.player.utils.media.M3UPlaylistItem
 import kotlinx.coroutines.flow.Flow
 
 class PlaylistRepository(private val playlistDao: PlaylistDao) {
@@ -206,47 +205,6 @@ class PlaylistRepository(private val playlistDao: PlaylistDao) {
   }
 
   // M3U Playlist operations
-  suspend fun createM3UPlaylist(url: String): Result<Long> {
-    return try {
-      val parseResult = M3UParser.parseFromUrl(url)
-      
-      when (parseResult) {
-        is M3UParseResult.Success -> {
-          val now = System.currentTimeMillis()
-          val playlistId = playlistDao.insertPlaylist(
-            PlaylistEntity(
-              name = parseResult.playlistName,
-              createdAt = now,
-              updatedAt = now,
-              m3uSourceUrl = url,
-              isM3uPlaylist = true
-            )
-          )
-          
-          // Add all items from the M3U playlist
-          val items = parseResult.items.mapIndexed { index, m3uItem ->
-            PlaylistItemEntity(
-              playlistId = playlistId.toInt(),
-              filePath = m3uItem.url,
-              fileName = m3uItem.title ?: "Item ${index + 1}",
-              position = index,
-              addedAt = now
-            )
-          }
-          
-          playlistDao.insertPlaylistItems(items)
-          
-          Result.success(playlistId)
-        }
-        is M3UParseResult.Error -> {
-          Result.failure(Exception(parseResult.message, parseResult.exception))
-        }
-      }
-    } catch (e: Exception) {
-      Result.failure(e)
-    }
-  }
-
   suspend fun createM3UPlaylistFromFile(context: Context, uri: Uri): Result<Long> {
     return try {
       val parseResult = M3UParser.parseFromUri(context, uri)
@@ -268,7 +226,7 @@ class PlaylistRepository(private val playlistDao: PlaylistDao) {
           val items = parseResult.items.mapIndexed { index, m3uItem ->
             PlaylistItemEntity(
               playlistId = playlistId.toInt(),
-              filePath = m3uItem.url,
+              filePath = m3uItem.path,
               fileName = m3uItem.title ?: "Item ${index + 1}",
               position = index,
               addedAt = now
@@ -288,45 +246,5 @@ class PlaylistRepository(private val playlistDao: PlaylistDao) {
     }
   }
 
-  suspend fun refreshM3UPlaylist(playlistId: Int): Result<Unit> {
-    return try {
-      val playlist = getPlaylistById(playlistId)
-        ?: return Result.failure(Exception("Playlist not found"))
-      
-      if (!playlist.isM3uPlaylist || playlist.m3uSourceUrl == null) {
-        return Result.failure(Exception("Not an M3U playlist or no source URL available"))
-      }
-      
-      val parseResult = M3UParser.parseFromUrl(playlist.m3uSourceUrl)
-      
-      when (parseResult) {
-        is M3UParseResult.Success -> {
-          // Clear existing items
-          playlistDao.deleteAllItemsFromPlaylist(playlistId)
-          
-          // Add refreshed items
-          val now = System.currentTimeMillis()
-          val items = parseResult.items.mapIndexed { index, m3uItem ->
-            PlaylistItemEntity(
-              playlistId = playlistId,
-              filePath = m3uItem.url,
-              fileName = m3uItem.title ?: "Item ${index + 1}",
-              position = index,
-              addedAt = now
-            )
-          }
-          
-          playlistDao.insertPlaylistItems(items)
-          updatePlaylist(playlist)
-          
-          Result.success(Unit)
-        }
-        is M3UParseResult.Error -> {
-          Result.failure(Exception(parseResult.message, parseResult.exception))
-        }
-      }
-    } catch (e: Exception) {
-      Result.failure(e)
-    }
-  }
+
 }

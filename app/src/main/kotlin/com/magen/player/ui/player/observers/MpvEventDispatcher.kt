@@ -41,7 +41,7 @@ class MpvEventDispatcher(
 
   fun dispatchProperty(property: String, value: String) {
     when (property.substringBeforeLast("/")) {
-      "user-data/magenplayer" -> listener.onLuaInvocation(property, value)
+      "user-data/mpvex" -> listener.onLuaInvocation(property, value)
     }
   }
 

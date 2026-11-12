@@ -33,19 +33,19 @@ class VideoFlipFilterManager(
       }
 
       if (isMirrored) {
-        executeCommand(arrayOf("vf", "add", "@magenplayer_hflip:hflip"))
+        executeCommand(arrayOf("vf", "add", "@mpvex_hflip:hflip"))
       } else {
-        executeCommand(arrayOf("vf", "remove", "@magenplayer_hflip"))
+        executeCommand(arrayOf("vf", "remove", "@mpvex_hflip"))
       }
 
       if (isFlipped) {
-        executeCommand(arrayOf("vf", "add", "@magenplayer_vflip:vflip"))
+        executeCommand(arrayOf("vf", "add", "@mpvex_vflip:vflip"))
       } else {
-        executeCommand(arrayOf("vf", "remove", "@magenplayer_vflip"))
+        executeCommand(arrayOf("vf", "remove", "@mpvex_vflip"))
       }
     } else {
-      executeCommand(arrayOf("vf", "remove", "@magenplayer_hflip"))
-      executeCommand(arrayOf("vf", "remove", "@magenplayer_vflip"))
+      executeCommand(arrayOf("vf", "remove", "@mpvex_hflip"))
+      executeCommand(arrayOf("vf", "remove", "@mpvex_vflip"))
 
       val savedHwDec = preFlipHwDec
       if (savedHwDec != null) {

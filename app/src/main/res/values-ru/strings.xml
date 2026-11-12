@@ -21,8 +21,6 @@
 	<string name="pref_appearance_tab_recents_summary">Быстрое возобновление предыдущих видео</string>
 	<string name="pref_appearance_tab_playlists_title">Плейлисты</string>
 	<string name="pref_appearance_tab_playlists_summary">Показывать локальные пользовательские плейлисты</string>
-	<string name="pref_appearance_tab_network_title">Сетевые потоки</string>
-	<string name="pref_appearance_tab_network_summary">Доступ к дискам SMB, FTP и WebDAV</string>
 	<string name="pref_appearance_summary">Тёмная тема, Material You</string>
 	<string name="pref_appearance_category_theme">Тема</string>
 	<string name="pref_appearance_darkmode_system">Системная</string>
@@ -52,8 +50,6 @@
 	<string name="pref_appearance_unplayed_old_video_days_title">Порог дней для метки нового видео</string>
 	<string name="pref_appearance_unplayed_old_video_days_summary">Видео, добавленные за последние %d дней без истории воспроизведения, будут отмечены как новые</string>
 	<string name="pref_appearance_category_thumbnails">Миниатюры</string>
-	<string name="pref_appearance_show_network_thumbnails_title">Показывать сетевые миниатюры (Экспериментально)</string>
-	<string name="pref_appearance_show_network_thumbnails_summary">Генерировать миниатюры для сетевых потоков (может увеличить использование данных в мобильных сетях)</string>
 	<string name="pref_appearance_theme_picker_label">Тема приложения</string>
 	<string name="pref_appearance_auto_scroll_title">Автопрокрутка к последнему воспроизведённому</string>
 	<string name="pref_appearance_auto_scroll_summary">Автоматически прокручивать к последнему воспроизведённому видео при открытии списков видео</string>
@@ -246,8 +242,6 @@
 
 	<string name="pref_subtitles">Субтитры</string>
 	<string name="pref_subtitles_summary">Предпочитаемые языки, шрифты и поиск</string>
-	<string name="pref_subtitle_search_title">Поиск субтитров онлайн</string>
-	<string name="pref_subtitle_search_summary">Поиск и загрузка субтитров из онлайн-источников</string>
 	<string name="pref_custom_lua_title">Пользовательские кнопки Lua</string>
 	<string name="pref_custom_lua_summary">Управление пользовательскими кнопками плеера с помощью кода Lua</string>
 	<string name="pref_preferred_languages">Предпочитаемые языки</string>
@@ -261,8 +255,6 @@
 	<string name="pref_subtitles_custom_picker_folder_title">Папка выбора по умолчанию</string>
 	<string name="pref_subtitles_custom_picker_folder_summary">Выбранная папка, которая открывается при добавлении субтитров вручную</string>
 	<string name="pref_subtitles_save_location">Место сохранения субтитров</string>
-	<string name="pref_subtitles_search_online">Поиск субтитров онлайн…</string>
-	<string name="pref_subtitles_subdl_languages">Языки субтитров</string>
 	<string name="all_languages">Все (выборочная фильтрация)</string>
 	<string name="pref_subtitles_clear_downloads">Очистить загруженные субтитры</string>
 	<string name="pref_subtitles_clear_downloads_summary">Удалить все файлы в текущем месте сохранения</string>
@@ -270,13 +262,6 @@
 	<string name="toast_subtitles_cleared">Загруженные субтитры очищены</string>
 	<string name="pref_subtitles_searching">Поиск…</string>
 	<string name="pref_subtitles_found">Найдено субтитров: %d</string>
-	<string name="pref_subtitles_online_search_title">Поиск субтитров онлайн</string>
-	<string name="pref_subtitles_wyzie_api_key_title">API-ключ Wyzie</string>
-	<string name="pref_subtitles_wyzie_api_key_summary">Требуется для поиска субтитров. Получите свой на sub.wyzie.io/redeem</string>
-	<string name="pref_subtitles_wyzie_api_key_hint">Введите API-ключ</string>
-	<string name="pref_subtitles_wyzie_api_key_not_set">Не задан</string>
-	<string name="pref_subtitles_wyzie_api_key_masked">••••••••••••••••••••••</string>
-
 	<string name="pref_audio">Аудио</string>
 	<string name="pref_audio_summary">Предпочитаемые языки, аудиоканалы, коррекция высоты тона</string>
 	<string name="pref_audio_pitch_correction_title">Включить коррекцию высоты звука</string>
@@ -343,10 +328,6 @@
 	<string name="pref_about_oss_libraries">Библиотеки</string>
 	<string name="pref_about_device_info">Информация об устройстве</string>
 	<string name="pref_about_donate_title">Поддержать</string>
-	<string name="pref_about_donate_kofi">Ko-fi</string>
-	<string name="pref_about_donate_kofi_summary">Поддержать разработчика на Ko-fi</string>
-	<string name="pref_about_donate_paypal">PayPal</string>
-	<string name="pref_about_donate_paypal_summary">Поддержать разработчика на PayPal</string>
 	<string name="pref_about_donate_upi">UPI</string>
 
 	<string name="player_sheets_add_ext_sub">Добавить внешние субтитры</string>
@@ -434,7 +415,7 @@
 	<string name="player_aspect_stretch">Растянуть</string>
 
 	<string name="crash_screen_title">Ой</string>
-	<string name="crash_screen_subtitle">Похоже, в %s произошла непредвиденная ошибка. Вы можете поделиться логами сбоя в GitHub Issue.</string>
+	<string name="crash_screen_subtitle">An unexpected error occurred in %s.</string>
 	<string name="crash_screen_logs_title">Логи сбоя:</string>
 	<string name="crash_screen_share">Поделиться логами сбоя</string>
 	<string name="crash_screen_restart">Перезапустить приложение</string>
@@ -574,22 +555,15 @@
 
 	<!-- M3U Playlist Strings -->
 	<string name="playlist_add_m3u_title">Добавить плейлист M3U</string>
-	<string name="playlist_add_m3u_description">Введите URL файла плейлиста M3U</string>
-	<string name="playlist_url_label">URL плейлиста</string>
-	<string name="playlist_url_placeholder">https://example.com/playlist.m3u</string>
-	<string name="playlist_url_hint">Поддерживает форматы .m3u и .m3u8</string>
 	<string name="playlist_add_success">Плейлист M3U успешно добавлен</string>
 	<string name="playlist_add_error">Не удалось добавить плейлист M3U: %s</string>
 	<string name="playlist_create_empty">Создать пустой плейлист</string>
-	<string name="playlist_add_from_url">Добавить по URL M3U/M3U8</string>
-	<string name="playlist_refresh_m3u">Обновить плейлист M3U</string>
 	<string name="playlist_refresh_success">Плейлист успешно обновлен</string>
 	<string name="playlist_refresh_error">Не удалось обновить плейлист: %s</string>
 	<string name="playlist_m3u_badge">M3U</string>
 
 	<string name="open_file">Открыть файл</string>
 	<string name="recently_played">Недавно воспроизведённые</string>
-	<string name="open_link">Открыть ссылку</string>
 	<string name="install">Установить</string>
 	<string name="download">Скачать</string>
 	<string name="failed_load_audio_invalid_uri">Не удалось загрузить аудиофайл: недействительный URI</string>
@@ -620,9 +594,7 @@
 	<string name="remove">Удалить</string>
 	<string name="add">Добавить</string>
 	<string name="ignore">Игнорировать</string>
-	<string name="check_for_updates_now">Проверить обновления сейчас</string>
 	<string name="loading_detailed_information">Загрузка подробной информации…</string>
-	<string name="stream_url">URL потока</string>
 	<string name="export_complete">Экспорт завершен</string>
 	<string name="import_complete">Импорт завершен</string>
 	<string name="auto_picture_in_picture">Авто-режим "Картинка в картинке"</string>
@@ -631,18 +603,13 @@
 	<string name="create_playlist">Создать плейлист</string>
 	<string name="add_connection">Добавить подключение</string>
 	<string name="playlist_name">Название плейлиста</string>
-	<string name="playlist_url">URL плейлиста</string>
-	<string name="enter_url">Введите URL</string>
 	<string name="new_name">Новое имя</string>
 	<string name="folder_name">Имя папки</string>
-	<string name="video_url">URL видео</string>
 	<string name="choose_local_m3u_file">Выбрать локальный файл M3U</string>
-	<string name="add_from_url">Добавить по URL</string>
 	<string name="home">Главная</string>
 	<string name="shorts">Shorts</string>
 	<string name="recents">Недавние</string>
 	<string name="playlists">Плейлисты</string>
-	<string name="network">Сеть</string>
 	<string name="unit_seconds">Секунды</string>
 	<string name="milliseconds">Миллисекунды</string>
 	<string name="name">Имя</string>
@@ -715,23 +682,11 @@
 	<string name="media_info_default_file_name">Медиафайл</string>
 
 	<!-- Network Connection Card -->
-	<string name="network_connection_protocol_host">%1$s • %2$s:%3$s</string>
-	<string name="network_connection_edit">Изменить</string>
-	<string name="network_connection_delete">Удалить</string>
-	<string name="network_connection_path_prefix">Путь: %1$s</string>
-	<string name="network_connection_user_prefix">Пользователь: %1$s</string>
-	<string name="network_connection_error_prefix">Ошибка: %1$s</string>
-	<string name="network_connection_auto_connect">Подключаться автоматически при запуске</string>
-	<string name="network_connection_connecting">Подключение</string>
-	<string name="network_connection_browse">Обзор</string>
-	<string name="network_connection_disconnect">Отключить</string>
-	<string name="network_connection_connect">Подключить</string>
-
 	<!-- Playlist Screen Empty and Search States -->
 	<string name="no_playlists_found">Плейлисты не найдены</string>
 	<string name="try_different_search_term">Попробуйте другой поисковый запрос</string>
 	<string name="no_playlists_yet">Пока нет плейлистов</string>
-	<string name="no_playlists_yet_desc">Создайте плейлист или добавьте его по URL m3u</string>
+	<string name="no_playlists_yet_desc">Create a playlist or import a local M3U file.</string>
 	<string name="empty_playlists_desc">Создайте плейлист, чтобы увидеть его здесь</string>
 
 	<!-- Recently Played Screen -->
@@ -762,8 +717,6 @@
 	<string name="search_all_videos">Поиск по всем видео…</string>
 
 	<!-- Network Streaming Screen Strings -->
-	<string name="stream_link">Ссылка на поток</string>
-	<string name="video_url_placeholder">https://example.com/video.mp4</string>
 	<string name="paste">Вставить</string>
 	<string name="play">Воспроизвести</string>
 
@@ -792,9 +745,6 @@
 	<string name="moved_to_private_space">Перемещено в Личное пространство</string>
 	<string name="moved_to_private_space_desc">Успешно перемещено %1$d видео в личное пространство.\n\nДля доступа к личному пространству удерживайте нажатие на название приложения в верхней части главного экрана.</string>
 	<string name="save">Сохранить</string>
-	<string name="add_network_connection">Добавить сетевое подключение</string>
-	<string name="edit_network_connection">Редактировать сетевое подключение</string>
-
 	<!-- Add To Playlist Dialog Strings -->
 	<string name="add_to_playlist">Добавить в плейлист</string>
 	<string name="adding_one_video_to_playlist">Добавление 1 видео в плейлист</string>
@@ -837,10 +787,6 @@
 	<string name="name_cannot_contain_invalid_chars">Имя не может содержать / или \\</string>
 
 	<!-- Sheets Strings -->
-	<string name="play_link">Воспроизвести ссылку</string>
-	<string name="invalid_url_protocol">Недопустимый протокол URL</string>
-	<string name="valid_url">Действительный URL</string>
-	<string name="invalid_url">Недействительный URL</string>
 	<string name="playlist_created_successfully">Плейлист успешно создан</string>
 	<string name="failed_create_playlist">Не удалось создать плейлист</string>
 	<string name="m3u_playlist_added_successfully">Плейлист M3U успешно добавлен</string>
@@ -850,9 +796,6 @@
 	<string name="playlist_options">Опции плейлиста</string>
 	<string name="create_empty_playlist">Создать пустой плейлист</string>
 	<string name="create_blank_playlist_desc">Создать новый пустой плейлист</string>
-	<string name="add_m3u_playlist_from_url">Добавить плейлист M3U по URL</string>
-	<string name="import_playlist_url_desc">Импортировать плейлист по веб-ссылке</string>
-
 	<!-- Component Strings -->
 	<string name="more_options">Дополнительные опции</string>
 	<string name="move">Переместить</string>
@@ -868,6 +811,7 @@
 	<string name="folders_count">Папок (%1$d)</string>
 	<string name="media_count">Медиа (%1$d)</string>
 	<string name="drag_to_reorder">Перетащите для изменения порядка</string>
+	<string name="connect_social_media">Оставайтесь с нами в соцсетях</string>
 
 	<!-- Sort Dialog Strings -->
 	<string name="sort_and_view_options">Опции сортировки и вида</string>
@@ -878,14 +822,14 @@
 	<string name="pref_category_playback_controls">Воспроизведение и управление</string>
 	<string name="pref_category_file_management">Управление файлами</string>
 	<string name="pref_category_media_settings">Настройки медиа</string>
-	<string name="pref_category_rexshorts">Magen Shorts</string>
-	<string name="pref_category_rexshorts_settings">Настройки Magen Shorts</string>
-	<string name="pref_category_rexshorts_settings_desc">Управление включением/выключением, перемешиванием и заблокированным контентом</string>
+	<string name="pref_category_magen_shorts">Magen Shorts</string>
+	<string name="pref_category_magen_shorts_settings">Настройки Magen Shorts</string>
+	<string name="pref_category_magen_shorts_settings_desc">Управление включением/выключением, перемешиванием и заблокированным контентом</string>
 	<string name="pref_category_advanced_about">Дополнительно и О приложении</string>
 
 	<!-- Shorts preference screen -->
-	<string name="pref_enable_rexshorts">Включить Magen Shorts</string>
-	<string name="pref_enable_rexshorts_summary">Показывать вкладку Shorts на нижней панели навигации</string>
+	<string name="pref_enable_magen_shorts">Включить Magen Shorts</string>
+	<string name="pref_enable_magen_shorts_summary">Показывать вкладку Shorts на нижней панели навигации</string>
 	<string name="pref_auto_swipe_shorts">Автосвайп к следующему Short</string>
 	<string name="pref_auto_swipe_shorts_summary">Автоматически переходить к следующему короткому видео по окончании текущего</string>
 	<string name="pref_enable_glass_shorts_controls">Стеклянные элементы Shorts</string>
@@ -911,27 +855,8 @@
 	<string name="pref_select_sourced_folders_desc">Выберите каталоги, откуда брать Shorts. Если не выбрано ни одного, Shorts будут браться из всех папок.</string>
 
 	<!-- Update features -->
-	<string name="pref_category_updates">Обновления</string>
-	<string name="pref_about_auto_check_updates">Автопроверка обновлений</string>
-	<string name="pref_about_auto_check_updates_summary">Проверять наличие новых версий при запуске</string>
-	<string name="pref_about_check_updates">Проверить обновления</string>
 	<string name="pref_about_checking">Проверка…</string>
-	<string name="pref_about_check_updates_summary">Вручную проверить новые версии на GitHub</string>
 	<string name="pref_about_up_to_date">У вас установлена последняя версия!</string>
-	<string name="pref_about_check_updates_failed">Не удалось проверить наличие обновлений</string>
-	<string name="update_ready_to_install">Готово к установке</string>
-	<string name="update_available_title">Доступно обновление</string>
-	<string name="update_current_version">Текущая версия</string>
-	<string name="update_latest_version">Последняя версия</string>
-	<string name="update_release_date">Дата релиза</string>
-	<string name="update_size">Размер</string>
-	<string name="update_release_notes">Примечания к релизу</string>
-	<string name="update_downloading">Загрузка…</string>
-	<string name="update_install">Установить</string>
-	<string name="update_download">Скачать</string>
-	<string name="update_ignore">Игнорировать</string>
-	<string name="update_cancel">Отмена</string>
-
 	<!-- Player Button Labels -->
 	<string name="btn_label_back">Стрелка назад</string>
 	<string name="btn_label_title">Название видео</string>
@@ -975,18 +900,17 @@
 	<string name="allow_access">РАЗРЕШИТЬ ДОСТУП</string>
 	<string name="why_do_i_see_this">Почему я это вижу?</string>
 	<string name="why_this_permission_is_needed">Зачем нужно это разрешение</string>
-	<string name="permission_explanation_playstore_intro">MagenPlayer нужен доступ к вашим видеофайлам для обеспечения своей основной функциональности как медиаплеера.</string>
+	<string name="permission_explanation_playstore_intro">magen player нужен доступ к вашим видеофайлам для обеспечения своей основной функциональности как медиаплеера.</string>
 	<string name="permission_used_exclusively_for">Это разрешение используется исключительно для:</string>
 	<string name="permission_usage_bullet_list">• Обнаружения и отображения ваших видеофайлов\n• Воспроизведения медиаконтента\n• Загрузки файлов субтитров</string>
-	<string name="permission_explanation_standard_intro">MagenPlayer всегда требовал разрешения на доступ к хранилищу, так как это необходимо приложению для поиска всех медиа и файлов субтитров на вашем устройстве, в том числе и тех, что не поддерживаются системой.</string>
+	<string name="permission_explanation_standard_intro">magen player всегда требовал разрешения на доступ к хранилищу, так как это необходимо приложению для поиска всех медиа и файлов субтитров на вашем устройстве, в том числе и тех, что не поддерживаются системой.</string>
 	<string name="permission_security_policy_change">Однако, из-за изменения политики безопасности, приложениям для Android 11 и выше теперь требуются дополнительные разрешения для продолжения доступа к ним.</string>
 	<string name="permission_privacy_assurance_standard">Обратите внимание, что это разрешение используется только для автообнаружения файлов медиа/субтитров на вашем устройстве и не позволит нам каким-либо образом получить доступ к личным данным других приложений.</string>
-	<string name="opensource_github_notice">MagenPlayer — это проект с открытым исходным кодом. Вы можете просмотреть исходный код и проверить, как используются разрешения, посетив наш репозиторий GitHub по адресу:</string>
 	<string name="privacy_assurance_final">Будьте уверены, ваша конфиденциальность — наш главный приоритет. Мы не обращаемся к вашим файлам для других целей, не передаем и не храним их на наших серверах. Они остаются в безопасности на вашем устройстве.</string>
 
-	<string name="permission_required_photos_videos">MagenPlayer требует разрешения \"Фото и видео\" для доступа и воспроизведения ваших видеофайлов, хранящихся на устройстве.</string>
-	<string name="permission_required_storage">MagenPlayer требует разрешения \"Хранилище\" для доступа и воспроизведения ваших медиафайлов, хранящихся на устройстве.</string>
-	<string name="permission_required_all_files">MagenPlayer требует разрешения \"Доступ ко всем файлам\" для обнаружения медиа и субтитров на вашем устройстве в связи с изменением политики безопасности в Android 11 и более новых версиях.</string>
+	<string name="permission_required_photos_videos">magen player требует разрешения \"Фото и видео\" для доступа и воспроизведения ваших видеофайлов, хранящихся на устройстве.</string>
+	<string name="permission_required_storage">magen player требует разрешения \"Хранилище\" для доступа и воспроизведения ваших медиафайлов, хранящихся на устройстве.</string>
+	<string name="permission_required_all_files">magen player требует разрешения \"Доступ ко всем файлам\" для обнаружения медиа и субтитров на вашем устройстве в связи с изменением политики безопасности в Android 11 и более новых версиях.</string>
 	<string name="permission_explanation_tiramisu_plus">На Android 13 и выше это разрешение позволяет приложению читать видеофайлы из хранилища вашего устройства, включая папки Загрузки (Downloads), Фильмы (Movies) и DCIM.</string>
 	<string name="permission_explanation_pre_tiramisu">Это разрешение позволяет приложению читать медиафайлы из памяти вашего устройства для воспроизведения видео и аудио.</string>
 
@@ -1058,16 +982,7 @@
 	<string name="generic_edit_content_description">Редактировать %1$s</string>
 
 	<!-- Network Streaming Screen -->
-	<string name="network_recent_links">Недавние ссылки</string>
-	<string name="network_local_network">Локальная сеть</string>
-	<string name="network_empty_title">Нет сетевых подключений</string>
-	<string name="network_empty_description">Добавьте подключения SMB, FTP или WebDAV для просмотра сетевых файлов</string>
-	<string name="network_remove_link_action">Удалить ссылку</string>
-
 	<!-- Appearance Preferences Screen -->
-	<string name="pref_appearance_network_thumbnails_dialog_title">Включить сетевые миниатюры?</string>
-	<string name="pref_appearance_network_thumbnails_dialog_message">Генерация миниатюр для сетевых потоков (M3U/HTTP) может значительно увеличить использование данных в фоне и время загрузки. Продолжить?</string>
-
 	<!-- Control Layout Editor Screen -->
 	<string name="control_layout_edit_title_top_right">Редактировать сверху справа</string>
 	<string name="control_layout_edit_title_bottom_right">Редактировать снизу справа</string>
@@ -1171,7 +1086,7 @@
 	<string name="pref_advanced_config_cache_cleared">Кэш конфигурации очищен</string>
 	<string name="pref_advanced_delete_thumbnails_summary">Удалить все кэшированные миниатюры видео (будут созданы заново при просмотре папок)</string>
 	<string name="pref_advanced_clear_thumbnail_cache_confirm_title">Очистить кэш миниатюр?</string>
-	<string name="pref_advanced_clear_thumbnail_cache_confirm_subtitle">Это удалит все кэшированные миниатюры (локальные и сетевые) из хранилища и памяти.</string>
+	<string name="pref_advanced_clear_thumbnail_cache_confirm_subtitle">This will delete all cached thumbnails from storage and memory.</string>
 	<string name="pref_advanced_thumbnail_cache_cleared">Кэш миниатюр очищен</string>
 	<string name="pref_advanced_remove_cached_fonts_summary">Удалить все кэшированные шрифты субтитров</string>
 	<string name="pref_advanced_enable_media_info_title">Включить активность "Медиаинформация"</string>
@@ -1266,7 +1181,7 @@
 	<string name="filter_preset_deep_black">Глубокий чёрный</string>
 	<string name="filter_preset_deep_black_desc">Улучшенный чёрный цвет для OLED-дисплеев</string>
     <string name="pref_player_resume_playback_title">Возобновить воспроизведение</string>
-    <string name="welcome_title">Добро пожаловать в MagenPlayer</string>
+    <string name="welcome_title">Добро пожаловать в magen player</string>
     <string name="welcome_subtitle">Ваш современный, мощный и настраиваемый медиаплеер.</string>
     <string name="welcome_language_section_title">Предпочитаемый язык</string>
     <string name="welcome_language_section_desc">Выберите отображаемый язык</string>
@@ -1274,7 +1189,7 @@
     <string name="welcome_get_started">Начать</string>
     <string name="welcome_skip_permission">Продолжить без доступа к хранилищу</string>
     <string name="storage_access_granted">Доступ к хранилищу предоставлен</string>
-    <string name="storage_access_granted_desc">Разрешение предоставлено. MagenPlayer готов обнаруживать и воспроизводить ваши медиафайлы.</string>
+    <string name="storage_access_granted_desc">Разрешение предоставлено. magen player готов обнаруживать и воспроизводить ваши медиафайлы.</string>
     <string name="player_resume_prompt_title">Возобновить воспроизведение?</string>
     <string name="pref_player_resume_playback_summary">Выберите, как открываются ранее просмотренные видео</string>
     <string name="pref_player_resume_mode_always">Всегда возобновлять</string>

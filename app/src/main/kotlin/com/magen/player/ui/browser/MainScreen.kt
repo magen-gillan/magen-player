@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.PlaylistPlay
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.outlined.VideoLibrary
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
@@ -50,7 +51,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
@@ -64,6 +64,7 @@ import com.magen.player.ui.browser.folderlist.FolderListScreen
 import com.magen.player.ui.browser.playlist.PlaylistScreen
 import com.magen.player.ui.browser.recentlyplayed.RecentlyPlayedScreen
 import com.magen.player.ui.browser.shorts.ShortsScreen
+import com.magen.player.ui.browser.you.YouScreen
 import com.magen.player.ui.browser.selection.SelectionManager
 import com.magen.player.ui.browser.miniplayer.MiniPlayer
 import com.magen.player.ui.browser.miniplayer.MiniPlayerDefaults
@@ -167,7 +168,6 @@ object MainScreen : Screen {
       mutableIntStateOf(persistentPreviousTab)
     }
 
-    val context = LocalContext.current
     val density = LocalDensity.current
     val haptic = LocalHapticFeedback.current
     val browserPreferences = koinInject<BrowserPreferences>()
@@ -175,32 +175,11 @@ object MainScreen : Screen {
     val miniPlayerStateManager = koinInject<MiniPlayerStateManager>()
     val miniPlayerState by miniPlayerStateManager.state.collectAsState()
     val isShortsEnabled by browserPreferences.enableShorts.collectAsState()
+    val enableTabYou by browserPreferences.enableTabYou.collectAsState()
     val enableTabRecents by browserPreferences.enableTabRecents.collectAsState()
     val enableTabPlaylists by browserPreferences.enableTabPlaylists.collectAsState()
     val bottomNavOrder by browserPreferences.bottomNavOrder.collectAsState()
     val customProfileImagePath by appearancePreferences.customProfileImagePath.collectAsState()
-
-    // One-shot catch-up: ask (once per process) for any runtime permission that is still
-    // missing — e.g. notifications for users who finished onboarding on an older build.
-    val permissionCatchUpLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
-      androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions()
-    ) { }
-    LaunchedEffect(Unit) {
-      // Catch-up is notifications-only on purpose: media access is handled by the
-      // welcome screen (runtime dialog + "All files access" toggle), and re-asking for
-      // media on every start would nag — or re-open the photo-selector for users who
-      // deliberately picked a limited set.
-      if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.TIRAMISU) {
-        return@LaunchedEffect
-      }
-      val notificationsGranted = androidx.core.content.ContextCompat.checkSelfPermission(
-        context,
-        android.Manifest.permission.POST_NOTIFICATIONS,
-      ) == android.content.pm.PackageManager.PERMISSION_GRANTED
-      if (!notificationsGranted) {
-        permissionCatchUpLauncher.launch(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS))
-      }
-    }
 
     val customAvatarBitmap = remember(customProfileImagePath) {
       if (customProfileImagePath.isNotBlank()) {
@@ -217,13 +196,14 @@ object MainScreen : Screen {
 
     val homeLabel = stringResource(R.string.home)
     val shortsLabel = stringResource(R.string.shorts)
+    val youLabel = stringResource(R.string.you)
     val recentsLabel = stringResource(R.string.recents)
     val playlistsLabel = stringResource(R.string.playlists)
 
     val visibleTabs = remember(
-      isShortsEnabled, enableTabRecents, enableTabPlaylists,
+      isShortsEnabled, enableTabYou, enableTabRecents, enableTabPlaylists,
       bottomNavOrder,
-      homeLabel, shortsLabel, recentsLabel, playlistsLabel
+      homeLabel, shortsLabel, youLabel, recentsLabel, playlistsLabel
     ) {
       val rawTabs = buildList {
         add(
@@ -238,17 +218,26 @@ object MainScreen : Screen {
             }
           )
         }
-        if (enableTabRecents) {
+        if (!enableTabYou) {
+          if (enableTabRecents) {
             add(
               VisibleTab("recents", recentsLabel, Icons.Filled.History) {
                 RecentlyPlayedScreen.Content()
               }
             )
           }
-        if (enableTabPlaylists) {
+          if (enableTabPlaylists) {
+            add(
+              VisibleTab("playlists", playlistsLabel, Icons.AutoMirrored.Filled.PlaylistPlay) {
+                PlaylistScreen.Content()
+              }
+            )
+          }
+        }
+        if (enableTabYou) {
           add(
-            VisibleTab("playlists", playlistsLabel, Icons.AutoMirrored.Filled.PlaylistPlay) {
-              PlaylistScreen.Content()
+            VisibleTab("you", youLabel, Icons.Filled.AccountCircle) {
+              YouScreen.Content()
             }
           )
         }
@@ -348,7 +337,7 @@ object MainScreen : Screen {
               }
 
               visibleTabs.forEachIndexed { index, tab ->
-                val isYouTabWithCustomAvatar = false
+                val isYouTabWithCustomAvatar = tab.id == "you" && customAvatarBitmap != null
                 NavigationBarItem(
                   modifier = Modifier.offset(y = 2.dp),
                   icon = {
@@ -468,7 +457,6 @@ object MainScreen : Screen {
         }
       }
     }
-
   }
 }
 

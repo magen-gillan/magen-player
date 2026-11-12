@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
@@ -23,7 +23,6 @@
         android:name="android.hardware.usb.host"
         android:required="false" />
 
-
     <application
         android:name=".App"
         android:appCategory="video"
@@ -33,7 +32,7 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.magenplayer"
+        android:theme="@style/Theme.MagenPlayer"
         android:largeHeap="true"
         android:hardwareAccelerated="true"
         tools:targetApi="35">
@@ -41,18 +40,12 @@
             android:name=".MainActivity"
             android:exported="true"
             android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:theme="@style/Theme.magenplayer.Launcher" />
-
-        <activity-alias
-            android:name="com.magen.player.MainActivity"
-            android:targetActivity=".MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.magenplayer.Launcher">
+            android:theme="@style/Theme.MagenPlayer.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity-alias>
+        </activity>
 
         <activity
             android:name=".ui.player.PlayerActivity"
@@ -65,7 +58,7 @@
             android:documentLaunchMode="never"
             android:resizeableActivity="true"
             android:supportsPictureInPicture="true"
-            android:theme="@style/Theme.magenplayer.Player">
+            android:theme="@style/Theme.MagenPlayer.Player">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -75,8 +68,6 @@
                 <data android:scheme="content" />
                 <data android:scheme="file" />
 
-                <data android:scheme="http" />
-                <data android:scheme="https" />
 
                 <data android:mimeType="video/*" />
                 <data android:mimeType="audio/*" />
@@ -101,134 +92,12 @@
                 <data android:mimeType="application/x-quicktimeplayer" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="rtmp" />
-                <data android:scheme="rtmps" />
-                <data android:scheme="rtp" />
-                <data android:scheme="rtsp" />
-                <data android:scheme="mms" />
-                <data android:scheme="mmst" />
-                <data android:scheme="mmsh" />
-                <data android:scheme="tcp" />
-                <data android:scheme="udp" />
-                <data android:scheme="smb" />
-            </intent-filter>
-            <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:mimeType="video/*" />
                 <data android:mimeType="audio/*" />
                 <data android:mimeType="image/*" />
-                <data android:mimeType="text/plain" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-                <data android:host="youtu.be" />
-                <data android:host="*youtube.com" />
-                <data android:host="*twitch.tv" />
-            </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-                <data android:host="*"
-                    tools:ignore="AppLinkUrlError" />
-
-                <!-- basically copied from mpv-android -->
-                <!-- the duplicate patterns below work around an Android bug: -->
-                <!-- http://stackoverflow.com/questions/3400072/#answer-8599921 -->
-                <data android:pathPattern=".*\\.mkv" />
-                <data android:pathPattern=".*\\..*\\.mkv" />
-                <data android:pathPattern=".*\\..*\\..*\\.mkv" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\.mkv" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.mkv" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.mkv" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.mkv" />
-
-                <data android:pathPattern=".*\\.mp4" />
-                <data android:pathPattern=".*\\..*\\.mp4" />
-                <data android:pathPattern=".*\\..*\\..*\\.mp4" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\.mp4" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.mp4" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.mp4" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.mp4" />
-
-                <data android:pathPattern=".*\\.webm" />
-                <data android:pathPattern=".*\\..*\\.webm" />
-                <data android:pathPattern=".*\\..*\\..*\\.webm" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\.webm" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.webm" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.webm" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.webm" />
-
-                <data android:pathPattern=".*\\.avi" />
-                <data android:pathPattern=".*\\..*\\.avi" />
-                <data android:pathPattern=".*\\..*\\..*\\.avi" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\.avi" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.avi" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.avi" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.avi" />
-
-                <data android:pathPattern=".*\\.mov" />
-                <data android:pathPattern=".*\\..*\\.mov" />
-                <data android:pathPattern=".*\\..*\\..*\\.mov" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\.mov" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.mov" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.mov" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.mov" />
-
-                <data android:pathPattern=".*\\.m4v" />
-                <data android:pathPattern=".*\\..*\\.m4v" />
-                <data android:pathPattern=".*\\..*\\..*\\.m4v" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\.m4v" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.m4v" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.m4v" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.m4v" />
-
-                <data android:pathPattern=".*\\.flac" />
-                <data android:pathPattern=".*\\..*\\.flac" />
-                <data android:pathPattern=".*\\..*\\..*\\.flac" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\.flac" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.flac" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.flac" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.flac" />
-
-                <data android:pathPattern=".*\\.mp3" />
-                <data android:pathPattern=".*\\..*\\.mp3" />
-                <data android:pathPattern=".*\\..*\\..*\\.mp3" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\.mp3" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.mp3" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.mp3" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.mp3" />
-
-                <data android:pathPattern=".*\\.ogg" />
-                <data android:pathPattern=".*\\..*\\.ogg" />
-                <data android:pathPattern=".*\\..*\\..*\\.ogg" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\.ogg" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.ogg" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.ogg" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.ogg" />
-
-                <data android:pathPattern=".*\\.m3u8*" />
-                <data android:pathPattern=".*\\..*\\.m3u8*" />
-                <data android:pathPattern=".*\\..*\\..*\\.m3u8*" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\.m3u8*" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.m3u8*" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.m3u8*" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.m3u8*" />
             </intent-filter>
         </activity>
         <activity android:name=".presentation.crash.CrashActivity" />
@@ -236,7 +105,7 @@
         <activity
             android:name=".ui.mediainfo.MediaInfoActivity"
             android:exported="false"
-            android:theme="@style/Theme.magenplayer"
+            android:theme="@style/Theme.MagenPlayer"
             android:label="Media Info" />
 
         <activity-alias
@@ -324,7 +193,8 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-<service
+
+        <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
             android:enabled="false"
             android:exported="false">

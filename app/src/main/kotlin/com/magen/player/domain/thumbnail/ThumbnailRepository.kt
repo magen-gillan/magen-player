@@ -7,8 +7,6 @@ import android.util.LruCache
 import android.util.Log
 import com.magen.player.domain.media.model.Video
 import com.magen.player.utils.media.MediaInfoOps
-import com.magen.player.ui.browser.networkstreaming.proxy.NetworkStreamingProxy
-import com.magen.player.domain.network.NetworkConnection
 import com.magen.player.domain.thumbnail.isMostlySolidThumbnail
 import com.magen.player.domain.thumbnail.scaleToThumbnailMax
 import com.magen.player.utils.storage.FileTypeUtils
@@ -21,18 +19,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Semaphore
-import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.security.MessageDigest
 import java.util.concurrent.ConcurrentHashMap
-import java.util.Collections
 import kotlin.math.max
 
 class ThumbnailRepository(
@@ -47,7 +42,6 @@ class ThumbnailRepository(
   private val diskCacheDimension = 1024
   private val diskJpegQuality = 100
   private val memoryCache: LruCache<String, Bitmap>
-  private val networkDiskDir: File = File(context.filesDir, "thumbnails/network").apply { mkdirs() }
   private val localDiskDir: File  = File(context.filesDir, "thumbnails/local").apply  { mkdirs() }
   private class ProxyRequest(
     val deferred: Deferred<Bitmap?>,
@@ -60,12 +54,12 @@ class ThumbnailRepository(
   private val failureTtlMs = 60_000L
 
   private val ongoingOperations = ConcurrentHashMap<String, Deferred<Bitmap?>>()
-  private val ongoingProxyOperations = ConcurrentHashMap<String, ProxyRequest>()
-  private val proxyThumbnailSemaphore = Semaphore(3)
-  internal var proxyExtractorForTesting: (suspend (tempVideo: Video, dimension: Int) -> Bitmap?)? = null
 
   private val repositoryScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
   private val maxconcurrentfolders = 3
+
+  /** How many thumbnails a folder open pre-generates beyond what the visible cards request. */
+  private val FOLDER_PREFETCH_LIMIT = 24
 
   private data class FolderState(
     val signature: String,
@@ -78,12 +72,7 @@ class ThumbnailRepository(
   // Track local videos that failed with FastThumbnails and should use MediaStore
   private val useMediaStoreForVideo = ConcurrentHashMap<String, Boolean>()
 
-  // Track network URLs where all extraction strategies have failed – bounded TTL retry
-  private val networkThumbnailFailed = ConcurrentHashMap<String, NetworkFailureRecord>()
-  private val networkMemoryKeys = Collections.newSetFromMap(ConcurrentHashMap<String, Boolean>())
-
-  private fun diskDirFor(video: Video): File =
-    if (isNetworkUrl(video.path)) networkDiskDir else localDiskDir
+  private fun diskDirFor(video: Video): File = localDiskDir
 
   private val _thumbnailReadyKeys =
     MutableSharedFlow<String>(
@@ -91,12 +80,6 @@ class ThumbnailRepository(
     )
   val thumbnailReadyKeys: SharedFlow<String> = _thumbnailReadyKeys.asSharedFlow()
 
-  private val _networkThumbnailFailuresCleared =
-    MutableSharedFlow<Long?>(
-      extraBufferCapacity = 64,
-    )
-  val networkThumbnailFailuresCleared: SharedFlow<Long?> =
-    _networkThumbnailFailuresCleared.asSharedFlow()
 
   init {
     val maxMemoryKb = (Runtime.getRuntime().maxMemory() / 1024L).toInt()
@@ -123,147 +106,75 @@ class ThumbnailRepository(
     forceFirstFrame: Boolean = false,
   ): Bitmap? =
     withContext(Dispatchers.IO) {
+      if (isNetworkUrl(video.path)) return@withContext null
       val key = thumbnailKey(video, widthPx, heightPx, forceFirstFrame)
-
-      if (isNetworkUrl(video.path) && !appearancePreferences.showNetworkThumbnails.get()) {
-        return@withContext null
-      }
-
       memoryCache.get(key)?.let { return@withContext it }
+      ongoingOperations[key]?.let { return@withContext it.await() }
 
-      ongoingOperations[key]?.let {
-        return@withContext it.await()
-      }
+      val deferred = async {
+        try {
+          loadFromDisk(video, forceFirstFrame = forceFirstFrame)?.let { thumbnail ->
+            memoryCache.put(key, thumbnail)
+            _thumbnailReadyKeys.tryEmit(key)
+            return@async thumbnail
+          }
 
-      val deferred =
-        async {
-          try {
-            loadFromDisk(video, forceFirstFrame = forceFirstFrame)?.let { thumbnail ->
-              if (isNetworkUrl(video.path)) networkMemoryKeys.add(key)
-              memoryCache.put(key, thumbnail)
-              _thumbnailReadyKeys.tryEmit(key)
-              return@async thumbnail
-            }
-
-            if (isNetworkUrl(video.path) && !appearancePreferences.showNetworkThumbnails.get()) {
-              return@async null
-            }
-
-            val videoKey = videoBaseKey(video)
-            val isAudio = video.isAudio || com.magen.player.utils.storage.FileTypeUtils.isAudioFile(java.io.File(video.path))
-
-            val thumbnail = if (forceFirstFrame) {
-              // Direct First-Frame (0.0s) extraction for Shorts Player
-              generateWithFastThumbnails(video, diskCacheDimension, targetOffsetsOverride = listOf(0.0))
-                ?: generateWithMediaMetadataRetriever(video, diskCacheDimension, targetOffsetsOverride = listOf(0L))
-            } else if (isNetworkUrl(video.path)) {
-              
-              // ---- Network path ------------------------------------------------
-              // Android's native MediaStore cannot handle network URLs properly,
-              // MediaMetadataRetriever -> FastThumbnails
-              // Once both fail record it to avoid re-trying on every scroll.
-              if (isNetworkThumbnailFailed(videoKey)) {
-                android.util.Log.d("ThumbnailRepository", "Skipping network thumbnail (previously failed): ${video.displayName}")
-                null
-              } else {
-                // Priority 1: MediaMetadataRetriever (10s, 15s with solid check)
-                val retrieverResult = generateWithMediaMetadataRetriever(video, diskCacheDimension)
-                if (retrieverResult != null) {
-                  retrieverResult
-                } else {
-                  // Fallback: FastThumbnails (10s only, no solid check)
-                  android.util.Log.w("ThumbnailRepository", "Retriever failed for network stream ${video.displayName}, trying FastThumbnails")
-                  val fastResult = generateWithFastThumbnails(video, diskCacheDimension)
-                  if (fastResult == null) {
-                    android.util.Log.w("ThumbnailRepository", "All strategies failed for network stream ${video.displayName}")
-                    markNetworkThumbnailFailed(videoKey)
-                  }
-                  fastResult
-                }
-              }
-            } else if (isAudio) {
-              // ---- Local-audio path ---------------------------------------------
-              // Priority 1: Embedded album art (ID3 APIC / MP4 covr / FLAC picture)
-              // Priority 2: Sibling or folder image (song.jpg, cover.jpg, folder.jpg, album.jpg)
-              // Priority 3: Android MediaStore audio thumbnail / MediaMetadataRetriever fallback
-              val embedded = generateFromEmbeddedPicture(video, diskCacheDimension)
-              val sibling = embedded ?: loadFromSiblingImage(video, diskCacheDimension)
-              val mediaStore = sibling ?: generateWithMediaStore(video, diskCacheDimension)
-              mediaStore ?: generateAudioThumbnail(video, diskCacheDimension)
+          val videoKey = videoBaseKey(video)
+          val isAudio = video.isAudio ||
+            com.magen.player.utils.storage.FileTypeUtils.isAudioFile(java.io.File(video.path))
+          val thumbnail = if (forceFirstFrame) {
+            generateWithFastThumbnails(video, diskCacheDimension, targetOffsetsOverride = listOf(0.0))
+              ?: generateWithMediaMetadataRetriever(video, diskCacheDimension, targetOffsetsOverride = listOf(0L))
+          } else if (isAudio) {
+            val embedded = generateFromEmbeddedPicture(video, diskCacheDimension)
+            val sibling = embedded ?: loadFromSiblingImage(video, diskCacheDimension)
+            val mediaStore = sibling ?: generateWithMediaStore(video, diskCacheDimension)
+            mediaStore ?: generateAudioThumbnail(video, diskCacheDimension)
+          } else {
+            val sibling = loadFromSiblingImage(video, diskCacheDimension)
+            val embedded = sibling ?: generateFromEmbeddedPicture(video, diskCacheDimension)
+            if (embedded != null) {
+              embedded
             } else {
-
-              // ---- Local-file path ---------------------------------------------
-              // Priority 0: sibling image (cover art next to video file).
-              // Priority 1: embedded/attached picture (cover art). Catches MP4 covr,
-              // MP3 APIC, and Matroska attachments — most notably files produced by
-              // `yt-dlp --embed-thumbnail --merge-output-format mkv`. Skip frame-seeking
-              // entirely when the container already carries a thumbnail.
-              val sibling = loadFromSiblingImage(video, diskCacheDimension)
-              val embedded = sibling ?: generateFromEmbeddedPicture(video, diskCacheDimension)
-              if (embedded != null) {
-                embedded
-              } else {
-              // For local videos, we can be more aggressive about trying to find a good thumbnail:
-              // Short videos: (<2 min) get priority for MediaStore
-              // Longer videos: FastThumbnails -> MediaMetadataRetriever -> MediaStore
               val isShortVideo = video.duration in 1L..120_000L
-
-              // If it's a short video, or we already know heavy extractors fail on this file, go straight to MediaStore
               if (useMediaStoreForVideo.containsKey(videoKey) || isShortVideo) {
                 val storeResult = generateWithMediaStore(video, diskCacheDimension)
-                
                 if (storeResult != null) {
                   storeResult
                 } else if (isShortVideo) {
-                  // If MediaStore inexplicably fails on a short video, run through the standard heavy fallback
-                  android.util.Log.w("ThumbnailRepository", "MediaStore failed for short video ${video.displayName}, falling back to FastThumbnails")
                   val fastResult = generateWithFastThumbnails(video, diskCacheDimension)
-                  if (fastResult != null) {
-                    fastResult
-                  } else {
-                    generateWithMediaMetadataRetriever(video, diskCacheDimension)
-                  }
+                  fastResult ?: generateWithMediaMetadataRetriever(video, diskCacheDimension)
                 } else {
                   null
                 }
               } else {
-                // For videos > 120s: Priority 1 - FastThumbnails (10s, 20s, 30s)
                 val fastResult = generateWithFastThumbnails(video, diskCacheDimension)
                 if (fastResult != null) {
                   fastResult
                 } else {
-                  // Fallback 1: MediaMetadataRetriever (10s, 15s)
-                  android.util.Log.w("ThumbnailRepository", "FastThumbnails failed for local ${video.displayName}, trying Retriever")
                   val retrieverResult = generateWithMediaMetadataRetriever(video, diskCacheDimension)
                   if (retrieverResult != null) {
                     retrieverResult
                   } else {
-                    // Fallback 2: MediaStore & ThumbnailUtils
-                    android.util.Log.w("ThumbnailRepository", "Retriever failed for local ${video.displayName}, falling back to MediaStore")
                     useMediaStoreForVideo[videoKey] = true
                     generateWithMediaStore(video, diskCacheDimension)
                   }
                 }
               }
-              }
             }
-
-            if (thumbnail == null) {
-              return@async null
-            }
-            if (isNetworkUrl(video.path)) networkMemoryKeys.add(key)
-            memoryCache.put(key, thumbnail)
-            _thumbnailReadyKeys.tryEmit(key)
-            writeToDisk(video, thumbnail, forceFirstFrame = forceFirstFrame)
-
-            thumbnail
-          } finally {
-            ongoingOperations.remove(key)
           }
-        }
 
+          if (thumbnail == null) return@async null
+          memoryCache.put(key, thumbnail)
+          _thumbnailReadyKeys.tryEmit(key)
+          writeToDisk(video, thumbnail, forceFirstFrame = forceFirstFrame)
+          thumbnail
+        } finally {
+          ongoingOperations.remove(key)
+        }
+      }
       ongoingOperations[key] = deferred
-      return@withContext deferred.await()
+      deferred.await()
     }
 
   suspend fun getCachedThumbnail(
@@ -273,15 +184,12 @@ class ThumbnailRepository(
     forceFirstFrame: Boolean = false,
   ): Bitmap? =
     withContext(Dispatchers.IO) {
-      if (isNetworkUrl(video.path) && !appearancePreferences.showNetworkThumbnails.get()) {
-        return@withContext null
-      }
+      if (isNetworkUrl(video.path)) return@withContext null
       
       val key = thumbnailKey(video, widthPx, heightPx, forceFirstFrame)
       synchronized(memoryCache) { memoryCache.get(key) }?.let { return@withContext it }
       loadFromDisk(video, forceFirstFrame = forceFirstFrame)?.let { thumbnail ->
         synchronized(memoryCache) {
-          if (isNetworkUrl(video.path)) networkMemoryKeys.add(key)
           memoryCache.put(key, thumbnail)
         }
         return@withContext thumbnail
@@ -295,127 +203,10 @@ class ThumbnailRepository(
     heightPx: Int,
     forceFirstFrame: Boolean = false,
   ): Bitmap? {
-    if (isNetworkUrl(video.path) && !appearancePreferences.showNetworkThumbnails.get()) {
-      return null
-    }
+    if (isNetworkUrl(video.path)) return null
     
     val key = thumbnailKey(video, widthPx, heightPx, forceFirstFrame)
     return synchronized(memoryCache) { memoryCache.get(key) }
-  }
-
-  /**
-   * Constructs the deterministic cache key for proxy-stream thumbnails.
-   *
-   * @param connectionId The ID of the network connection.
-   * @param path The remote file path or URI string.
-   * @param dimension The requested pixel dimension.
-   * @return Cache key in format "$connectionId|$path|networkProxy|$dimension".
-   */
-  fun networkProxyThumbnailKey(connectionId: Long, path: String, dimension: Int): String =
-    Companion.networkProxyThumbnailKey(connectionId, path, dimension)
-
-  fun networkProxyThumbnailKey(path: String, dimension: Int): String =
-    Companion.networkProxyThumbnailKey(0L, path, dimension)
-
-  fun networkProxyThumbnailDiskKey(connectionId: Long, path: String): String =
-    Companion.networkProxyThumbnailDiskKey(connectionId, path)
-
-  fun networkProxyThumbnailDiskKey(path: String): String =
-    Companion.networkProxyThumbnailDiskKey(0L, path)
-
-  /**
-   * Performs an immediate, synchronous memory-cache lookup for a proxy-stream thumbnail.
-   *
-   * Used in Compose UI cards within [androidx.compose.runtime.remember] to instantly bind
-   * cached bitmaps on frame 0 without placeholder flickering during scrolling.
-   */
-  fun getThumbnailViaProxyFromMemory(
-    connectionId: Long,
-    path: String,
-    dimension: Int,
-  ): Bitmap? {
-    if (!appearancePreferences.showNetworkThumbnails.get()) return null
-    val key = networkProxyThumbnailKey(connectionId, path, dimension)
-    return synchronized(memoryCache) { memoryCache.get(key) }
-  }
-
-  fun getThumbnailViaProxyFromMemory(
-    path: String,
-    dimension: Int,
-  ): Bitmap? = getThumbnailViaProxyFromMemory(0L, path, dimension)
-
-  /**
-   * Checks if proxy thumbnail generation previously failed for this path on this connection.
-   * Employs bounded TTL expiration allowing transient network failures to be retried.
-   */
-  fun isNetworkThumbnailFailed(connectionId: Long, path: String): Boolean {
-    val key = "$connectionId|$path"
-    val record = networkThumbnailFailed[key] ?: return false
-    if (System.currentTimeMillis() - record.timestamp > failureTtlMs) {
-      networkThumbnailFailed.remove(key)
-      return false
-    }
-    return true
-  }
-
-  fun isNetworkThumbnailFailed(path: String): Boolean {
-    val record = networkThumbnailFailed[path] ?: networkThumbnailFailed["0|$path"] ?: return false
-    if (System.currentTimeMillis() - record.timestamp > failureTtlMs) {
-      networkThumbnailFailed.remove(path)
-      networkThumbnailFailed.remove("0|$path")
-      return false
-    }
-    return true
-  }
-
-  /**
-   * Marks a remote path as failed for proxy thumbnail extraction.
-   */
-  fun markNetworkThumbnailFailed(connectionId: Long, path: String) {
-    val key = "$connectionId|$path"
-    val existing = networkThumbnailFailed[key]
-    val count = (existing?.failureCount ?: 0) + 1
-    networkThumbnailFailed[key] = NetworkFailureRecord(System.currentTimeMillis(), count)
-  }
-
-  fun markNetworkThumbnailFailed(path: String) {
-    val existing = networkThumbnailFailed[path]
-    val count = (existing?.failureCount ?: 0) + 1
-    networkThumbnailFailed[path] = NetworkFailureRecord(System.currentTimeMillis(), count)
-  }
-
-  /**
-   * Clears failure records for a specific connection or all connections on manual refresh.
-   */
-  fun clearNetworkThumbnailFailures(connectionId: Long? = null) {
-    if (connectionId == null) {
-      networkThumbnailFailed.clear()
-    } else {
-      val prefix = "$connectionId|"
-      networkThumbnailFailed.keys.removeIf { it.startsWith(prefix) }
-    }
-    _networkThumbnailFailuresCleared.tryEmit(connectionId)
-  }
-
-  /**
-   * Clears memory cache, disk cache, and failure tracking for a specific connection ID.
-   */
-  fun clearConnectionThumbnailCache(connectionId: Long) {
-    clearNetworkThumbnailFailures(connectionId)
-    val prefix = "$connectionId|"
-    synchronized(memoryCache) {
-      val snapshot = memoryCache.snapshot().keys.toList()
-      for (key in snapshot) {
-        if (key.startsWith(prefix)) {
-          memoryCache.remove(key)
-          networkMemoryKeys.remove(key)
-        }
-      }
-    }
-    runCatching {
-      val connDir = File(networkDiskDir, connectionId.toString())
-      if (connDir.exists()) connDir.deleteRecursively()
-    }
   }
 
   fun clearLocalThumbnailCache() {
@@ -424,14 +215,7 @@ class ThumbnailRepository(
     folderStates.clear()
     useMediaStoreForVideo.clear()
 
-    synchronized(memoryCache) {
-      val snapshot = memoryCache.snapshot().keys.toList()
-      for (key in snapshot) {
-        if (key !in networkMemoryKeys) {
-          memoryCache.remove(key)
-        }
-      }
-    }
+    synchronized(memoryCache) { memoryCache.evictAll() }
 
     runCatching {
       localDiskDir.listFiles()?.forEach { it.delete() }
@@ -443,17 +227,13 @@ class ThumbnailRepository(
     folderJobs.clear()
     folderStates.clear()
     ongoingOperations.clear()
-    ongoingProxyOperations.clear()
     useMediaStoreForVideo.clear()
-    networkThumbnailFailed.clear()
-    networkMemoryKeys.clear()
 
     synchronized(memoryCache) {
       memoryCache.evictAll()
     }
 
     runCatching {
-      if (networkDiskDir.exists()) networkDiskDir.listFiles()?.forEach { it.deleteRecursively() }
       if (localDiskDir.exists()) localDiskDir.listFiles()?.forEach { it.delete() }
     }
   }
@@ -464,11 +244,7 @@ class ThumbnailRepository(
     widthPx: Int,
     heightPx: Int,
   ) {
-    val filteredVideos = if (appearancePreferences.showNetworkThumbnails.get()) {
-      videos
-    } else {
-      videos.filterNot { v -> isNetworkUrl(v.path) }
-    }
+    val filteredVideos = videos.filterNot { video -> isNetworkUrl(video.path) }
     
     if (filteredVideos.isEmpty()) return
     
@@ -495,11 +271,17 @@ class ThumbnailRepository(
     folderJobs.remove(folderId)?.cancel()
     folderJobs[folderId] =
       repositoryScope.launch {
+        // Only pre-generate what is about to scroll into view. VideoCard already requests a
+        // thumbnail for every visible item on its own, so walking the whole folder here just
+        // duplicated that work: opening a 124-video folder used to fire hundreds of disk reads
+        // and froze the list for ~40s. The remaining items are covered as they are composed.
         var i = state.nextIndex
-        while (i < filteredVideos.size) {
+        var generated = 0
+        while (i < filteredVideos.size && generated < FOLDER_PREFETCH_LIMIT) {
           val video = filteredVideos[i]
           getThumbnail(video, widthPx, heightPx)
           i++
+          generated++
           state.nextIndex = i
         }
       }
@@ -1101,206 +883,4 @@ class ThumbnailRepository(
   }
   
   
-/**
- * Resolves network video thumbnails via a localized proxy stream.
- * 
- * Strategy: MemCache -> DiskCache -> Proxy Extraction -> Cache/Fail.
- * Bypasses network extraction limits by registering a temporary [NetworkStreamingProxy] 
- * stream and feeding a mocked localhost URI to standard extractors. Guarantees proxy cleanup.
- */
-  suspend fun getThumbnailViaProxy(
-    path: String,
-    name: String,
-    size: Long,
-    connection: NetworkConnection,
-    dimension: Int = diskCacheDimension,
-  ): Bitmap? = withContext(Dispatchers.IO) {
-    if (!appearancePreferences.showNetworkThumbnails.get()) return@withContext null
-
-    val videoKey = networkProxyThumbnailKey(connection.id, path, dimension)
-    
-    if (isNetworkThumbnailFailed(connection.id, path)) return@withContext null
-
-    synchronized(memoryCache) { memoryCache.get(videoKey) }?.let { return@withContext it }
-
-    val connectionDiskDir = File(networkDiskDir, connection.id.toString())
-    val diskKey = networkProxyThumbnailDiskKey(connection.id, path)
-    val diskFile = File(connectionDiskDir, keyToFileName(diskKey))
-    if (diskFile.exists()) {
-      decodeFileSafely(diskFile.absolutePath, dimension)?.let { bitmap ->
-        synchronized(memoryCache) {
-          memoryCache.put(videoKey, bitmap)
-          networkMemoryKeys.add(videoKey)
-        }
-        return@withContext bitmap
-      }
-    }
-
-    val deferred: Deferred<Bitmap?>
-    synchronized(ongoingProxyOperations) {
-      val existing = ongoingProxyOperations[videoKey]
-      if (existing != null && !existing.deferred.isCancelled) {
-        existing.refCount++
-        deferred = existing.deferred
-      } else {
-        val newDeferred = repositoryScope.async {
-          try {
-            proxyThumbnailSemaphore.withPermit {
-              coroutineContext.ensureActive()
-              synchronized(memoryCache) { memoryCache.get(videoKey) }?.let { return@withPermit it }
-              if (diskFile.exists()) {
-                decodeFileSafely(diskFile.absolutePath, dimension)?.let { bitmap ->
-                  synchronized(memoryCache) {
-                    memoryCache.put(videoKey, bitmap)
-                    networkMemoryKeys.add(videoKey)
-                  }
-                  return@withPermit bitmap
-                }
-              }
-              if (isNetworkThumbnailFailed(connection.id, path)) return@withPermit null
-
-              coroutineContext.ensureActive()
-              val ext = File(name).extension
-              val mimeType = FileTypeUtils.getMimeTypeFromExtension(ext).takeIf { it != "*/*" } ?: "video/mp4"
-
-              val targetDimension = maxOf(dimension, 512)
-              var bitmap: Bitmap? = null
-              val testExtractor = proxyExtractorForTesting
-              if (testExtractor != null) {
-                val tempVideo = Video(
-                  id = path.hashCode().toLong(),
-                  title = name,
-                  displayName = name,
-                  path = path,
-                  uri = android.net.Uri.parse("http://127.0.0.1/$path"),
-                  duration = 0,
-                  durationFormatted = "",
-                  size = size,
-                  sizeFormatted = "",
-                  dateModified = 0,
-                  dateAdded = 0,
-                  mimeType = mimeType,
-                  bucketId = "",
-                  bucketDisplayName = "",
-                  width = 0,
-                  height = 0,
-                  fps = 0f,
-                  resolution = "",
-                )
-                bitmap = testExtractor(tempVideo, targetDimension)
-              } else {
-                val proxy = NetworkStreamingProxy.getInstance()
-                if (proxy == null) {
-                  Log.w("ThumbnailRepository", "Local proxy unavailable, skipping thumbnail for $path")
-                  return@withPermit null
-                }
-                val streamId = "thumb_${connection.id}_${path.hashCode()}_${System.nanoTime()}"
-
-                val localUrl = proxy.registerStream(
-                  streamId = streamId,
-                  connection = connection,
-                  filePath = path,
-                  fileSize = size,
-                  mimeType = mimeType,
-                )
-
-                try {
-                  coroutineContext.ensureActive()
-                  val tempVideo = Video(
-                    id = path.hashCode().toLong(),
-                    title = name,
-                    displayName = name,
-                    path = localUrl,
-                    uri = android.net.Uri.parse(localUrl),
-                    duration = 0,
-                    durationFormatted = "",
-                    size = size,
-                    sizeFormatted = "",
-                    dateModified = 0,
-                    dateAdded = 0,
-                    mimeType = mimeType,
-                    bucketId = "",
-                    bucketDisplayName = "",
-                    width = 0,
-                    height = 0,
-                    fps = 0f,
-                    resolution = "",
-                  )
-
-                  bitmap = generateWithMediaMetadataRetriever(tempVideo, targetDimension)
-                  if (bitmap == null) {
-                    coroutineContext.ensureActive()
-                    bitmap = generateWithFastThumbnails(tempVideo, targetDimension)
-                  }
-                } finally {
-                  proxy.unregisterStream(streamId)
-                }
-              }
-
-              if (bitmap != null) {
-                synchronized(memoryCache) {
-                  memoryCache.put(videoKey, bitmap)
-                  networkMemoryKeys.add(videoKey)
-                }
-                runCatching {
-                  connectionDiskDir.mkdirs()
-                  FileOutputStream(diskFile).use { out ->
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, diskJpegQuality, out)
-                  }
-                }
-              } else {
-                markNetworkThumbnailFailed(connection.id, path)
-              }
-
-              bitmap
-            }
-          } finally {
-            synchronized(ongoingProxyOperations) {
-              val current = ongoingProxyOperations[videoKey]
-              if (current != null && current.deferred == coroutineContext[Job]) {
-                ongoingProxyOperations.remove(videoKey)
-              }
-            }
-          }
-        }
-        ongoingProxyOperations[videoKey] = ProxyRequest(newDeferred, 1)
-        deferred = newDeferred
-      }
-    }
-
-    return@withContext try {
-      deferred.await()
-    } catch (e: CancellationException) {
-      synchronized(ongoingProxyOperations) {
-        val state = ongoingProxyOperations[videoKey]
-        if (state != null && state.deferred == deferred) {
-          state.refCount--
-          if (state.refCount <= 0) {
-            ongoingProxyOperations.remove(videoKey)
-            state.deferred.cancel()
-          }
-        }
-      }
-      throw e
-    } catch (e: Exception) {
-      null
-    }
-  }
-
-  companion object {
-    /**
-     * Constructs the deterministic cache key for proxy-stream thumbnails.
-     */
-    fun networkProxyThumbnailKey(connectionId: Long, path: String, dimension: Int): String =
-      "$connectionId|$path|networkProxy|$dimension"
-
-    fun networkProxyThumbnailKey(path: String, dimension: Int): String =
-      networkProxyThumbnailKey(0L, path, dimension)
-
-    fun networkProxyThumbnailDiskKey(connectionId: Long, path: String): String =
-      "$connectionId|$path|networkProxy"
-
-    fun networkProxyThumbnailDiskKey(path: String): String =
-      networkProxyThumbnailDiskKey(0L, path)
-  }
 }

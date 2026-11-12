@@ -353,7 +353,7 @@ data class VideoListScreen(
     // Bottom bar animation state
     var showFloatingBottomBar by remember { mutableStateOf(false) }
     var showMarkAsSheet by remember { mutableStateOf(false) }
-    val animationDuration = 300
+      val animationDuration = 300
 
     // Handle selection mode changes with animation
     LaunchedEffect(selectionManager.isInSelectionMode) {

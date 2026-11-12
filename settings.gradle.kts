@@ -1,27 +1,5 @@
 pluginManagement {
   repositories {
-    // Fast mirrors that don't rate-limit this environment (repo.maven.apache.org 429s,
-    // maven.aliyun.com intermittently 502s). JitPack-hosted groups are excluded: the
-    // mirrors proxy their POMs but not their AARs, which breaks resolution.
-    // truetypeparser-light is published on Maven Central (NOT JitPack), so the
-    // io.github.* blanket exclusion must not apply to it — the mirrors serve its
-    // AAR and repo.maven.apache.org 429s in build sandboxes.
-    maven(url = "https://mirrors.cloud.tencent.com/nexus/repository/maven-public/") {
-      content { includeGroup("io.github.yubyf") }
-    }
-    maven(url = "https://mirrors.cloud.tencent.com/nexus/repository/maven-public/") {
-      content { excludeGroupByRegex("com\\.github..*"); excludeGroupByRegex("io\\.github..*") }
-    }
-    maven(url = "https://repo.huaweicloud.com/repository/maven/") {
-      content { excludeGroupByRegex("com\\.github..*"); excludeGroupByRegex("io\\.github..*") }
-    }
-    maven(url = "https://maven.aliyun.com/repository/public") {
-      content { excludeGroupByRegex("com\\.github..*"); excludeGroupByRegex("io\\.github..*") }
-    }
-    maven(url = "https://maven.aliyun.com/repository/google")
-    maven(url = "https://maven.aliyun.com/repository/gradle-plugin") {
-      content { excludeGroupByRegex("com\\.github..*"); excludeGroupByRegex("io\\.github..*") }
-    }
     google {
       content {
         includeGroupByRegex("com\\.android.*")
@@ -34,29 +12,11 @@ pluginManagement {
   }
 }
 plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 dependencyResolutionManagement {
   repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
   repositories {
-    // Mirrors first: they proxy Maven Central + Google and are not rate-limited
-    // from this environment (repo.maven.apache.org returns 429 under load).
-    // JitPack-hosted groups excluded: mirrors serve their POMs but 404 their AARs.
-    // io.github.yubyf (truetypeparser-light) is Central-published, so it gets its
-    // own mirror entry ahead of the blanket exclusion.
-    maven(url = "https://mirrors.cloud.tencent.com/nexus/repository/maven-public/") {
-      content { includeGroup("io.github.yubyf") }
-    }
-    maven(url = "https://mirrors.cloud.tencent.com/nexus/repository/maven-public/") {
-      content { excludeGroupByRegex("com\\.github..*"); excludeGroupByRegex("io\\.github..*") }
-    }
-    maven(url = "https://repo.huaweicloud.com/repository/maven/") {
-      content { excludeGroupByRegex("com\\.github..*"); excludeGroupByRegex("io\\.github..*") }
-    }
-    maven(url = "https://maven.aliyun.com/repository/public") {
-      content { excludeGroupByRegex("com\\.github..*"); excludeGroupByRegex("io\\.github..*") }
-    }
-    maven(url = "https://maven.aliyun.com/repository/google")
     google()
     mavenLocal()
     mavenCentral()
@@ -77,5 +37,5 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "MagenPlayer"
+rootProject.name = "magen-player"
 include(":app")

@@ -85,18 +85,16 @@ fun PlaylistCard(
       resolvedVideo = null
     } else {
       resolvedVideo = withContext(Dispatchers.IO) {
-        val isNetwork = mostRecentVideoPath.startsWith("http://") || mostRecentVideoPath.startsWith("https://")
-        if (isNetwork) null else VideoScanUtils.getVideoByPath(context, mostRecentVideoPath)
+        VideoScanUtils.getVideoByPath(context, mostRecentVideoPath)
       }
     }
   }
 
-  // Fast fallback dummy video while resolvedVideo loads or for network streams
+  // Fast fallback dummy video while resolvedVideo loads
   val dummyVideo = remember(mostRecentVideoPath) {
     if (mostRecentVideoPath.isNullOrBlank()) null
     else {
-      val isNetwork = mostRecentVideoPath.startsWith("http://") || mostRecentVideoPath.startsWith("https://")
-      val file = if (!isNetwork) java.io.File(mostRecentVideoPath) else null
+      val file = java.io.File(mostRecentVideoPath)
       val exists = file?.exists() == true && file.isFile
       val size = if (exists) file.length() else 0L
       val dateModified = if (exists) file.lastModified() / 1000 else 0L
@@ -106,11 +104,7 @@ fun PlaylistCard(
         title = playlist.name,
         displayName = playlist.name,
         path = mostRecentVideoPath,
-        uri = if (isNetwork) {
-          android.net.Uri.parse(mostRecentVideoPath)
-        } else {
-          android.net.Uri.fromFile(file ?: java.io.File(mostRecentVideoPath))
-        },
+        uri = android.net.Uri.fromFile(file),
         duration = 0,
         durationFormatted = "",
         size = size,
@@ -273,7 +267,7 @@ fun PlaylistCard(
       }
     },
     chipsContent = if (isGridMode) null else ({
-      val chipText = if (playlist.id < 0) "Auto" else if (playlist.isM3uPlaylist) "Network" else "Local"
+      val chipText = if (playlist.id < 0) "Auto" else if (playlist.isM3uPlaylist) "M3U" else "Local"
       val (chipColor, chipBgColor) = if (playlist.id < 0) {
         MaterialTheme.colorScheme.secondary to MaterialTheme.colorScheme.secondaryContainer
       } else if (playlist.isM3uPlaylist) {

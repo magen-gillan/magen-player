@@ -217,21 +217,17 @@ object PreferencesScreen : Screen {
 
           // Magen Shorts Section
           item {
-            PreferenceSection(title = stringResource(R.string.pref_category_rexshorts)) {
+            PreferenceSection(title = stringResource(R.string.pref_category_magen_shorts)) {
               GroupedListColumn {
                 PreferenceItem(
                   position = GroupPosition.ONLY,
-                  title = stringResource(R.string.pref_category_rexshorts_settings),
-                  summary = stringResource(R.string.pref_category_rexshorts_settings_desc),
+                  title = stringResource(R.string.pref_category_magen_shorts_settings),
+                  summary = stringResource(R.string.pref_category_magen_shorts_settings_desc),
                   icon = Icons.Outlined.VideoLibrary,
                   onClick = { backstack.add(ShortsPreferencesScreen) },
                 )
               }
             }
-          }
-
-          // Integrations Section
-          item {
           }
 
           // Advanced & About Section

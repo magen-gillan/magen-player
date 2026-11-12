@@ -10,6 +10,7 @@ import com.magen.player.utils.storage.FileFilterUtils
 import com.magen.player.utils.storage.VideoScanUtils
 import com.magen.player.utils.storage.FileSystemOps
 import com.magen.player.utils.storage.MediaScanPolicy
+import com.magen.player.utils.storage.isPathExcluded
 import com.magen.player.utils.media.MediaMetadataOps
 import com.magen.player.domain.playbackstate.repository.PlaybackStateRepository
 import com.magen.player.database.repository.HybridMediaIndexRepository
@@ -17,8 +18,9 @@ import com.magen.player.preferences.AppearancePreferences
 import com.magen.player.preferences.BrowserPreferences
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeout
 import org.koin.core.context.GlobalContext
 import java.io.File
 
@@ -27,8 +29,6 @@ import java.io.File
  * Now refactored to delegate to specialized logic classes (Ops).
  */
 object MediaFileRepository {
-
-  private const val FOLDER_ENRICH_TIMEOUT_MS = 5_000L
 
   /**
    * Clears all caches
@@ -58,13 +58,6 @@ object MediaFileRepository {
         VideoScanUtils.scanFolder(context, bucketId, policy)
       }.getOrNull()?.takeIf { it.access == VideoScanUtils.FolderAccess.READABLE }?.videos.orEmpty()
       val indexed = koin.get<HybridMediaIndexRepository>().getVideosInFolder(bucketId)
-      // Bounded priority enrichment: opening a folder must never block on a long
-      // (or hung) metadata pass; leftover items are picked up by the background worker.
-      runCatching {
-        withTimeout(FOLDER_ENRICH_TIMEOUT_MS) {
-          koin.get<HybridMediaIndexRepository>().enrichFolderMetadata(bucketId)
-        }
-      }
       mergeFolderVideos(direct, indexed)
     }
 
@@ -164,31 +157,64 @@ object MediaFileRepository {
         val foldersPreferences = koin.get<com.magen.player.preferences.FoldersPreferences>()
         val blacklistedFolders = foldersPreferences.blacklistedFolders.get()
 
-        val folders = if (scanPolicy.includeNoMediaContent) {
-          val hybridIndex = koin.get<HybridMediaIndexRepository>()
-          hybridIndex.ensureFreshIfEmpty()
-          hybridIndex.getFoldersInDirectory(
-            parentPath = path,
-            playbackStates = playbackStates,
-            thresholdDays = thresholdDays,
-            watchedThreshold = browserPreferences.watchedThreshold.get(),
-          )
-        } else {
-          CoreMediaScanner.getFoldersInDirectory(
-            context = context,
-            parentPath = path,
-            playbackStates = playbackStates,
-            thresholdDays = thresholdDays,
-            blacklistedFolders = blacklistedFolders,
-            policy = scanPolicy,
-          )
-        }
-        folders
-          .filter { data ->
-            (isAudioEnabled || data.videoCount > 0) &&
-            (scanPolicy.includeNoMediaContent || !FileFilterUtils.isWithinNoMediaBoundary(File(data.path)))
+        coroutineScope {
+          val foldersDeferred = async {
+            val folders = if (scanPolicy.includeNoMediaContent) {
+              val hybridIndex = koin.get<HybridMediaIndexRepository>()
+              hybridIndex.ensureFreshIfEmpty()
+              hybridIndex.getFoldersInDirectory(
+                parentPath = path,
+                playbackStates = playbackStates,
+                thresholdDays = thresholdDays,
+                watchedThreshold = browserPreferences.watchedThreshold.get(),
+              )
+            } else {
+              CoreMediaScanner.getFoldersInDirectory(
+                context = context,
+                parentPath = path,
+                playbackStates = playbackStates,
+                thresholdDays = thresholdDays,
+                blacklistedFolders = blacklistedFolders,
+                policy = scanPolicy,
+              )
+            }
+            folders.filter { data ->
+              !isPathExcluded(data.path, blacklistedFolders) &&
+                data.activeCount(isAudioEnabled) > 0 &&
+                (scanPolicy.includeNoMediaContent || !FileFilterUtils.isWithinNoMediaBoundary(File(data.path)))
+            }
           }
-          .forEach { folderData ->
+
+          val videosDeferred = async {
+            if (!isPathExcluded(path, blacklistedFolders)) {
+              val folderScan = VideoScanUtils.scanFolder(context, path, scanPolicy)
+              if (folderScan.access == VideoScanUtils.FolderAccess.INACCESSIBLE) {
+                return@async Result.failure<List<FileSystemItem.VideoFile>>(Exception("Directory is not accessible: $path"))
+              }
+              val videoItems = folderScan.videos
+                .filter { video -> isAudioEnabled || !video.isAudio }
+                .map { video ->
+                  FileSystemItem.VideoFile(
+                    name = video.displayName,
+                    path = video.path,
+                    lastModified = if (video.dateModified > 0) video.dateModified * 1000L else File(video.path).lastModified(),
+                    video = video,
+                  )
+                }
+              Result.success(videoItems)
+            } else {
+              Result.success(emptyList())
+            }
+          }
+
+          val folderList = foldersDeferred.await()
+          val videoResult = videosDeferred.await()
+
+          if (videoResult.isFailure) {
+            return@coroutineScope Result.failure(videoResult.exceptionOrNull() ?: Exception("Unknown error"))
+          }
+
+          folderList.forEach { folderData ->
             items.add(
               FileSystemItem.Folder(
                 name = folderData.name,
@@ -209,30 +235,13 @@ object MediaFileRepository {
             )
           }
 
-        // Get videos in current directory - Hide if current path is blacklisted
-        if (path !in blacklistedFolders) {
-          val folderScan = VideoScanUtils.scanFolder(context, path, scanPolicy)
-          if (folderScan.access == VideoScanUtils.FolderAccess.INACCESSIBLE) {
-            return@withContext Result.failure(Exception("Directory is not accessible: $path"))
-          }
-          folderScan.videos
-            .filter { video -> isAudioEnabled || !video.isAudio }
-            .forEach { video ->
-              items.add(
-                FileSystemItem.VideoFile(
-                  name = video.displayName,
-                  path = video.path,
-                  lastModified = File(video.path).lastModified(),
-                  video = video,
-                ),
-              )
-            }
+          items.addAll(videoResult.getOrDefault(emptyList()))
+          Result.success(items)
         }
-
-        Result.success(items)
       } catch (e: CancellationException) {
         throw e
       } catch (e: Exception) {
+        android.util.Log.e("MediaFileRepository", "Error scanning directory: $path", e)
         Result.failure(e)
       }
     }

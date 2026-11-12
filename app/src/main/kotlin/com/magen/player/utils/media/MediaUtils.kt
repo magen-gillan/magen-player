@@ -49,16 +49,17 @@ object MediaUtils : KoinComponent {
   private val headlessPlaybackController: HeadlessPlaybackController by inject()
 
   /**
-   * Play video content from any source.
-   *
-   * Supports:
-   * - Video objects (from media library)
-   * - URI strings (http://, content://, file://)
-   * - File paths (absolute or relative)
+   * Play local video content from the media library, a local URI, or a file path.
    *
    * @param source Video object, URI string, android.net.Uri, or file path
    * @param launchSource Analytics identifier (e.g., "open_file", "recently_played")
    */
+  private fun isLocalUri(uri: Uri): Boolean =
+    uri.scheme?.lowercase() in setOf(null, "file", "content", "android.resource")
+
+  private fun isLocalVideo(video: Video): Boolean =
+    video.path.startsWith("/") || video.path.startsWith("file://") || isLocalUri(video.uri)
+
   fun playFile(
     source: Any,
     context: Context,
@@ -75,6 +76,10 @@ object MediaUtils : KoinComponent {
           }
         } else {
           source.uri
+        }
+        if (!isLocalUri(videoUri)) {
+          android.util.Log.w("MediaUtils", "Ignoring non-local playback URI")
+          return
         }
         val it = Intent(Intent.ACTION_VIEW, videoUri)
         it.putExtra("width", source.width)
@@ -93,7 +98,11 @@ object MediaUtils : KoinComponent {
           val parsedUri = source.toUri()
           parsedUri.scheme?.let { parsedUri } ?: Uri.parse("file://$source")
         }
-        
+        if (!isLocalUri(uri)) {
+          android.util.Log.w("MediaUtils", "Ignoring non-local playback URI")
+          return
+        }
+
         val it = Intent(Intent.ACTION_VIEW, uri)
         
         // Eagerly lookup metadata for local files to avoid jumpy transitions
@@ -124,6 +133,10 @@ object MediaUtils : KoinComponent {
       }
 
       is Uri -> {
+        if (!isLocalUri(source)) {
+          android.util.Log.w("MediaUtils", "Ignoring non-local playback URI")
+          return
+        }
         val it = Intent(Intent.ACTION_VIEW, source)
         if (source.scheme == "file") {
           val file = File(source.path ?: "")
@@ -228,6 +241,10 @@ object MediaUtils : KoinComponent {
     playlistId: Int? = null,
   ) {
     if (videos.isEmpty() || startIndex < 0 || startIndex >= videos.size) return
+    if (videos.any { !isLocalVideo(it) }) {
+      android.util.Log.w("MediaUtils", "Ignoring a playlist containing non-local media")
+      return
+    }
 
     val firstVideo = videos[startIndex]
     val videoUri = if (firstVideo.uri.scheme == null) {

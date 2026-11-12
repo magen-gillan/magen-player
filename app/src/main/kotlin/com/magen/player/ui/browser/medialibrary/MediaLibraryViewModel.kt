@@ -10,6 +10,7 @@ import com.magen.player.repository.MediaFileRepository
 import com.magen.player.ui.browser.base.BaseBrowserViewModel
 import com.magen.player.ui.browser.videolist.VideoWithPlaybackInfo
 import com.magen.player.utils.media.MetadataRetrieval
+import com.magen.player.utils.media.PlaybackStateIndex
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
@@ -112,6 +113,7 @@ class MediaLibraryViewModel(
 
   private suspend fun loadPlaybackInfo(videos: List<Video>) {
     val playbackStates = playbackStateRepository.getAllPlaybackStates()
+    val playbackIndex = PlaybackStateIndex.of(playbackStates)
     val currentTime = System.currentTimeMillis()
     val thresholdDays = appearancePreferences.unplayedOldVideoDays.get()
     val thresholdMillis = thresholdDays * 24 * 60 * 60 * 1000L
@@ -119,7 +121,7 @@ class MediaLibraryViewModel(
 
     val videosWithInfo =
       videos.map { video ->
-        val playbackState = playbackStates.find { it.mediaTitle == video.path || it.mediaTitle == video.displayName }
+        val playbackState = playbackIndex.forVideoPathOrName(video.path, video.displayName)
 
         // Map saved orientation to video
         val videoWithOrientation = if (playbackState?.savedOrientation != null) {

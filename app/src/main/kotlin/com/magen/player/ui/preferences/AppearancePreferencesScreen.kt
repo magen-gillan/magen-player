@@ -246,7 +246,6 @@ object AppearancePreferencesScreen : Screen {
                         val enableTabYou by browserPreferences.enableTabYou.collectAsState()
                         val enableTabRecents by browserPreferences.enableTabRecents.collectAsState()
                         val enableTabPlaylists by browserPreferences.enableTabPlaylists.collectAsState()
-                        val enableTabNetwork by browserPreferences.enableTabNetwork.collectAsState()
                         val bottomNavOrder by browserPreferences.bottomNavOrder.collectAsState()
 
                         val orderedTabIds = remember(bottomNavOrder) {
@@ -259,7 +258,6 @@ object AppearancePreferencesScreen : Screen {
                             enableTabYou,
                             enableTabRecents,
                             enableTabPlaylists,
-                            enableTabNetwork
                         ) {
                             val items = mutableListOf<BottomNavTabItem>()
                             for (id in orderedTabIds) {
@@ -308,16 +306,6 @@ object AppearancePreferencesScreen : Screen {
                                             )
                                         )
                                     }
-                                    "network" -> items.add(
-                                        BottomNavTabItem(
-                                            id = "network",
-                                            titleRes = R.string.pref_appearance_tab_network_title,
-                                            summaryRes = R.string.pref_appearance_tab_network_summary,
-                                            value = enableTabNetwork,
-                                            enabled = true,
-                                            onValueChange = { browserPreferences.enableTabNetwork.set(it) }
-                                        )
-                                    )
                                     "you" -> items.add(
                                         BottomNavTabItem(
                                             id = "you",

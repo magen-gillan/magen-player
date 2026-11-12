@@ -19,6 +19,7 @@ import com.magen.player.repository.MediaFileRepository
 import com.magen.player.utils.history.RecentlyPlayedOps
 import com.magen.player.utils.media.MediaLibraryEvents
 import com.magen.player.utils.media.MetadataRetrieval
+import com.magen.player.utils.media.PlaybackStateIndex
 import com.magen.player.utils.permission.PermissionUtils.StorageOps
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -161,7 +162,7 @@ class SearchViewModel(
         if (targetPath == null) {
           val folders = MediaFileRepository.getAllVideoFolders(getApplication())
           folders.filter { it.name.contains(query, ignoreCase = true) || it.path.contains(query, ignoreCase = true) }
-            .filter { it.path !in blacklist && (isAudioEnabled || it.videoCount > 0) }
+            .filter { it.path !in blacklist && it.activeCount(isAudioEnabled) > 0 }
             .forEach { folder ->
               results.add(
                 FileSystemItem.Folder(
@@ -231,6 +232,7 @@ class SearchViewModel(
 
   private suspend fun updatePlaybackStates(items: List<FileSystemItem>) {
     val playbackStates = playbackStateRepository.getAllPlaybackStates()
+    val playbackIndex = PlaybackStateIndex.of(playbackStates)
     val playbackMap = mutableMapOf<Long, Float>()
     val newIds = mutableSetOf<Long>()
     val watchedIds = mutableSetOf<Long>()
@@ -241,7 +243,7 @@ class SearchViewModel(
 
     items.filterIsInstance<FileSystemItem.VideoFile>().forEach { item ->
       val video = item.video
-      val state = playbackStates.find { it.mediaTitle == video.path || it.mediaTitle == video.displayName }
+      val state = playbackIndex.forVideoPathOrName(video.path, video.displayName)
       if (state != null) {
         var isWatched = state.hasBeenWatched
         if (video.duration > 0 && state.timeRemaining != -1) {

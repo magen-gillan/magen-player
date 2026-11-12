@@ -71,7 +71,6 @@ import com.magen.player.preferences.UiSettings
 import com.magen.player.preferences.preference.collectAsState
 import com.magen.player.presentation.Screen
 import com.magen.player.presentation.components.pullrefresh.PullRefreshBox
-import com.magen.player.ui.browser.cards.M3UVideoCard
 import com.magen.player.ui.browser.cards.VideoCard
 import com.magen.player.ui.browser.components.BrowserTopBar
 import com.magen.player.ui.browser.components.UnifiedExplorerContent
@@ -94,11 +93,7 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
  * Playlist detail screen showing videos in a playlist.
  *
  * **M3U Playlist Behavior:**
- * M3U playlists (streaming URLs) are handled differently to prevent ANR issues:
- * - Each stream is played individually (no playlist navigation in PlayerActivity)
- * - No next/previous buttons - each stream URL is opened standalone
- * - This prevents loading thousands of URLs into memory at once
- * - Users can manually select and play different streams from the list
+ * M3U playlists are local files and play one local media item at a time.
  *
  * **Regular Playlist Behavior:**
  * Local file playlists support full playlist navigation:
@@ -187,8 +182,6 @@ data class PlaylistDetailScreen(val playlistId: Int) : Screen {
     val mediaInfoData = remember { mutableStateOf<MediaInfoOps.MediaInfoData?>(null) }
     val mediaInfoLoading = remember { mutableStateOf(false) }
     val mediaInfoError = remember { mutableStateOf<String?>(null) }
-    var showUrlDialog by rememberSaveable { mutableStateOf(false) }
-    var urlDialogContent by remember { mutableStateOf("") }
 
     // Reorder mode state
     var isReorderMode by rememberSaveable { mutableStateOf(false) }
@@ -272,12 +265,7 @@ data class PlaylistDetailScreen(val playlistId: Int) : Screen {
               if (selectionManager.isSingleSelection) {
                 val item = selected.firstOrNull()
                 if (item != null) {
-                  if (playlist?.isM3uPlaylist == true) {
-                    urlDialogContent = item.video.path
-                    showUrlDialog = true
-                  } else {
-                    mediaInfoUri = item.video.uri
-                  }
+                  mediaInfoUri = item.video.uri
                 }
               } else {
                 multiSelectionInfo = Triple(
@@ -505,21 +493,7 @@ data class PlaylistDetailScreen(val playlistId: Int) : Screen {
           enabled = pullToRefreshEnabled,
           listState = listState,
           modifier = Modifier.fillMaxSize().padding(padding),
-          onRefresh = {
-            val isM3uPlaylist = playlist?.isM3uPlaylist == true
-            if (isM3uPlaylist) {
-              val result = viewModel.refreshM3UPlaylist()
-              result
-                .onSuccess {
-                  Toast.makeText(context, "Playlist refreshed successfully", Toast.LENGTH_SHORT).show()
-                }
-                .onFailure { error ->
-                  Toast.makeText(context, "Failed to refresh: ${error.message}", Toast.LENGTH_LONG).show()
-                }
-            } else {
-              viewModel.refreshNow()
-            }
-          },
+          onRefresh = { viewModel.refreshNow() },
         ) {
           PlaylistVideoListContent(
             videoItems = filteredVideoItems,
@@ -587,20 +561,6 @@ data class PlaylistDetailScreen(val playlistId: Int) : Screen {
         )
       }
 
-      // URL Dialog for M3U streams
-      if (showUrlDialog) {
-        StreamUrlDialog(
-          url = urlDialogContent,
-          onDismiss = { showUrlDialog = false },
-          onCopy = {
-            val clipboardManager = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-            val clip = android.content.ClipData.newPlainText(context.getString(R.string.stream_url), urlDialogContent)
-            clipboardManager.setPrimaryClip(clip)
-            android.widget.Toast.makeText(context, R.string.copied_to_clipboard, android.widget.Toast.LENGTH_SHORT).show()
-          }
-        )
-      }
-
       mediaInfoUri?.let { uri ->
         com.magen.player.ui.browser.sheets.MediaInfoSheet(uri = uri, onDismiss = { mediaInfoUri = null })
       }
@@ -640,45 +600,6 @@ private fun PlaylistVideoListContent(
     isReorderMode = isReorderMode,
     onReorder = onReorder,
     listState = listState
-  )
-}
-
-@Composable
-private fun StreamUrlDialog(
-  url: String,
-  onDismiss: () -> Unit,
-  onCopy: () -> Unit,
-) {
-  androidx.compose.material3.AlertDialog(
-    onDismissRequest = onDismiss,
-    title = { Text(stringResource(R.string.stream_url)) },
-    text = {
-      Text(
-        text = url,
-        style = MaterialTheme.typography.bodyMedium,
-        modifier = Modifier.fillMaxWidth()
-      )
-    },
-    confirmButton = {
-      androidx.compose.material3.TextButton(
-        onClick = {
-          onCopy()
-          onDismiss()
-        }
-      ) {
-        Icon(
-          imageVector = Icons.Filled.ContentCopy,
-          contentDescription = null,
-          modifier = Modifier.padding(end = 4.dp).size(18.dp)
-        )
-        Text(stringResource(R.string.copy))
-      }
-    },
-    dismissButton = {
-      androidx.compose.material3.TextButton(onClick = onDismiss) {
-        Text(stringResource(R.string.close))
-      }
-    },
   )
 }
 

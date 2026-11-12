@@ -36,8 +36,6 @@
     <string name="pref_appearance_unplayed_old_video_days_title">新影片標籤的天數閾值</string>
     <string name="pref_appearance_unplayed_old_video_days_summary">在過去 %d 天內新增且無播放記錄的影片將被標記為新影片</string>
     <string name="pref_appearance_category_thumbnails">縮圖</string>
-    <string name="pref_appearance_show_network_thumbnails_title">顯示網路縮圖 (實驗性)</string>
-    <string name="pref_appearance_show_network_thumbnails_summary">為網路串流產生縮圖 (可能會增加行動網路的數據使用量)</string>
     <string name="pref_appearance_theme_picker_label">應用程式主題</string>
     <string name="pref_appearance_auto_scroll_title">自動捲動到上次播放</string>
     <string name="pref_appearance_auto_scroll_summary">開啟影片列表時自動捲動到上次播放的影片</string>
@@ -218,8 +216,6 @@
 
     <string name="pref_subtitles">字幕</string>
     <string name="pref_subtitles_summary">偏好語言、字型與搜尋</string>
-    <string name="pref_subtitle_search_title">線上字幕搜尋</string>
-    <string name="pref_subtitle_search_summary">從線上來源搜尋並下載字幕</string>
     <string name="pref_custom_lua_title">自訂 Lua 按鈕</string>
     <string name="pref_custom_lua_summary">使用 Lua 程式碼管理自訂播放程式按鈕</string>
     <string name="pref_preferred_languages">偏好語言</string>
@@ -227,8 +223,6 @@
     <string name="pref_subtitles_autoload_title">自動載入字幕</string>
     <string name="pref_subtitles_autoload_summary">自動載入同名的外部字幕。</string>
     <string name="pref_subtitles_save_location">字幕儲存位置</string>
-    <string name="pref_subtitles_search_online">線上字幕搜尋…</string>
-    <string name="pref_subtitles_subdl_languages">字幕語言</string>
     <string name="all_languages">全部 (選擇性過濾)</string>
     <string name="pref_subtitles_clear_downloads">清除字幕下載</string>
     <string name="pref_subtitles_clear_downloads_summary">刪除目前儲存位置中的所有檔案</string>
@@ -236,8 +230,6 @@
     <string name="toast_subtitles_cleared">已清除字幕下載</string>
     <string name="pref_subtitles_searching">搜尋中…</string>
     <string name="pref_subtitles_found">找到 %d 個字幕</string>
-    <string name="pref_subtitles_online_search_title">線上字幕搜尋</string>
-
     <string name="pref_audio">音訊</string>
     <string name="pref_audio_summary">偏好語言、音訊聲道、音調修正</string>
     <string name="pref_audio_pitch_correction_title">啟用音訊音調修正</string>
@@ -300,10 +292,6 @@
     <string name="pref_about_summary">致謝、授權</string>
     <string name="pref_about_oss_libraries">函式庫</string>
     <string name="pref_about_donate_title">贊助</string>
-    <string name="pref_about_donate_kofi">Ko-fi</string>
-    <string name="pref_about_donate_kofi_summary">在 Ko-fi 上支持開發者</string>
-    <string name="pref_about_donate_paypal">PayPal</string>
-    <string name="pref_about_donate_paypal_summary">在 PayPal 上支持開發者</string>
     <string name="pref_about_donate_upi">UPI</string>
 
     <string name="player_sheets_add_ext_sub">新增外部字幕</string>
@@ -387,7 +375,7 @@
     <string name="player_aspect_stretch">拉伸</string>
 
     <string name="crash_screen_title">糟糕</string>
-    <string name="crash_screen_subtitle">看起來 %s 遇到了非預期的錯誤。請考慮在 GitHub Issue 中分享崩潰日誌。</string>
+    <string name="crash_screen_subtitle">An unexpected error occurred in %s.</string>
     <string name="crash_screen_logs_title">崩潰日誌：</string>
     <string name="crash_screen_share">分享崩潰日誌</string>
     <string name="crash_screen_restart">重新啟動應用程式</string>
@@ -479,22 +467,15 @@
 
     <!-- M3U Playlist Strings -->
     <string name="playlist_add_m3u_title">新增 M3U 播放清單</string>
-    <string name="playlist_add_m3u_description">輸入 M3U 播放清單檔案的網址</string>
-    <string name="playlist_url_label">播放清單網址</string>
-    <string name="playlist_url_placeholder">https://example.com/playlist.m3u</string>
-    <string name="playlist_url_hint">支援 .m3u 和 .m3u8 格式</string>
     <string name="playlist_add_success">M3U 播放清單新增成功</string>
     <string name="playlist_add_error">新增 M3U 播放清單失敗：%s</string>
     <string name="playlist_create_empty">建立空白播放清單</string>
-    <string name="playlist_add_from_url">從 M3U/M3U8 網址新增</string>
-    <string name="playlist_refresh_m3u">重新整理 M3U 播放清單</string>
     <string name="playlist_refresh_success">播放清單重新整理成功</string>
     <string name="playlist_refresh_error">重新整理播放清單失敗：%s</string>
     <string name="playlist_m3u_badge">M3U</string>
 
     <string name="open_file">開啟檔案</string>
     <string name="recently_played">最近播放</string>
-    <string name="open_link">開啟連結</string>
     <string name="install">安裝</string>
     <string name="download">下載</string>
     <string name="failed_load_audio_invalid_uri">載入音訊檔案失敗：無效的 URI</string>
@@ -521,9 +502,7 @@
     <string name="remove">移除</string>
     <string name="add">新增</string>
     <string name="ignore">忽略</string>
-    <string name="check_for_updates_now">立即檢查更新</string>
     <string name="loading_detailed_information">正在載入詳細資訊…</string>
-    <string name="stream_url">串流網址</string>
     <string name="export_complete">匯出完成</string>
     <string name="import_complete">匯入完成</string>
     <string name="auto_picture_in_picture">自動子母畫面</string>
@@ -532,17 +511,12 @@
     <string name="create_playlist">建立播放清單</string>
     <string name="add_connection">新增連線</string>
     <string name="playlist_name">播放清單名稱</string>
-    <string name="playlist_url">播放清單網址</string>
-    <string name="enter_url">輸入網址</string>
     <string name="new_name">新名稱</string>
     <string name="folder_name">資料夾名稱</string>
-    <string name="video_url">影片網址</string>
     <string name="choose_local_m3u_file">選擇本機 M3U 檔案</string>
-    <string name="add_from_url">從網址新增</string>
     <string name="home">首頁</string>
     <string name="recents">最近</string>
     <string name="playlists">播放清單</string>
-    <string name="network">網路</string>
     <string name="unit_seconds">秒</string>
     <string name="milliseconds">毫秒</string>
     <string name="name">名稱</string>

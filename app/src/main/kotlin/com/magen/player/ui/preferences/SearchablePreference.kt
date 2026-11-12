@@ -94,7 +94,7 @@ object SearchablePreferences {
             add(SearchablePreference(
                 titleRes = R.string.pref_appearance_tab_shorts_title,
                 summaryRes = R.string.pref_appearance_tab_shorts_summary,
-                keywords = listOf("shorts", "tab", "navigation", "bottom bar", "rexshorts"),
+                keywords = listOf("shorts", "tab", "navigation", "bottom bar", "magen_shorts"),
                 category = "Appearance",
                 screen = AppearancePreferencesScreen,
                 targetIndex = 5,
@@ -119,14 +119,6 @@ object SearchablePreferences {
                 titleRes = R.string.pref_appearance_tab_playlists_title,
                 summaryRes = R.string.pref_appearance_tab_playlists_summary,
                 keywords = listOf("playlists", "tab", "navigation", "bottom bar"),
-                category = "Appearance",
-                screen = AppearancePreferencesScreen,
-                targetIndex = 5,
-            ))
-            add(SearchablePreference(
-                titleRes = R.string.pref_appearance_tab_network_title,
-                summaryRes = R.string.pref_appearance_tab_network_summary,
-                keywords = listOf("network", "tab", "navigation", "bottom bar", "smb", "stream"),
                 category = "Appearance",
                 screen = AppearancePreferencesScreen,
                 targetIndex = 5,
@@ -179,12 +171,12 @@ object SearchablePreferences {
                 targetIndex = 3,
             ))
             add(SearchablePreference(
-                titleRes = R.string.pref_appearance_show_network_thumbnails_title,
-                summaryRes = R.string.pref_appearance_show_network_thumbnails_summary,
-                keywords = listOf("network", "thumbnail", "stream", "preview", "images"),
+                titleRes = R.string.pref_flatten_folders_title,
+                summaryRes = R.string.pref_flatten_folders_summary,
+                keywords = listOf("flatten", "flat", "tree view", "nested", "empty", "merge", "folder hierarchy"),
                 category = "Media & Library",
                 screen = MediaLibraryPreferencesScreen,
-                targetIndex = 1,
+                targetIndex = 3,
             ))
 
             // Layout preferences
@@ -250,6 +242,14 @@ object SearchablePreferences {
                 titleRes = R.string.pref_player_show_seekbar_read_ahead_title,
                 summaryRes = R.string.pref_player_show_seekbar_read_ahead_summary,
                 keywords = listOf("buffer", "buffered", "cache", "read ahead", "visual hint", "seekbar", "progress", "player"),
+                category = "Player Layout",
+                screen = PlayerControlsPreferencesScreen,
+                targetIndex = 7,
+            ))
+            add(SearchablePreference(
+                titleRes = R.string.pref_player_speed_adjusted_remaining_title,
+                summaryRes = R.string.pref_player_speed_adjusted_remaining_summary,
+                keywords = listOf("speed", "remaining", "time", "timestamp", "timer", "clock", "seekbar", "duration", "player"),
                 category = "Player Layout",
                 screen = PlayerControlsPreferencesScreen,
                 targetIndex = 7,
@@ -931,7 +931,7 @@ object SearchablePreferences {
             add(SearchablePreference(
                 titleRes = R.string.pref_subtitles,
                 summaryRes = R.string.pref_subtitles_summary,
-                keywords = listOf("subtitles", "subs", "language", "fonts", "text", "wyzie", "subdl"),
+                keywords = listOf("subtitles", "subs", "language", "fonts", "text"),
                 category = "Subtitles",
                 screen = SubtitlesPreferencesScreen,
                 targetIndex = 1,
@@ -1013,54 +1013,9 @@ object SearchablePreferences {
                 targetIndex = 1,
             ))
             add(SearchablePreference(
-                titleRes = R.string.pref_subtitle_search_title,
-                summaryRes = R.string.pref_subtitle_search_summary,
-                keywords = listOf("subtitle", "search", "online", "download", "wyzie", "subdl", "subs"),
-                category = "Subtitles",
-                screen = SubtitlesPreferencesScreen,
-                targetIndex = 3,
-            ))
-            add(SearchablePreference(
-                titleRes = R.string.pref_subtitles_save_location,
-                keywords = listOf("save", "location", "download", "folder", "directory", "subtitles"),
-                category = "Subtitles",
-                screen = SubtitlesPreferencesScreen,
-                targetIndex = 3,
-            ))
-            add(SearchablePreference(
-                titleRes = R.string.pref_subtitles_subdl_languages,
-                keywords = listOf("languages", "subdl", "online", "search", "subtitles"),
-                category = "Subtitles",
-                screen = SubtitlesPreferencesScreen,
-                targetIndex = 3,
-            ))
-            add(SearchablePreference(
-                title = "Advanced Search Filters",
-                keywords = listOf("advanced", "filters", "subtitle", "search", "formats", "encodings", "hearing impaired"),
-                category = "Subtitles",
-                screen = SubtitlesPreferencesScreen,
-                targetIndex = 3,
-            ))
-            add(SearchablePreference(
-                title = "Hearing-impaired friendly",
-                summary = "Only show subtitles optimized for hearing impaired",
-                keywords = listOf("hearing", "impaired", "sdh", "accessibility", "subtitles", "deaf"),
-                category = "Subtitles",
-                screen = SubtitlesPreferencesScreen,
-                targetIndex = 3,
-            ))
-            add(SearchablePreference(
                 titleRes = R.string.pref_subtitles_clear_downloads,
                 summaryRes = R.string.pref_subtitles_clear_downloads_summary,
                 keywords = listOf("clear", "delete", "downloads", "remove", "subtitles"),
-                category = "Subtitles",
-                screen = SubtitlesPreferencesScreen,
-                targetIndex = 3,
-            ))
-            add(SearchablePreference(
-                titleRes = R.string.pref_subtitles_wyzie_api_key_title,
-                summaryRes = R.string.pref_subtitles_wyzie_api_key_summary,
-                keywords = listOf("api", "key", "token", "wyzie", "subtitles", "vip"),
                 category = "Subtitles",
                 screen = SubtitlesPreferencesScreen,
                 targetIndex = 3,
@@ -1264,17 +1219,17 @@ object SearchablePreferences {
 
             // Magen Shorts preferences
             add(SearchablePreference(
-                titleRes = R.string.pref_category_rexshorts_settings,
-                summaryRes = R.string.pref_category_rexshorts_settings_desc,
-                keywords = listOf("shorts", "rexshorts", "tiktok", "reels", "vertical", "video"),
+                titleRes = R.string.pref_category_magen_shorts_settings,
+                summaryRes = R.string.pref_category_magen_shorts_settings_desc,
+                keywords = listOf("shorts", "magen_shorts", "tiktok", "reels", "vertical", "video"),
                 category = "Magen Shorts",
                 screen = ShortsPreferencesScreen,
                 targetIndex = 0,
             ))
             add(SearchablePreference(
-                titleRes = R.string.pref_enable_rexshorts,
-                summaryRes = R.string.pref_enable_rexshorts_summary,
-                keywords = listOf("shorts", "rexshorts", "enable", "disable", "tab", "vertical"),
+                titleRes = R.string.pref_enable_magen_shorts,
+                summaryRes = R.string.pref_enable_magen_shorts_summary,
+                keywords = listOf("shorts", "magen_shorts", "enable", "disable", "tab", "vertical"),
                 category = "Magen Shorts",
                 screen = ShortsPreferencesScreen,
                 targetIndex = 1,
@@ -1282,7 +1237,7 @@ object SearchablePreferences {
             add(SearchablePreference(
                 titleRes = R.string.pref_auto_swipe_shorts,
                 summaryRes = R.string.pref_auto_swipe_shorts_summary,
-                keywords = listOf("auto swipe", "loop", "shorts", "rexshorts", "continuous"),
+                keywords = listOf("auto swipe", "loop", "shorts", "magen_shorts", "continuous"),
                 category = "Magen Shorts",
                 screen = ShortsPreferencesScreen,
                 targetIndex = 1,
@@ -1290,7 +1245,7 @@ object SearchablePreferences {
             add(SearchablePreference(
                 titleRes = R.string.pref_enable_glass_shorts_controls,
                 summaryRes = R.string.pref_enable_glass_shorts_controls_summary,
-                keywords = listOf("glass", "controls", "shorts", "rexshorts", "appearance", "blur"),
+                keywords = listOf("glass", "controls", "shorts", "magen_shorts", "appearance", "blur"),
                 category = "Magen Shorts",
                 screen = ShortsPreferencesScreen,
                 targetIndex = 1,
@@ -1298,7 +1253,7 @@ object SearchablePreferences {
             add(SearchablePreference(
                 titleRes = R.string.pref_show_shorts_back_button,
                 summaryRes = R.string.pref_show_shorts_back_button_summary,
-                keywords = listOf("back button", "navigation", "shorts", "rexshorts", "controls"),
+                keywords = listOf("back button", "navigation", "shorts", "magen_shorts", "controls"),
                 category = "Magen Shorts",
                 screen = ShortsPreferencesScreen,
                 targetIndex = 1,
@@ -1306,7 +1261,7 @@ object SearchablePreferences {
             add(SearchablePreference(
                 titleRes = R.string.pref_include_short_horizontal_videos,
                 summaryRes = R.string.pref_include_short_horizontal_videos_summary,
-                keywords = listOf("horizontal", "landscape", "short videos", "shorts", "rexshorts"),
+                keywords = listOf("horizontal", "landscape", "short videos", "shorts", "magen_shorts"),
                 category = "Magen Shorts",
                 screen = ShortsPreferencesScreen,
                 targetIndex = 3,

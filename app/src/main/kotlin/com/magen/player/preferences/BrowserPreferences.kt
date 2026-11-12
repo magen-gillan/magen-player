@@ -77,37 +77,6 @@ class BrowserPreferences(
     videoSortOrder.set(getVideoSortOrder(type))
   }
 
-  // Network sorting preferences
-  val networkSortType = preferenceStore.getEnum("network_sort_type", FolderSortType.Title)
-  val networkSortOrder = preferenceStore.getEnum("network_sort_order", SortOrder.Ascending)
-  val networkShowHiddenFiles = preferenceStore.getBoolean("network_show_hidden_files", false)
-  val networkSortOrderTitle = preferenceStore.getEnum("network_sort_order_title", SortOrder.Ascending)
-  val networkSortOrderDate = preferenceStore.getEnum("network_sort_order_date", SortOrder.Descending)
-  val networkSortOrderSize = preferenceStore.getEnum("network_sort_order_size", SortOrder.Descending)
-
-  fun getNetworkSortOrder(type: FolderSortType): SortOrder =
-    when (type) {
-      FolderSortType.Title -> networkSortOrderTitle.get()
-      FolderSortType.Date -> networkSortOrderDate.get()
-      FolderSortType.Size -> networkSortOrderSize.get()
-      else -> SortOrder.Ascending
-    }
-
-  fun saveNetworkSortOrder(type: FolderSortType, order: SortOrder) {
-    when (type) {
-      FolderSortType.Title -> networkSortOrderTitle.set(order)
-      FolderSortType.Date -> networkSortOrderDate.set(order)
-      FolderSortType.Size -> networkSortOrderSize.set(order)
-      else -> {}
-    }
-    networkSortOrder.set(order)
-  }
-
-  fun setNetworkSortType(type: FolderSortType) {
-    networkSortType.set(type)
-    networkSortOrder.set(getNetworkSortOrder(type))
-  }
-
   val folderViewMode = preferenceStore.getEnum("folder_view_mode", FolderViewMode.AlbumView)
 
   // Whether the "Filters" section in the sort dialog is expanded. Persisted so it
@@ -123,6 +92,7 @@ class BrowserPreferences(
 
   // Visibility preferences for video card chips
   val showVideoThumbnails = preferenceStore.getBoolean("show_video_thumbnails", true)
+  val showFileExtension = preferenceStore.getBoolean("show_file_extension", false)
   val showSizeChip = preferenceStore.getBoolean("show_size_chip", true)
   // Metadata-dependent chips (disabled by default for better performance)
   val showResolutionChip = preferenceStore.getBoolean("show_resolution_chip", false)
@@ -150,28 +120,29 @@ class BrowserPreferences(
   val includeNoMediaContent = preferenceStore.getBoolean("include_no_media_content", false)
   val showTreeViewPath = preferenceStore.getBoolean("show_tree_view_path", false)
 
+  // Smart tree flattening: hide folders without media in Tree View when they only lead to a single media folder
+  val flattenFolders = preferenceStore.getBoolean("flatten_folders", false)
+
   // Magen Shorts preferences
   val enableShorts = preferenceStore.getBoolean("enable_shorts", true)
   val autoSwipeShorts = preferenceStore.getBoolean("shorts_auto_swipe", false)
-  val quickDeleteShorts = preferenceStore.getBoolean("shorts_quick_delete", false)
-  val shortsSortType = preferenceStore.getEnum("shorts_sort_type", ShortsSortType.Title)
   val enableGlassShortsControls = preferenceStore.getBoolean("enable_glass_shorts_controls", false)
   val showShortsBackButton = preferenceStore.getBoolean("show_shorts_back_button", true)
   val includeShortHorizontalVideos = preferenceStore.getBoolean("shorts_include_horizontal", false)
   val maxHorizontalVideoDurationMinutes = preferenceStore.getInt("shorts_max_horizontal_minutes", 1)
   val shortsSourceFolders = preferenceStore.getStringSet("shorts_source_folders", emptySet())
   val lastWatchedShortPath = preferenceStore.getString("shorts_last_watched_path", "")
+  val shortsSortType = preferenceStore.getEnum("shorts_sort_type", ShortsSortType.Name)
+  val quickDeleteShorts = preferenceStore.getBoolean("shorts_quick_delete", false)
 
   // Bottom navigation visibility and ordering preferences
   val enableTabYou = preferenceStore.getBoolean("enable_tab_you", true)
   val enableTabRecents = preferenceStore.getBoolean("enable_tab_recents", true)
   val enableTabPlaylists = preferenceStore.getBoolean("enable_tab_playlists", true)
-  val enableTabNetwork = preferenceStore.getBoolean("enable_tab_network", false)
-  val bottomNavOrder = preferenceStore.getString("bottom_nav_order", "home,shorts,recents,playlists,network,you")
-  val playedNetworkLinks = preferenceStore.getString("played_network_links", "")
+  val bottomNavOrder = preferenceStore.getString("bottom_nav_order", "home,shorts,recents,playlists,you")
 
   fun getBottomNavOrder(): List<String> {
-    val defaultOrder = listOf("home", "shorts", "recents", "playlists", "network", "you")
+    val defaultOrder = listOf("home", "shorts", "recents", "playlists", "you")
     val saved = bottomNavOrder.get().split(",").map { it.trim() }.filter { it.isNotEmpty() }
     val missing = defaultOrder.filterNot { it in saved }
     return saved + missing
@@ -249,14 +220,6 @@ enum class VideoSortType(
 /**
  * Folder view mode options
  */
-enum class ShortsSortType(
-  @StringRes val stringRes: Int,
-) {
-  Title(R.string.sort_type_title),
-  Size(R.string.sort_type_size),
-  Date(R.string.sort_type_date),
-}
-
 enum class FolderViewMode(
   @StringRes val stringRes: Int,
 ) {
@@ -272,4 +235,10 @@ enum class MediaLayoutMode(
   LIST(R.string.layout_mode_list),
   GRID(R.string.layout_mode_grid),
   ;
+}
+
+enum class ShortsSortType {
+  Name,
+  Size,
+  DateAdded,
 }

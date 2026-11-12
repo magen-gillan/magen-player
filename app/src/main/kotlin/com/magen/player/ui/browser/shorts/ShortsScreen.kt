@@ -58,9 +58,12 @@ import androidx.compose.material.icons.filled.Fullscreen
 import androidx.compose.material.icons.filled.FullscreenExit
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.ui.draw.scale
 import androidx.compose.material3.AlertDialog
@@ -123,7 +126,6 @@ import com.magen.player.presentation.Screen
 import com.magen.player.ui.browser.MainScreen
 import com.magen.player.ui.player.MPVView
 import com.magen.player.ui.preferences.BlockedShortsScreen
-import com.magen.player.ui.preferences.FavoriteShortsScreen
 import com.magen.player.ui.utils.LocalBackStack
 import com.magen.player.ui.utils.navigateBack
 import `is`.xyz.mpv.MPVLib
@@ -149,7 +151,7 @@ import kotlin.math.abs
 data class ShortsScreen(
     val initialVideoPath: String? = null,
     val blockedOnly: Boolean = false,
-    val favoritesOnly: Boolean = false
+    val favoritesOnly: Boolean = false,
 ) : Screen {
 
     @Composable
@@ -168,6 +170,8 @@ data class ShortsScreen(
         val isLoading by viewModel.isLoading.collectAsState()
         val totalShortsCount by viewModel.totalShortsCount.collectAsState()
         val lovedPaths by viewModel.lovedPaths.collectAsState()
+        val sortType by viewModel.sortType.collectAsState()
+        val quickDeleteEnabled by viewModel.quickDeleteEnabled.collectAsState()
         val blockedPaths by viewModel.blockedPaths.collectAsState()
         val autoSwipe by viewModel.autoSwipe.collectAsState()
         val currentSpeed by viewModel.currentSpeed.collectAsState()
@@ -206,7 +210,7 @@ data class ShortsScreen(
                 Text(
                     text = when {
                         blockedOnly -> stringResource(R.string.shorts_no_blocked_videos_found)
-                        favoritesOnly -> stringResource(R.string.favorite_shorts_empty)
+                        favoritesOnly -> stringResource(R.string.shorts_favorites_empty)
                         else -> stringResource(R.string.shorts_no_vertical_videos_found)
                     },
                     color = Color.White,
@@ -222,47 +226,17 @@ data class ShortsScreen(
                 var isManuallyPaused by remember { mutableStateOf(false) }
                 var isFreeModeEnabled by remember { mutableStateOf(false) }
                 
-                // The initial page is resolved once the target video has actually been
-                // discovered (see the restore effect below). Computing it from a 1-item
-                // snapshot silently broke "resume last watched short".
+                // Compute once: the feed now grows while the user watches, so keying this
+                // on `shorts` would restart the pager on every appended page.
+                val initialIndex = remember {
+                    viewModel.getInitialPageIndex(initialVideoPath)
+                }
                 val pagerState = rememberPagerState(
-                    initialPage = 0,
+                    initialPage = initialIndex.coerceIn(0, (shorts.size - 1).coerceAtLeast(0)),
                     pageCount = { 
                         if (shorts.isNotEmpty()) shorts.size + 1 else 0 
                     }
                 )
-
-                // Restore the last watched short once its page exists in the feed.
-                var restoredInitialPage by remember { mutableStateOf(false) }
-                LaunchedEffect(shorts) {
-                    if (restoredInitialPage || shorts.isEmpty()) return@LaunchedEffect
-                    if (pagerState.currentPage != 0 || pagerState.isScrollInProgress) {
-                        // The user started browsing before the target was discovered.
-                        restoredInitialPage = true
-                        return@LaunchedEffect
-                    }
-                    val targetIndex = viewModel.getInitialPageIndex(initialVideoPath)
-                    if (targetIndex > 0) {
-                        pagerState.scrollToPage(targetIndex)
-                    }
-                    restoredInitialPage = true
-                }
-
-                // Keep the video the user is watching anchored at the current page while
-                // the feed grows / re-sorts / shrinks underneath the pager. Without this,
-                // insertions before the current index swap the on-screen video (the
-                // "104 jumps to 107" skip).
-                var settledVideoPath by remember { mutableStateOf<String?>(null) }
-                var loadedVideoPath by remember { mutableStateOf<String?>(null) }
-                LaunchedEffect(shorts) {
-                    val anchor = settledVideoPath ?: return@LaunchedEffect
-                    val currentIdx = pagerState.settledPage
-                    if (currentIdx < shorts.size && shorts[currentIdx].path == anchor) return@LaunchedEffect
-                    val anchoredIdx = shorts.indexOfFirst { it.path == anchor }
-                    if (anchoredIdx >= 0 && anchoredIdx != currentIdx) {
-                        pagerState.scrollToPage(anchoredIdx)
-                    }
-                }
                 val lifecycleOwner = LocalLifecycleOwner.current
                 val density = LocalDensity.current
                 val coroutineScope = rememberCoroutineScope()
@@ -381,19 +355,12 @@ data class ShortsScreen(
                         if (mpvView != null && shorts.isNotEmpty()) {
                             if (pagerState.settledPage < shorts.size) {
                                 val video = shorts[pagerState.settledPage]
-                                // Guard against reloading the same file (e.g. after the
-                                // anchor correction scrolls the pager): loadfile always
-                                // restarts from 0, which would restart the same video.
-                                if (loadedVideoPath != video.path) {
-                                    MPVLib.command("loadfile", video.path)
-                                    loadedVideoPath = video.path
-                                }
+                                MPVLib.command("loadfile", video.path)
                                 MPVLib.setPropertyString("loop-file", if (autoSwipe) "no" else "inf")
                                 MPVLib.setPropertyBoolean("pause", false)
                                 isManuallyPaused = false
                                 viewModel.syncPlaybackSpeed()
-
-                                settledVideoPath = video.path
+                                
                                 viewModel.onShortSettled(video)
                             } else {
                                 MPVLib.setPropertyBoolean("pause", true)
@@ -421,6 +388,22 @@ data class ShortsScreen(
                             isManuallyPaused = nextPause
                         },
                         viewModel = viewModel,
+                        quickDeleteEnabled = quickDeleteEnabled,
+                        onQuickDelete = { video ->
+                            coroutineScope.launch {
+                                val currentList = viewModel.shorts.value
+                                val currentIndex = currentList.indexOfFirst { it.path == video.path }
+                                val wasCurrent = pagerState.settledPage == currentIndex
+                                val nextVideo = if (currentIndex >= 0 && currentIndex < currentList.lastIndex) {
+                                    currentList[currentIndex + 1]
+                                } else if (currentIndex > 0) {
+                                    currentList[currentIndex - 1]
+                                } else null
+                                if (viewModel.deleteShort(video) && wasCurrent) {
+                                    if (nextVideo != null) MPVLib.command("loadfile", nextVideo.path) else MPVLib.command("stop")
+                                }
+                            }
+                        },
                         onBack = { 
                             if (backstack.size > 1) {
                                 backstack.navigateBack()
@@ -437,7 +420,7 @@ data class ShortsScreen(
                         },
                         onReshuffle = {
                             coroutineScope.launch {
-                                viewModel.loadShorts(forceRefresh = true)
+                                viewModel.loadShorts(forceRefresh = true, favoritesOnly = favoritesOnly)
                                 pagerState.scrollToPage(0)
                             }
                         }
@@ -446,6 +429,57 @@ data class ShortsScreen(
                     // System status & navigation bar protective overlays (drawn on top of sliding pages)
                     val statusBarHeight = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
                     val navigationBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+
+                    var showSortMenu by remember { mutableStateOf(false) }
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .padding(start = 12.dp, top = statusBarHeight + 8.dp)
+                    ) {
+                        IconButton(onClick = { showSortMenu = true }) {
+                            Icon(
+                                imageVector = Icons.Filled.Sort,
+                                contentDescription = stringResource(R.string.sort_by),
+                                tint = Color.White,
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = showSortMenu,
+                            onDismissRequest = { showSortMenu = false },
+                        ) {
+                            listOf(
+                            ShortsSortType.Name to R.string.name,
+                            ShortsSortType.Size to R.string.sort_type_size,
+                            ShortsSortType.DateAdded to R.string.shorts_sort_date_added,
+                            ).forEach { (type, labelRes) ->
+                                DropdownMenuItem(
+                                    text = {
+                                        val suffix = when (type) {
+                                            ShortsSortType.Name -> ""
+                                            ShortsSortType.Size -> " · ${stringResource(R.string.sort_order_largest)}"
+                                            ShortsSortType.DateAdded -> " · ${stringResource(R.string.sort_order_newest)}"
+                                        }
+                                        Text(stringResource(labelRes) + suffix)
+                                    },
+                                    trailingIcon = {
+                                        if (sortType == type) {
+                                            Icon(Icons.Filled.Check, contentDescription = null)
+                                        }
+                                    },
+                                    onClick = {
+                                        showSortMenu = false
+                                        coroutineScope.launch {
+                                            val currentPath = shorts.getOrNull(pagerState.settledPage)?.path
+                                            val newPage = viewModel.sortShorts(type, currentPath)
+                                            if (currentPath != null && newPage >= 0) {
+                                                pagerState.scrollToPage(newPage)
+                                            }
+                                        }
+                                    },
+                                )
+                            }
+                        }
+                    }
 
                     Box(
                         modifier = Modifier
@@ -677,6 +711,8 @@ private fun ShortsPager(
     onFreeModeToggle: () -> Unit,
     onTogglePause: () -> Unit,
     viewModel: ShortsViewModel,
+    quickDeleteEnabled: Boolean,
+    onQuickDelete: (Video) -> Unit,
     onBack: () -> Unit,
     onLove: (Video) -> Unit,
     onBlock: (Video) -> Unit,
@@ -706,10 +742,11 @@ private fun ShortsPager(
                 onFreeModeToggle = onFreeModeToggle,
                 onTogglePause = onTogglePause,
                 viewModel = viewModel,
+                quickDeleteEnabled = quickDeleteEnabled,
+                onQuickDelete = { onQuickDelete(video) },
                 onBack = onBack,
                 onLove = { onLove(video) },
-                onBlock = { onBlock(video) },
-                onDeleteShort = { viewModel.deleteShort(video) }
+                onBlock = { onBlock(video) }
             )
         } else {
             FinishedPageItem(
@@ -737,10 +774,11 @@ private fun ShortPageItem(
     onFreeModeToggle: () -> Unit,
     onTogglePause: () -> Unit,
     viewModel: ShortsViewModel,
+    quickDeleteEnabled: Boolean,
+    onQuickDelete: () -> Unit,
     onBack: () -> Unit,
     onLove: () -> Unit,
-    onBlock: () -> Unit,
-    onDeleteShort: () -> Unit
+    onBlock: () -> Unit
 ) {
     val backstack = LocalBackStack.current
     val coroutineScope = rememberCoroutineScope()
@@ -750,11 +788,8 @@ private fun ShortPageItem(
     var showInfo by remember { mutableStateOf(false) }
     var showMore by remember { mutableStateOf(false) }
     var showDeleteConfirmation by remember { mutableStateOf(false) }
-    var showSortDialog by remember { mutableStateOf(false) }
 
     val playerPreferences = koinInject<PlayerPreferences>()
-    val browserPreferences = koinInject<BrowserPreferences>()
-    val quickDeleteEnabled by browserPreferences.quickDeleteShorts.collectAsState()
     val playerTutorialManager = koinInject<PlayerTutorialManager>()
     val holdForMultipleSpeed by playerPreferences.holdForMultipleSpeed.collectAsState()
     
@@ -853,7 +888,7 @@ private fun ShortPageItem(
                                 launch { heartAlpha.animateTo(0f, tween(400)) }
                             }
                             if (quickDeleteEnabled) {
-                                onDeleteShort()
+                                onQuickDelete()
                             } else if (!isLoved) {
                                 onLove()
                             }
@@ -1063,10 +1098,9 @@ private fun ShortPageItem(
                 isLoved = isLoved,
                 isBlocked = isBlocked,
                 isFreeModeEnabled = isFreeModeEnabled,
-                onLove = onLove,
+                onLove = { if (quickDeleteEnabled) onQuickDelete() else onLove() },
                 onBlock = onBlock,
                 onFreeModeToggle = onFreeModeToggle,
-                onDeleteShort = { viewModel.deleteShort(video) },
                 onBack = onBack,
                 onMore = { showMore = true },
                 onLoveButtonPositioned = { loveButtonCenter = it }
@@ -1114,13 +1148,10 @@ private fun ShortPageItem(
 
         if (showMore) {
             val isAutoSwipeEnabled by viewModel.autoSwipe.collectAsState()
-            val quickDeleteEnabled by browserPreferences.quickDeleteShorts.collectAsState()
             val context = LocalContext.current
             MoreActionsSheet(
                 onDismiss = { showMore = false },
                 isAutoSwipeEnabled = isAutoSwipeEnabled,
-                quickDeleteEnabled = quickDeleteEnabled,
-                onToggleQuickDelete = { browserPreferences.quickDeleteShorts.set(!quickDeleteEnabled) },
                 onToggleAutoSwipe = { viewModel.toggleAutoSwipe() },
                 isSpeedLocked = isSpeedLockedState,
                 onToggleSpeedLock = { locked ->
@@ -1139,32 +1170,17 @@ private fun ShortPageItem(
                     showMore = false
                     backstack.add(BlockedShortsScreen)
                 },
-                onShowFavorites = {
-                    showMore = false
-                    backstack.add(ShortsScreen(favoritesOnly = true))
-                },
                 onShowInfo = {
                     showMore = false
                     showInfo = true
                 },
-                onShowSort = {
-                    showMore = false
-                    showSortDialog = true
-                },
                 onDeleteShort = {
                     showMore = false
-                    if (quickDeleteEnabled) {
-                        viewModel.deleteShort(video)
-                    } else {
-                        showDeleteConfirmation = true
-                    }
+                    showDeleteConfirmation = true
                 }
             )
         }
 
-        if (showSortDialog) {
-            ShortsSortDialog(onDismiss = { showSortDialog = false })
-        }
         if (showDeleteConfirmation) {
             AlertDialog(
                 onDismissRequest = { showDeleteConfirmation = false },
@@ -1180,10 +1196,19 @@ private fun ShortPageItem(
                     TextButton(
                         onClick = {
                             showDeleteConfirmation = false
-                            // No manual loadfile here: once the deleted item leaves the
-                            // feed, the settle effect loads the next video by itself. The
-                            // manual loadfile used to race it and double-load.
-                            viewModel.deleteShort(video)
+                            coroutineScope.launch {
+                                val currentList = viewModel.shorts.value
+                                val currentIndex = currentList.indexOfFirst { it.path == video.path }
+                                val wasCurrent = currentIndex >= 0
+                                val nextVideo = if (currentIndex >= 0 && currentIndex < currentList.lastIndex) {
+                                    currentList[currentIndex + 1]
+                                } else if (currentIndex > 0) {
+                                    currentList[currentIndex - 1]
+                                } else null
+                                if (viewModel.deleteShort(video) && wasCurrent) {
+                                    if (nextVideo != null) MPVLib.command("loadfile", nextVideo.path) else MPVLib.command("stop")
+                                }
+                            }
                         }
                     ) {
                         Text(stringResource(R.string.delete), color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold)
@@ -1245,47 +1270,17 @@ private fun ConfettiBurst(trigger: Long, center: Offset) {
     }
 }
 
-@Composable
-private fun ShortsSortDialog(onDismiss: () -> Unit) {
-    val browserPreferences = koinInject<BrowserPreferences>()
-    val current by browserPreferences.shortsSortType.collectAsState()
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.pref_shorts_sort)) },
-        text = {
-            Column {
-                ShortsSortType.entries.forEach { type ->
-                    ListItem(
-                        headlineContent = { Text(stringResource(type.stringRes)) },
-                        trailingContent = { if (type == current) Icon(Icons.Default.Check, contentDescription = null) },
-                        modifier = Modifier.clickable {
-                            browserPreferences.shortsSortType.set(type)
-                            onDismiss()
-                        },
-                        colors = ListItemDefaults.colors(containerColor = Color.Transparent)
-                    )
-                }
-            }
-        },
-        confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.cancel)) } }
-    )
-}
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun MoreActionsSheet(
     onDismiss: () -> Unit,
     isAutoSwipeEnabled: Boolean,
-    quickDeleteEnabled: Boolean,
-    onToggleQuickDelete: () -> Unit,
     onToggleAutoSwipe: () -> Unit,
     isSpeedLocked: Boolean,
     onToggleSpeedLock: (Boolean) -> Unit,
     onShare: () -> Unit,
     onShowBlocked: () -> Unit,
-    onShowFavorites: () -> Unit,
     onShowInfo: () -> Unit,
-    onShowSort: () -> Unit,
     onDeleteShort: () -> Unit
 ) {
     val playerPreferences = koinInject<PlayerPreferences>()
@@ -1308,13 +1303,6 @@ private fun MoreActionsSheet(
         }
     ) {
         Column(modifier = Modifier.padding(bottom = 32.dp)) {
-            ListItem(
-                headlineContent = { Text(stringResource(R.string.pref_shorts_sort)) },
-                supportingContent = { Text(stringResource(R.string.pref_shorts_sort_summary)) },
-                leadingContent = { Icon(Icons.Default.MoreVert, contentDescription = null) },
-                modifier = Modifier.clickable { onShowSort() },
-                colors = ListItemDefaults.colors(containerColor = Color.Transparent)
-            )
             ListItem(
                 headlineContent = { Text(stringResource(R.string.auto_swipe_to_next_short)) },
                 supportingContent = { Text(stringResource(R.string.auto_swipe_to_next_short_desc)) },
@@ -1353,16 +1341,6 @@ private fun MoreActionsSheet(
                 colors = ListItemDefaults.colors(containerColor = Color.Transparent)
             )
             
-            ListItem(
-                headlineContent = { Text(stringResource(R.string.pref_quick_delete_shorts)) },
-                supportingContent = { Text(stringResource(R.string.pref_quick_delete_shorts_summary)) },
-                leadingContent = { Icon(Icons.Default.Delete, contentDescription = null) },
-                trailingContent = {
-                    Switch(checked = quickDeleteEnabled, onCheckedChange = { onToggleQuickDelete() })
-                },
-                modifier = Modifier.clickable { onToggleQuickDelete() },
-                colors = ListItemDefaults.colors(containerColor = Color.Transparent)
-            )
             ListItem(
                 headlineContent = { Text(stringResource(R.string.long_press_speed)) },
                 supportingContent = { 
@@ -1420,12 +1398,6 @@ private fun MoreActionsSheet(
             )
 
             ListItem(
-                headlineContent = { Text(stringResource(R.string.favorite_shorts)) },
-                leadingContent = { Icon(Icons.Default.Favorite, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
-                modifier = Modifier.clickable { onShowFavorites() },
-                colors = ListItemDefaults.colors(containerColor = Color.Transparent)
-            )
-            ListItem(
                 headlineContent = { Text(stringResource(R.string.video_information)) },
                 leadingContent = { Icon(Icons.Default.Info, contentDescription = null) },
                 modifier = Modifier.clickable { onShowInfo() },
@@ -1463,7 +1435,6 @@ private fun ActionColumn(
     onLove: () -> Unit,
     onBlock: () -> Unit,
     onFreeModeToggle: () -> Unit,
-    onDeleteShort: () -> Unit,
     onBack: () -> Unit,
     onMore: () -> Unit,
     onLoveButtonPositioned: (Offset) -> Unit

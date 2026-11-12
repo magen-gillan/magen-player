@@ -10,32 +10,24 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.magen.player.R
-import com.magen.player.ui.browser.networkstreaming.proxy.NetworkStreamingProxy
 import com.magen.player.ui.player.MediaPlaybackService
 import com.magen.player.ui.player.PlayerActivity
 import com.magen.player.ui.player.PlayerActivity.Companion.TAG
-import com.magen.player.ui.player.ResumePlaybackMode
+
 import com.magen.player.ui.player.resolveUri
 import com.magen.player.utils.media.FolderPlaylistOps
-import com.magen.player.utils.media.HttpUtils
 import com.magen.player.utils.media.M3UParseResult
 import com.magen.player.utils.media.M3UParser
 
 /**
  * Controller responsible for M3U playlist parsing, folder tree walking, auto-playlist generation,
- * playlist navigation, and network stream switching.
+ * and local playlist navigation.
  */
 class PlayerPlaylistLoader(
   private val activity: PlayerActivity,
 ) {
-  var activeNetworkStreamId: String? = null
+  // PRELOAD-RESUME-STATE-V1
   var isAutoplayNextTriggered: Boolean = false
-
-  /**
-   * Bumped on every SMB playlist navigation so a resolve that finishes late, after the user has
-   * already pressed Next again, is discarded instead of loading on top of the newer one.
-   */
-  private var smbResolveToken = 0
 
   /**
    * Check if there's a next video in the playlist
@@ -132,13 +124,14 @@ class PlayerPlaylistLoader(
       return
     }
     isAutoplayNextTriggered = true
-    loadPlaylistItemInternal(index)
+    val loadGeneration = activity.beginPlaybackLoadRequest()
+    loadPlaylistItemInternal(index, loadGeneration)
   }
 
   /**
    * Internal method to load a playlist item
    */
-  fun loadPlaylistItemInternal(index: Int) {
+  fun loadPlaylistItemInternal(index: Int, loadGeneration: Long = activity.beginPlaybackLoadRequest()) {
     val playlist = activity.viewModel.playlistManager.playlist.value
     if (index < 0 || index >= playlist.size) {
       Log.e(TAG, "Invalid playlist index: $index (playlist size: ${playlist.size})")
@@ -146,52 +139,15 @@ class PlayerPlaylistLoader(
     }
 
     val uri = playlist[index]
-    // scheme is platform-typed and null for local M3U entries resolved by Uri.parse —
-    // .equals on a null receiver used to NPE the whole playlist.
-    if (uri.scheme?.equals("smb", ignoreCase = true) == true) {
-      val token = ++smbResolveToken
-      activity.lifecycleScope.launch {
-        val stream = withContext(Dispatchers.IO) {
-          runCatching { FolderPlaylistOps.resolveSmbUri(uri.toString()) }
-            .onFailure { Log.w(TAG, "Could not resolve the next network playlist item", it) }
-            .getOrNull()
-        }
-        if (token != smbResolveToken) {
-          stream?.streamId?.takeIf { it.isNotEmpty() }?.let { streamId ->
-            activity.lifecycleScope.launch(Dispatchers.IO) {
-              NetworkStreamingProxy.getInstance()?.unregisterStream(streamId)
-            }
-          }
-          return@launch
-        }
-        if (stream == null) {
-          activity.viewModel.showToast(activity.getString(R.string.network_share_unreachable))
-          return@launch
-        }
-        loadResolvedPlaylistItem(
-          index = index,
-          uri = uri,
-          playableUri = stream.url,
-          mediaIdentifierOverride = "network_${stream.connectionId}_${stream.filePath.hashCode()}",
-        )
-      }
-      return
-    }
 
-    loadResolvedPlaylistItem(index, uri, uri.resolveUri(activity) ?: uri.toString())
+    loadResolvedPlaylistItem(
+      index,
+      uri,
+      uri.resolveUri(activity) ?: uri.toString(),
+      loadGeneration = loadGeneration,
+    )
   }
 
-  fun switchActiveNetworkStream(playableUri: String?) {
-    // Parsing a proxy URL is pure; never start the proxy to inspect a local file's URI.
-    val newStreamId = NetworkStreamingProxy.extractStreamIdFromUrl(playableUri)
-    val oldStreamId = activeNetworkStreamId
-    if (oldStreamId != null && oldStreamId != newStreamId) {
-      activity.lifecycleScope.launch(Dispatchers.IO) {
-        NetworkStreamingProxy.getInstance()?.unregisterStream(oldStreamId)
-      }
-    }
-    activeNetworkStreamId = newStreamId
-  }
 
   /**
    * Loads a playlist item whose playable URI is already known.
@@ -201,14 +157,14 @@ class PlayerPlaylistLoader(
     uri: Uri,
     playableUri: String,
     mediaIdentifierOverride: String? = null,
+    loadGeneration: Long = activity.beginPlaybackLoadRequest(),
   ) {
+    if (!activity.isPlaybackLoadRequestCurrent(loadGeneration)) return
     activity.isReady = false
     // Save current video's playback state before switching
     if (activity.fileName.isNotBlank()) {
       activity.saveVideoPlaybackState(activity.fileName)
     }
-
-    switchActiveNetworkStream(playableUri)
 
     // Update index in manager
     activity.viewModel.playlistManager.updateIndex(index)
@@ -224,22 +180,23 @@ class PlayerPlaylistLoader(
     val cachedDurationMs = activity.viewModel.playlistManager.getDurationAt(index)
     val fastDurationMs = if (cachedDurationMs > 0L) cachedDurationMs else getFastDurationMsForUri(uri)
     val fastDurationSec = if (fastDurationMs > 0L) fastDurationMs / 1000f else null
-    val isNetwork = HttpUtils.isNetworkStream(uri)
-    activity.viewModel.prepareForFileLoad(fastDurationSec, isNetwork = isNetwork)
+    activity.viewModel.prepareForFileLoad(fastDurationSec)
+    val loadedTitle = activity.fileName
 
     val targetUri = uri
     activity.lifecycleScope.launch(Dispatchers.IO) {
       val cachedThumb = activity.getCachedThumbnailForUri(targetUri)
       withContext(Dispatchers.Main) {
+        if (!activity.isPlaybackLoadRequestCurrent(loadGeneration)) return@withContext
         val activeThumb = cachedThumb ?: MediaPlaybackService.thumbnail ?: activity.miniPlayerStateManager.state.value.thumbnail
         MediaPlaybackService.thumbnail = activeThumb
         activity.mediaPlaybackService?.setMediaInfo(
-          title = activity.fileName,
+          title = loadedTitle,
           artist = "",
           thumbnail = activeThumb
         )
         activity.miniPlayerStateManager.updateState(
-          title = activity.fileName,
+          title = loadedTitle,
           thumbnail = activeThumb,
           videoPath = targetUri.toString(),
           currentPositionMs = 0L,
@@ -249,9 +206,6 @@ class PlayerPlaylistLoader(
         )
       }
     }
-
-    // Set HTTP headers (including referer) for network streams
-    setHttpHeadersForUri(uri)
 
     // Update playlist play history if this is a custom playlist
     activity.viewModel.playlistManager.playlistId?.let { id ->
@@ -287,14 +241,11 @@ class PlayerPlaylistLoader(
 
     if (activity.mpvInitialized) {
       activity.safeSetPropertyString("vid", "no")
-      runCatching { MPVLib.setPropertyBoolean("pause", true) }
-    } else if (!activity.playerPreferences.autoplayOnOpen.get() || activity.playerPreferences.savePositionOnQuit.get() || activity.playerPreferences.resumePlaybackMode.get() != ResumePlaybackMode.Never) {
-      runCatching { MPVLib.setPropertyBoolean("pause", true) }
     }
-    // Load the new video
-    // Avoid blocking UI thread while mpv opens network streams (e.g., HLS).
-    activity.lifecycleScope.launch(Dispatchers.Default) {
-      MPVLib.command("loadfile", playableUri)
+    runCatching { MPVLib.setPropertyBoolean("pause", true) }
+    // Prepare the resume position and cached playback state before MPV opens the item.
+    activity.lifecycleScope.launch {
+      activity.loadMediaWithPlaybackState(playableUri, loadGeneration)
     }
 
     // Update media title (this will trigger UI update)
@@ -313,6 +264,7 @@ class PlayerPlaylistLoader(
     // Update media session metadata
     activity.lifecycleScope.launch {
       kotlinx.coroutines.delay(100) // Wait for MPV to load the file
+      if (!activity.isPlaybackLoadRequestCurrent(loadGeneration)) return@launch
       val mpvDuration = MPVLib.getPropertyDouble("duration")
       val durationMs = if (mpvDuration != null && mpvDuration > 0) {
         (mpvDuration * 1000).toLong()
@@ -440,24 +392,32 @@ class PlayerPlaylistLoader(
   }
 
   /**
-   * Intercepts an M3U/M3U8 file or stream, parses its channels/items,
+   * Intercepts a local M3U/M3U8 file and parses its local media paths.
    * populates the playlist, and triggers playback of the first item.
-   * Falls back to direct playback if the parse fails (e.g. HLS streams).
+   * A local HLS playlist may fall back to direct local-file playback.
    */
   fun loadM3uPlaylistOrPlayDirectly(uriStr: String) {
     val uri = Uri.parse(uriStr)
+    if (!M3UParser.isLocalMediaReference(uriStr)) {
+      Log.w(TAG, "Ignoring non-local playlist URI")
+      return
+    }
+    val loadGeneration = activity.beginPlaybackLoadRequest()
     activity.lifecycleScope.launch(Dispatchers.IO) {
-      val result = if (uri.scheme == "http" || uri.scheme == "https") {
-        M3UParser.parseFromUrl(uriStr)
-      } else {
-        M3UParser.parseFromUri(activity, uri)
-      }
+      val result = M3UParser.parseFromUri(activity, uri)
 
       withContext(Dispatchers.Main) {
+        if (!activity.isPlaybackLoadRequestCurrent(loadGeneration)) return@withContext
         if (result is M3UParseResult.Success && result.items.isNotEmpty()) {
-          val items = result.items
-          val playlistUris = items.map { Uri.parse(it.url) }
-          val playlistTitles = items.map { it.title ?: it.url }
+          val localItems = result.items.mapNotNull { item ->
+            val itemUri = Uri.parse(item.path)
+            if (itemUri.scheme == "content" || itemUri.scheme == "file" ||
+              (itemUri.scheme == null && (itemUri.path?.startsWith('/') == true || item.path.startsWith('/')))) {
+              item to itemUri
+            } else null
+          }
+          val playlistUris = localItems.map { it.second }
+          val playlistTitles = localItems.map { it.first.title ?: it.first.path }
 
           activity.viewModel.playlistManager.setPlaylist(
             items = playlistUris,
@@ -468,27 +428,21 @@ class PlayerPlaylistLoader(
           )
 
           // Play the first item
-          loadPlaylistItemInternal(0)
+          loadPlaylistItemInternal(0, loadGeneration)
 
           // Set media title in UI
           val playlistName = result.playlistName
           activity.viewModel.setMediaTitle(playlistName)
-          Log.d(TAG, "Loaded M3U playlist '${playlistName}' with ${items.size} items")
+          Log.d(TAG, "Loaded M3U playlist '${playlistName}' with ${localItems.size} items")
         } else {
-          // If parsing failed or HLS, play the URI directly in MPV
-          Log.d(TAG, "M3U parsing failed or HLS stream. Playing directly: $uriStr")
+          // Keep support for local HLS playlist files; remote sources are rejected above.
+          Log.d(TAG, "Local M3U parsing failed or HLS playlist. Playing local file")
           if (activity.mpvInitialized) {
             activity.safeSetPropertyString("vid", "no")
-            runCatching { MPVLib.setPropertyBoolean("pause", true) }
-          } else if (!activity.playerPreferences.autoplayOnOpen.get() || activity.playerPreferences.savePositionOnQuit.get() || activity.playerPreferences.resumePlaybackMode.get() != ResumePlaybackMode.Never) {
-            runCatching { MPVLib.setPropertyBoolean("pause", true) }
           }
-          if (activity.mpvInitialized) {
-            activity.lifecycleScope.launch(Dispatchers.Default) {
-              MPVLib.command("loadfile", uriStr)
-            }
-          } else {
-            activity.player.playFile(uriStr)
+          runCatching { MPVLib.setPropertyBoolean("pause", true) }
+          activity.lifecycleScope.launch {
+            activity.loadMediaWithPlaybackState(uriStr, loadGeneration)
           }
         }
       }
@@ -510,46 +464,13 @@ class PlayerPlaylistLoader(
     )
   }
 
-  /**
-   * Generate a unique identifier for this media for playback state/history.
-   *
-   * For local/offline files, uses fileName (display name or path).
-   * For network streams via proxy (SMB/WebDAV/FTP), uses the stable network file path from intent extras.
-   * For other network URIs (http/https/rtmp/etc.), uses a hash of the URI string to distinguish different streams.
-   */
+  /** Generate a stable identifier from a local media URI and display name. */
   fun getMediaIdentifier(intent: Intent, fileName: String): String {
-    // Check if this is a network file played via proxy (SMB/WebDAV/FTP)
-    // Use the stable network file path instead of the temporary proxy URL
-    val networkFilePath = intent.getStringExtra("network_file_path")
-    val networkConnectionId = intent.getLongExtra("network_connection_id", -1L)
-
-    if (networkFilePath != null && networkConnectionId != -1L) {
-      // For network files via proxy: use connection ID + file path for stable identifier
-      val identifier = "network_${networkConnectionId}_${networkFilePath.hashCode()}"
-      Log.d(
-        TAG,
-        "Using network file identifier: $identifier (connection: $networkConnectionId, path: $networkFilePath)",
-      )
-      return identifier
-    }
-
     val uri = activity.extractUriFromIntent(intent)
     return if (uri != null) getMediaIdentifierFromUri(uri, fileName) else fileName
   }
 
-  /**
-   * Generate a unique identifier for this media from a URI and name.
-   *
-   * For local/offline files, uses fileName (display name or path).
-   * For network URIs (http/https/rtmp/etc.), uses a hash of the URI string to distinguish different streams.
-   */
-  fun getMediaIdentifierFromUri(uri: Uri, fileName: String): String {
-    return if (uri.scheme?.startsWith("http") == true || uri.scheme == "rtmp" || uri.scheme == "ftp" || uri.scheme == "rtsp" || uri.scheme == "mms" || uri.scheme.equals("smb", ignoreCase = true)) {
-      "${fileName}_${uri.toString().hashCode()}"
-    } else {
-      fileName
-    }
-  }
+  fun getMediaIdentifierFromUri(uri: Uri, fileName: String): String = fileName
 
   fun generatePlaylistFromMediaLibrary(currentPath: String) {
     activity.lifecycleScope.launch(Dispatchers.IO) {
@@ -574,58 +495,12 @@ class PlayerPlaylistLoader(
     }
   }
 
-  /**
-   * Picks the sibling source that matches how this file was launched.
-   *
-   * SMB is checked first because for those launches [parsePathFromIntent] yields a local proxy URL,
-   * which has no folder to scan: our own browser passes the share-relative path plus the connection
-   * it came from, and external file managers that proxy SMB themselves (MiXplorer) put the real
-   * location in a `real_path` extra. Without either, nothing changes for local/content launches.
-   */
   fun autoGeneratePlaylist(intent: Intent) {
-    val networkFilePath = intent.getStringExtra("network_file_path")
-    val networkConnectionId = intent.getLongExtra("network_connection_id", -1L)
-    val smbUri = intent.dataString?.takeIf { it.startsWith("smb://", ignoreCase = true) }
-      ?: intent.getStringExtra("real_path")?.takeIf { it.startsWith("smb://", ignoreCase = true) }
-
-    when {
-      networkFilePath != null && networkConnectionId != -1L ->
-        generatePlaylistFromNetworkFolder {
-          FolderPlaylistOps.generateNetworkFolderPlaylist(networkConnectionId, networkFilePath)
-        }
-
-      smbUri != null ->
-        generatePlaylistFromNetworkFolder { FolderPlaylistOps.generateNetworkFolderPlaylist(smbUri) }
-
-      else -> {
-        val path = activity.parsePathFromIntent(intent) ?: return
-        if (intent.getStringExtra("launch_source") == "media_library_list") {
-          generatePlaylistFromMediaLibrary(path)
-        } else {
-          generatePlaylistFromFolder(path)
-        }
-      }
-    }
-  }
-
-  /**
-   * Builds a playlist by listing a remote folder. A share we cannot list means no playlist — the
-   * user asked to watch a file, not to build a playlist, so playback is left alone and it is only
-   * logged.
-   */
-  private fun generatePlaylistFromNetworkFolder(generate: suspend () -> Result<Pair<List<Uri>, Int>?>) {
-    activity.lifecycleScope.launch(Dispatchers.IO) {
-      val (newPlaylist, newIndex) = generate()
-        .getOrElse { e ->
-          Log.w(TAG, "Could not list the remote folder for an auto-playlist", e)
-          return@launch
-        } ?: return@launch
-
-      withContext(Dispatchers.Main) {
-        activity.viewModel.playlistManager.setPlaylist(items = newPlaylist, index = newIndex)
-        Log.d(TAG, "Auto-playlist generated from network folder: ${newPlaylist.size} items")
-        updateMiniPlayerPlaylistState()
-      }
+    val path = activity.parsePathFromIntent(intent) ?: return
+    if (intent.getStringExtra("launch_source") == "media_library_list") {
+      generatePlaylistFromMediaLibrary(path)
+    } else {
+      generatePlaylistFromFolder(path)
     }
   }
 
@@ -653,35 +528,6 @@ class PlayerPlaylistLoader(
     }
   }
 
-  /**
-   * Automatically extracts and sets the Referer header based on the URI origin.
-   *
-   * @param uri The URI to extract referer from and set headers for
-   */
-  fun setHttpHeadersForUri(uri: Uri) {
-    if (!HttpUtils.isNetworkStream(uri)) return
-
-    val headerMap = mutableMapOf<String, String>()
-
-    // Automatically extract and set referer domain from the URI
-    HttpUtils.extractRefererDomain(uri)?.let { referer ->
-      headerMap["Referer"] = referer
-      Log.d(TAG, "Auto-detected Referer for playlist item: $referer")
-    }
-
-    // Set all headers in MPV, or clear them if empty
-    if (headerMap.isNotEmpty()) {
-      val headersString = headerMap
-        .map { "${it.key}: ${it.value.replace(",", "\\,")}" }
-        .joinToString(",")
-
-      activity.safeSetPropertyString("http-header-fields", headersString)
-      Log.d(TAG, "Set HTTP headers for playlist item: $headersString")
-    } else {
-      activity.safeSetPropertyString("http-header-fields", "")
-      Log.d(TAG, "Cleared HTTP headers for playlist item")
-    }
-  }
 
   /**
    * Check if the current playlist is an M3U playlist (sourced from database).

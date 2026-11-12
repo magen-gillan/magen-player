@@ -1,14 +1,17 @@
-.gradle/
-build/
-**/build/
-local.properties
-.idea/
 *.iml
+.gradle
+/local.properties
+.idea
 .DS_Store
-
-# Release APKs live in GitHub Releases, never in the git tree — committed APKs
-# (~80MB working tree + ~50MB of history blobs) were the main reason the repo was huge.
-*.apk
-*.idsig
-artifacts/
-app/build/outputs/.kotlin/
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+app/release
+MERGE_RULES.md
+KeyStore.jks
+install_debug.sh
+compile_release.sh
+remote.log
+mpvRex-libmpv/

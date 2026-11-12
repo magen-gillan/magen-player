@@ -47,7 +47,7 @@ class MediaPlaybackService :
   companion object {
     private const val TAG = "MediaPlaybackService"
     private const val NOTIFICATION_ID = 1
-    private const val NOTIFICATION_CHANNEL_ID = "magenplayer_playback_channel"
+    private const val NOTIFICATION_CHANNEL_ID = "magen_player_playback_channel"
 
     const val ACTION_TOGGLE_REPEAT = "com.magen.player.action.TOGGLE_REPEAT"
     const val ACTION_TOGGLE_SHUFFLE = "com.magen.player.action.TOGGLE_SHUFFLE"

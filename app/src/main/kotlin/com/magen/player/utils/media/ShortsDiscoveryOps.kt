@@ -3,12 +3,11 @@ package com.magen.player.utils.media
 import android.content.Context
 import android.util.Log
 import com.magen.player.database.dao.ShortsMediaDao
-import com.magen.player.database.repository.HybridMediaIndexRepository
 import com.magen.player.database.repository.VideoMetadataCacheRepository
-import com.magen.player.domain.media.model.MediaFolder
 import com.magen.player.domain.media.model.Video
 import com.magen.player.preferences.BrowserPreferences
 import com.magen.player.utils.storage.CoreMediaScanner
+import com.magen.player.utils.storage.MediaScanPolicy
 import com.magen.player.utils.storage.VideoScanUtils
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -22,51 +21,6 @@ import java.io.File
  */
 object ShortsDiscoveryOps {
     private const val TAG = "ShortsDiscoveryOps"
-
-    /**
-     * Fast folder list for shorts sources.
-     *
-     * Shorts used to call [CoreMediaScanner.getFlatMediaFolders], which builds the full
-     * media tree — including a recursive walk of every external volume and an O(n^2)
-     * hierarchy pass — and could run for minutes on devices with slow/large storage,
-     * freezing both the feed and the sourced-folders picker behind their spinners.
-     *
-     * This mirrors the main browser's strategy: read the persistent hybrid index (a
-     * Room query that returns in milliseconds); only on a cold index fall back to a
-     * quick MediaStore-only scan while the full index build runs in the background.
-     */
-    suspend fun getSourceFolders(context: Context): List<MediaFolder> {
-        val koin = org.koin.core.context.GlobalContext.get()
-        val hybridIndex = koin.get<HybridMediaIndexRepository>()
-        return if (!hybridIndex.isIndexEmpty()) {
-            hybridIndex.getFlatFolders(
-                playbackStates = emptyList(),
-                thresholdDays = 7,
-                watchedThreshold = koin.get<BrowserPreferences>().watchedThreshold.get(),
-            )
-        } else {
-            // Cold index (first launch): build it in the background so subsequent
-            // loads are fast; answer now from the quick MediaStore-only scan.
-            hybridIndex.ensureFreshAsync()
-            CoreMediaScanner.getFlatMediaFoldersQuick(context)
-        }
-    }
-
-    /**
-     * Fast video list for one shorts source folder.
-     *
-     * Reads the indexed rows (which already carry width/height/rotation/duration —
-     * exactly what shorts selection needs) and only falls back to a direct folder
-     * scan when the index has nothing for that folder (e.g. files added after the
-     * last index refresh).
-     */
-    suspend fun getVideosForShorts(context: Context, folderPath: String): List<Video> {
-        val hybridIndex = org.koin.core.context.GlobalContext.get()
-            .get<HybridMediaIndexRepository>()
-        val indexed = hybridIndex.getVideosInFolder(folderPath).filter { !it.isAudio }
-        if (indexed.isNotEmpty()) return indexed
-        return VideoScanUtils.getVideosInFolder(context, folderPath).filter { !it.isAudio }
-    }
 
     /**
      * Discovers all vertical videos across all scanned media folders.
@@ -104,21 +58,24 @@ object ShortsDiscoveryOps {
         metadataCache: VideoMetadataCacheRepository,
         browserPreferences: BrowserPreferences,
     ): Flow<Video> = channelFlow {
-        val configuredFoldersSet = browserPreferences.shortsSourceFolders.get()
-        val flatFolders = getSourceFolders(context)
-        val filteredFolders = if (configuredFoldersSet.isNotEmpty()) {
-            flatFolders.filter { it.path in configuredFoldersSet }
+        val configuredFolders = browserPreferences.shortsSourceFolders.get()
+            .map { runCatching { File(it).canonicalPath }.getOrDefault(File(it).absolutePath) }
+        val sourceFolders = if (configuredFolders.isNotEmpty()) {
+            configuredFolders
         } else {
-            flatFolders
+            CoreMediaScanner.getFlatMediaFolders(context).map { it.path }
         }
-
-        val allVideos = filteredFolders.flatMap { folder ->
-            getVideosForShorts(context, folder.path)
-        }
+        val scanPolicy = MediaScanPolicy(
+            includeNoMediaContent = configuredFolders.isNotEmpty() || browserPreferences.includeNoMediaContent.get(),
+        )
+        val allVideos = sourceFolders.flatMap { folderPath ->
+            VideoScanUtils.getVideosInFolder(context, folderPath, scanPolicy)
+        }.distinctBy { it.path }.filter { !it.isAudio }
 
         val elimination = SelectionRules(
             includeHorizontal = browserPreferences.includeShortHorizontalVideos.get(),
             maxHorizontalMs = browserPreferences.maxHorizontalVideoDurationMinutes.get() * 60 * 1000L,
+            includeAllSourceVideos = configuredFolders.isNotEmpty(),
             manuallyAdded = shortsMediaDao.getAllShortsMedia()
                 .filter { it.isManuallyAdded }
                 .map { it.path }
@@ -145,7 +102,7 @@ object ShortsDiscoveryOps {
             // --- Pass 1: orientation already known from MediaStore ---
             for (video in allVideos) {
                 val (w, h) = displayDimensions(video.width, video.height, video.rotation)
-                if (w > 0 && h > 0) {
+                if (elimination.includeAllSourceVideos || w > 0 && h > 0) {
                     emitResolved(video, w, h, video.duration)
                 }
             }
@@ -222,11 +179,13 @@ object ShortsDiscoveryOps {
     private class SelectionRules(
         private val includeHorizontal: Boolean,
         private val maxHorizontalMs: Long,
+        val includeAllSourceVideos: Boolean,
         private val manuallyAdded: Set<String>,
         private val blocked: Set<String>,
     ) {
         fun isAccepted(path: String, width: Int, height: Int, durationMs: Long): Boolean {
             if (path in blocked) return false
+            if (includeAllSourceVideos) return true
 
             val isVertical = height > width && height > 0
             val isShortHorizontal = width > 0 &&

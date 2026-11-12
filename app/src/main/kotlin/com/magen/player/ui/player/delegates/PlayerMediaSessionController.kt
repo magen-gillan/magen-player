@@ -142,6 +142,6 @@ class PlayerMediaSessionController(
   }
 
   companion object {
-    private const val TAG = "magenplayer"
+    private const val TAG = "MagenPlayer"
   }
 }

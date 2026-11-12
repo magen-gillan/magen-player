@@ -157,14 +157,14 @@ fun PlaybackSpeedSheet(
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
       ) {
          RepeatingIconButton(
-           onClick = { onSpeedChange((speed - 0.05f).coerceAtLeast(0.1f)) },
+           onClick = { onSpeedChange((speed - 0.05f).coerceAtLeast(0.05f)) },
            modifier = Modifier.size(40.dp)
         ) {
            Icon(Icons.Default.Remove, null, modifier = Modifier.size(24.dp))
         }
 
           Slider(
-            value = speed.coerceIn(0.1f, 4.0f),
+            value = speed,
             onValueChange = {
                 // Snap to nearest 0.05
                val snapped = (it * 20).roundToInt() / 20f

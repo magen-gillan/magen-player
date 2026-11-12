@@ -16,6 +16,7 @@ import com.magen.player.domain.media.model.Video
 import com.magen.player.domain.recentlyplayed.repository.RecentlyPlayedRepository
 import com.magen.player.ui.browser.base.BaseBrowserViewModel
 import com.magen.player.utils.media.MediaFormatter
+import com.magen.player.utils.media.PlaybackStateIndex
 import com.magen.player.utils.permission.PermissionUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,9 +28,9 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
 
-class RecentlyPlayedViewModel(application: Application) : 
+class RecentlyPlayedViewModel(application: Application) :
   BaseBrowserViewModel<RecentlyPlayedItem>(application), KoinComponent {
-  
+
   private val recentlyPlayedRepository by inject<RecentlyPlayedRepository>()
   private val playlistRepository by inject<PlaylistRepository>()
 
@@ -41,7 +42,7 @@ class RecentlyPlayedViewModel(application: Application) :
 
   init {
     loadData()
-    
+
     // Observe changes and update automatically
     viewModelScope.launch {
       val db = org.koin.core.context.GlobalContext.get().get<MagenPlayerDatabase>()
@@ -61,10 +62,11 @@ class RecentlyPlayedViewModel(application: Application) :
       try {
         val entities = recentlyPlayedRepository.getRecentlyPlayed(limit = 50)
         val playbackStates = playbackStateRepository.getAllPlaybackStates()
-        
+        val playbackIndex = PlaybackStateIndex.of(playbackStates)
+
         val db = org.koin.core.context.GlobalContext.get().get<MagenPlayerDatabase>()
         val playlistInfos = db.recentlyPlayedDao().getRecentlyPlayedPlaylists(limit = 20)
-        
+
         val appearancePreferences by inject<com.magen.player.preferences.AppearancePreferences>()
         val browserPreferences by inject<com.magen.player.preferences.BrowserPreferences>()
         val advancedPreferences by inject<com.magen.player.preferences.AdvancedPreferences>()
@@ -75,7 +77,7 @@ class RecentlyPlayedViewModel(application: Application) :
         val videoItems = entities.mapNotNull { entity ->
           try {
             val path = entity.filePath
-            val isValidMedia = com.magen.player.utils.history.RecentlyPlayedOps.isNonFileUri(path) || 
+            val isValidMedia = com.magen.player.utils.history.RecentlyPlayedOps.isNonFileUri(path) ||
                                com.magen.player.utils.history.RecentlyPlayedOps.fileExists(path)
             if (autoRemoveDeleted && !isValidMedia) {
               deadPaths.add(path)
@@ -85,37 +87,37 @@ class RecentlyPlayedViewModel(application: Application) :
             var video = createVideoFromEntity(entity, autoRemoveDeleted)
             if (video != null) {
               // Map saved orientation and progress info if available
-              val state = playbackStates.find { it.mediaTitle == video.displayName || it.mediaTitle == video.path }
-              
+              val state = playbackIndex.forVideoPathOrName(video.path, video.displayName)
+
               var progress: Float? = null
               var isWatched = false
-              
+
               if (state != null) {
                 if (state.savedOrientation != null) {
                   video = video.copy(savedOrientation = state.savedOrientation)
                 }
-                
+
                 if (state.hasBeenWatched) {
                   isWatched = true
                 }
-                
+
                 if (video.duration > 0) {
                   val durationSeconds = video.duration / 1000
                   val watched = durationSeconds - state.timeRemaining.toLong()
                   val progressValue = if (durationSeconds > 0) {
                     (watched.toFloat() / durationSeconds.toFloat()).coerceIn(0f, 1f)
                   } else 0f
-                  
+
                   if (state.timeRemaining > 0 && progressValue >= (watchedThreshold / 100f)) {
                     isWatched = true
                   }
-                  
+
                   if (progressValue >= 0.01f && !isWatched) {
                     progress = progressValue
                   }
                 }
               }
-              
+
               RecentlyPlayedItem.VideoItem(
                 video = video,
                 timestamp = entity.timestamp,
@@ -125,14 +127,14 @@ class RecentlyPlayedViewModel(application: Application) :
             } else null
           } catch (e: Exception) { null }
         }
-        
+
         // Clean up dead file records from database if auto-remove is enabled
         if (autoRemoveDeleted && deadPaths.isNotEmpty()) {
           deadPaths.forEach { path ->
             recentlyPlayedRepository.deleteByFilePath(path)
           }
         }
-        
+
         val deadPlaylistIds = mutableListOf<Int>()
         val playlistItems = playlistInfos.mapNotNull { info ->
           val playlist = playlistRepository.getPlaylistById(info.playlistId)
@@ -141,7 +143,7 @@ class RecentlyPlayedViewModel(application: Application) :
             val thumbnailPath = playlistRepository.getEffectiveThumbnailPath(playlist.id)
             RecentlyPlayedItem.PlaylistItem(
               playlist = playlist,
-              videoCount = count, 
+              videoCount = count,
               mostRecentVideoPath = thumbnailPath ?: "",
               timestamp = info.timestamp
             )
@@ -159,7 +161,7 @@ class RecentlyPlayedViewModel(application: Application) :
             recentlyPlayedRepository.deleteByPlaylistId(id)
           }
         }
-        
+
         val allItems = (videoItems + playlistItems).sortedByDescending { it.timestamp }
         _items.value = allItems
         _recentVideos.value = videoItems.map { it.video }
@@ -179,15 +181,15 @@ class RecentlyPlayedViewModel(application: Application) :
     if (entity == null) return null
     val filePath = entity.filePath
     if (autoRemoveDeleted &&
-        !com.magen.player.utils.history.RecentlyPlayedOps.isNonFileUri(filePath) && 
+        !com.magen.player.utils.history.RecentlyPlayedOps.isNonFileUri(filePath) &&
         !com.magen.player.utils.history.RecentlyPlayedOps.fileExists(filePath)) {
       return null
     }
     val file = File(filePath)
-    
+
     val videoTitle = if (entity.videoTitle?.isNotBlank() == true) entity.videoTitle else file.nameWithoutExtension
     val displayName = if (entity.fileName.isNotBlank()) entity.fileName else file.name
-    
+
     val duration = if (entity.duration > 0) entity.duration else 0L
     val size = if (entity.fileSize > 0) entity.fileSize else file.length()
     val dateModified = file.lastModified() / 1000
@@ -225,7 +227,7 @@ class RecentlyPlayedViewModel(application: Application) :
       bucketDisplayName = bucketDisplayName,
       width = if (isAudio) 0 else entity.width,
       height = if (isAudio) 0 else entity.height,
-      fps = 0f, 
+      fps = 0f,
       resolution = if (isAudio) "" else MediaFormatter.formatResolution(entity.width, entity.height),
       isAudio = isAudio,
       artist = entity.artist,
@@ -242,7 +244,7 @@ class RecentlyPlayedViewModel(application: Application) :
       val playlistItems = itemsToDelete.filterIsInstance<RecentlyPlayedItem.PlaylistItem>()
       val videoPaths = videoItems.map { it.video.path }.toSet()
       val playlistIds = playlistItems.map { it.playlist.id }.toSet()
-      
+
       // Optimistically remove from UI state immediately
       _items.value = _items.value.filterNot { item ->
         when (item) {
@@ -274,7 +276,7 @@ class RecentlyPlayedViewModel(application: Application) :
           deletedCount++
         }
       }
-      
+
       loadData()
       Pair(deletedCount, failedCount)
     } catch (e: Exception) {

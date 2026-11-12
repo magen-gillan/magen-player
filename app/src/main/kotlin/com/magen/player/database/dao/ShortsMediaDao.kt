@@ -23,6 +23,9 @@ interface ShortsMediaDao {
     @Query("DELETE FROM shorts_media WHERE path = :path")
     suspend fun deleteByPath(path: String)
 
+    @Query("UPDATE shorts_media SET path = :newPath WHERE path = :oldPath")
+    suspend fun updatePath(oldPath: String, newPath: String)
+
     @Query("UPDATE shorts_media SET isLoved = :isLoved WHERE path = :path")
     suspend fun updateLoved(path: String, isLoved: Boolean)
 

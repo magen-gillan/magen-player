@@ -2,7 +2,6 @@ package com.magen.player.ui.preferences
 
 import android.content.pm.PackageManager
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -36,7 +35,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,19 +57,9 @@ import com.magen.player.presentation.components.GroupedListColumn
 import com.magen.player.presentation.crash.CrashActivity.Companion.collectDeviceInfo
 import com.magen.player.ui.utils.LocalBackStack
 import com.magen.player.ui.utils.navigateBack
-import me.zhanghai.compose.preference.Preference
-import com.magen.player.ui.preferences.components.SwitchPreference
 import me.zhanghai.compose.preference.ProvidePreferenceLocals
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.Serializable
-import org.koin.compose.koinInject
 import com.magen.player.preferences.preference.collectAsState
-import com.magen.player.MainActivity
-import com.magen.player.LocalUpdateViewModel
-import com.magen.player.utils.update.UpdateViewModel
-import androidx.compose.runtime.collectAsState
-import androidx.compose.material.icons.filled.SystemUpdate
-import androidx.compose.material3.CircularProgressIndicator
 
 @Serializable
 object AboutScreen : Screen {
@@ -82,27 +70,11 @@ object AboutScreen : Screen {
     val context = LocalContext.current
     val backstack = LocalBackStack.current
     val clipboardManager = LocalClipboardManager.current
-    val updateViewModel = LocalUpdateViewModel.current
-    val updateState by (updateViewModel?.updateState ?: MutableStateFlow(UpdateViewModel.UpdateState.Idle)).collectAsState()
     
     val packageManager: PackageManager = context.packageManager
     val packageInfo = packageManager.getPackageInfo(context.packageName, 0)
     val versionName = packageInfo.versionName?.substringBefore('-') ?: packageInfo.versionName
     val buildType = BuildConfig.BUILD_TYPE
-
-    LaunchedEffect(updateState) {
-        when (updateState) {
-            is UpdateViewModel.UpdateState.NoUpdate -> {
-                Toast.makeText(context, context.getString(R.string.pref_about_up_to_date), Toast.LENGTH_SHORT).show()
-                updateViewModel?.dismissNoUpdate()
-            }
-            is UpdateViewModel.UpdateState.Error -> {
-                Toast.makeText(context, context.getString(R.string.pref_about_check_updates_failed), Toast.LENGTH_SHORT).show()
-                updateViewModel?.dismissNoUpdate()
-            }
-            else -> {}
-        }
-    }
 
     Scaffold(
       topBar = {
@@ -130,7 +102,6 @@ object AboutScreen : Screen {
       val cs = MaterialTheme.colorScheme
       val colorPrimary = cs.primaryContainer
       val colorSecondary = cs.secondaryContainer
-      val isAutoUpdateEnabled by (updateViewModel?.isAutoUpdateEnabled ?: MutableStateFlow(false)).collectAsState()
       val transition = rememberInfiniteTransition()
       val fraction by transition.animateFloat(
         initialValue = 0f,
@@ -212,32 +183,20 @@ object AboutScreen : Screen {
 
                   Spacer(modifier = Modifier.height(20.dp))
 
-                  Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                  Button(
+                    onClick = { backstack.add(LibrariesScreen) },
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                      containerColor = cs.primary,
+                      contentColor = cs.onPrimary,
+                    ),
                   ) {
-                    val btnContainer = cs.primary
-                    val btnContent = cs.onPrimary
-                    Button(
-                      onClick = { backstack.add(LibrariesScreen) },
-                      modifier =
-                        Modifier
-                          .weight(1f)
-                          .height(56.dp),
-                      shape = RoundedCornerShape(16.dp),
-                      colors =
-                        ButtonDefaults.buttonColors(
-                          containerColor = btnContainer,
-                          contentColor = btnContent,
-                        ),
-                    ) {
-                      Text(
-                        text = stringResource(id = R.string.pref_about_oss_libraries),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                      )
-                    }
-
+                    Text(
+                      text = stringResource(id = R.string.pref_about_oss_libraries),
+                      style = MaterialTheme.typography.titleMedium,
+                      fontWeight = FontWeight.SemiBold,
+                    )
                   }
 
                   Spacer(modifier = Modifier.height(20.dp))
@@ -279,58 +238,8 @@ object AboutScreen : Screen {
             }
           }
 
-          // Updates Section
-          if (BuildConfig.ENABLE_UPDATE_FEATURE) {
-            PreferenceSectionHeader(title = stringResource(R.string.pref_category_updates))
-            GroupedListColumn {
-              GroupedPreferenceCard(position = GroupPosition.FIRST) {
-                SwitchPreference(
-                  value = isAutoUpdateEnabled,
-                  onValueChange = { updateViewModel?.toggleAutoUpdate(it) },
-                  title = { Text(stringResource(R.string.pref_about_auto_check_updates)) },
-                  summary = {
-                    Text(
-                      stringResource(R.string.pref_about_auto_check_updates_summary),
-                      color = MaterialTheme.colorScheme.outline,
-                    )
-                  },
-                  icon = {
-                    Icon(
-                      imageVector = Icons.Default.SystemUpdate,
-                      contentDescription = null,
-                      tint = MaterialTheme.colorScheme.primary
-                    )
-                  }
-                )
-              }
-              
-              GroupedPreferenceCard(position = GroupPosition.LAST) {
-                Preference(
-                  title = { Text(stringResource(R.string.pref_about_check_updates)) },
-                  summary = {
-                    if (updateState is UpdateViewModel.UpdateState.Loading) {
-                      Text(stringResource(R.string.pref_about_checking), color = MaterialTheme.colorScheme.primary)
-                    } else {
-                      Text(stringResource(R.string.pref_about_check_updates_summary), color = MaterialTheme.colorScheme.outline)
-                    }
-                  },
-                  icon = {
-                    if (updateState is UpdateViewModel.UpdateState.Loading) {
-                       CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
-                    } else {
-                       Icon(
-                         imageVector = Icons.Default.SystemUpdate,
-                         contentDescription = null,
-                         tint = MaterialTheme.colorScheme.primary
-                       )
-                    }
-                  },
-                  onClick = { updateViewModel?.checkForUpdate(manual = true) },
-                  enabled = updateState !is UpdateViewModel.UpdateState.Loading
-                )
-              }
-            }
-          }
+          Spacer(Modifier.height(8.dp))
+
           Spacer(Modifier.height(com.magen.player.ui.browser.LocalNavigationBarHeight.current + 16.dp))
         }
       }

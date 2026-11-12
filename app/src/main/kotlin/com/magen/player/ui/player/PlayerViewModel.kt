@@ -22,8 +22,6 @@ import com.magen.player.preferences.DecoderPreferences
 import com.magen.player.preferences.GesturePreferences
 import com.magen.player.preferences.PlayerPreferences
 import com.magen.player.preferences.SubtitlesPreferences
-import com.magen.player.repository.wyzie.WyzieSearchRepository
-import com.magen.player.repository.wyzie.WyzieSubtitle
 import com.magen.player.utils.media.ChecksumUtils
 import com.magen.player.utils.media.MediaInfoParser
 import `is`.xyz.mpv.MPVLib
@@ -57,7 +55,6 @@ import org.koin.core.component.inject
 import java.io.File
 import com.magen.player.utils.storage.FileTypeUtils
 import androidx.documentfile.provider.DocumentFile
-import com.magen.player.domain.ytdl.model.VideoQuality
 import com.magen.player.preferences.AdvancedPreferences
 import com.magen.player.ui.browser.miniplayer.MiniPlayerStateManager
 import kotlin.properties.ReadOnlyProperty
@@ -112,7 +109,6 @@ class PlayerViewModel(
   private val json: Json by inject()
   private val playbackStateRepository: com.magen.player.domain.playbackstate.repository.PlaybackStateRepository by inject()
   private val recentlyPlayedRepository: com.magen.player.domain.recentlyplayed.repository.RecentlyPlayedRepository by inject()
-  private val wyzieRepository: WyzieSearchRepository by inject()
 
   private val browserPreferences: com.magen.player.preferences.BrowserPreferences by inject()
   private val miniPlayerStateManager: MiniPlayerStateManager by inject()
@@ -131,7 +127,6 @@ class PlayerViewModel(
    */
   private val _subtitleManager = SubtitleManager(
     context = appContext,
-    wyzieRepository = wyzieRepository,
     subtitlesPreferences = subtitlesPreferences,
     scope = viewModelScope,
     onShowToast = { showToast(it) }
@@ -210,25 +205,10 @@ class PlayerViewModel(
   }
   val gestureManager: PlayerGestureManager get() = _gestureManager
 
-  // Subtitle state delegates
-  val isDownloadingSub = _subtitleManager.isDownloadingSub
-  val isSearchingSub = _subtitleManager.isSearchingSub
-  val isOnlineSectionExpanded = _subtitleManager.isOnlineSectionExpanded
-  val wyzieSearchResults = _subtitleManager.wyzieSearchResults
-  val mediaSearchResults = _subtitleManager.mediaSearchResults
-  val isSearchingMedia = _subtitleManager.isSearchingMedia
-  val selectedTvShow = _subtitleManager.selectedTvShow
-  val isFetchingTvDetails = _subtitleManager.isFetchingTvDetails
-  val selectedSeason = _subtitleManager.selectedSeason
-  val seasonEpisodes = _subtitleManager.seasonEpisodes
-  val isFetchingEpisodes = _subtitleManager.isFetchingEpisodes
-  val selectedEpisode = _subtitleManager.selectedEpisode
-
   // Playlist items for the playlist sheet
   private val _playlistItems = kotlinx.coroutines.flow.MutableStateFlow<List<com.magen.player.ui.player.controls.components.sheets.PlaylistItem>>(emptyList())
   val playlistItems: kotlinx.coroutines.flow.StateFlow<List<com.magen.player.ui.player.controls.components.sheets.PlaylistItem>> = _playlistItems.asStateFlow()
 
-  fun toggleOnlineSection() = _subtitleManager.toggleOnlineSection()
 
   // Cache for video metadata to avoid re-extracting — LruCache handles bounds + thread-safety
   private val metadataCache = object : android.util.LruCache<String, Pair<String, String>>(100) {}
@@ -319,26 +299,6 @@ class PlayerViewModel(
         }
         .toList()
     }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
-
-  /**
-   * Alternate audio languages advertised by the yt-dlp add-on that are NOT yet
-   * attached to mpv. They are attached on demand (see [selectAlternateAudio]) so
-   * no alternate stream is buffered until the user actually wants it.
-   */
-  private val _availableAlternateAudio = MutableStateFlow<List<com.magen.player.domain.ytdl.model.AudioTrack>>(emptyList())
-  val availableAlternateAudio: StateFlow<List<com.magen.player.domain.ytdl.model.AudioTrack>> =
-    _availableAlternateAudio.asStateFlow()
-
-  /** Publishes the alternate audio list resolved for the current web stream. */
-  fun setAvailableAlternateAudio(tracks: List<com.magen.player.domain.ytdl.model.AudioTrack>) {
-    _availableAlternateAudio.value = tracks
-  }
-
-  /** Attaches and selects an alternate audio language chosen by the user. */
-  fun selectAlternateAudio(track: com.magen.player.domain.ytdl.model.AudioTrack) {
-    _availableAlternateAudio.value = _availableAlternateAudio.value.filterNot { it.url == track.url }
-    _trackManager.addRemoteAudio(track.url, track.label, select = true, lang = track.lang)
-  }
 
   val chapters: StateFlow<List<dev.vivvvek.seeker.Segment>> =
     observeChapters(json)
@@ -443,23 +403,6 @@ class PlayerViewModel(
   val lastMoreSheetTab = playerPreferences.lastMoreSheetTab
   val panelShown = MutableStateFlow(Panels.None)
   val isSpeedLocked = MutableStateFlow(false)
-
-  // Web stream video qualities
-  val availableVideoQualities = MutableStateFlow<List<VideoQuality>>(emptyList())
-  val currentVideoQuality = MutableStateFlow<VideoQuality?>(null)
-
-  fun setAvailableVideoQualities(
-    qualities: List<VideoQuality>,
-    current: VideoQuality? = null,
-  ) {
-    availableVideoQualities.value = qualities
-    currentVideoQuality.value = current
-  }
-
-  fun clearVideoQualities() {
-    availableVideoQualities.value = emptyList()
-    currentVideoQuality.value = null
-  }
 
   // Seek state delegates
   val seekText: StateFlow<String?> get() = _gestureManager.seekText
@@ -886,7 +829,6 @@ class PlayerViewModel(
 
   fun resetExternalAudioTracks() {
     _trackManager.resetExternalAudioTracks()
-    _availableAlternateAudio.value = emptyList()
   }
 
   fun prepareForFileLoad(initialDurationSec: Float? = null, isNetwork: Boolean = false) {
@@ -911,6 +853,14 @@ class PlayerViewModel(
     _isLoadingFile.value = true
     _isLoadingUrl.value = isNetwork
     _isNetworkStream.value = isNetwork
+
+    if (
+        playerUpdate.value is PlayerUpdates.ResumedFrom ||
+        playerUpdate.value is PlayerUpdates.PromptResume
+    ) {
+      playerUpdate.value = PlayerUpdates.None
+    }
+
     if (externalAudioTracks.isEmpty()) {
       _precisePosition.value = 0f
       if (primaryVideoDuration.value == null) {
@@ -996,24 +946,6 @@ class PlayerViewModel(
 
 
   fun removeSubtitle(id: Int) = _subtitleManager.removeSubtitle(id, subtitleTracks.value)
-
-  // --- Media Search and Series Management ---
-
-  fun searchMedia(query: String) = _subtitleManager.searchMedia(query)
-
-  fun selectMedia(result: com.magen.player.repository.wyzie.WyzieTmdbResult) = _subtitleManager.selectMedia(result)
-
-  fun selectSeason(season: com.magen.player.repository.wyzie.WyzieSeason) = _subtitleManager.selectSeason(season)
-
-  fun selectEpisode(episode: com.magen.player.repository.wyzie.WyzieEpisode) = _subtitleManager.selectEpisode(episode, currentMediaTitle)
-
-  fun clearMediaSelection() = _subtitleManager.clearMediaSelection()
-
-  // --- Subtitle Search ---
-  fun searchSubtitles(query: String, season: Int? = null, episode: Int? = null, year: String? = null) = _subtitleManager.searchSubtitles(query, season, episode, year)
-
-  fun downloadSubtitle(subtitle: WyzieSubtitle) = _subtitleManager.downloadSubtitle(subtitle, currentMediaTitle)
-
 
   fun toggleSubtitle(id: Int) = _trackManager.toggleSubtitle(id, subtitleTracks.value)
 
@@ -1302,7 +1234,7 @@ class PlayerViewModel(
 
   private var _cachedVideoRotation = 0
 
-  // Restores the user's preferred video aspect ratio and restores pan/zoom settings
+  // Prepares pan and advanced zoom; aspect ratio and regular zoom are finalized with playback state.
   fun resetVisualPreferences() {
 
     // Cache the video rotation once it's available (used by stretch mode)
@@ -1326,18 +1258,12 @@ class PlayerViewModel(
       changeVideoAspect(savedAspect, showUpdate = false, resetZoomAndPan = false, persistToPreferences = false)
     }
 
-    // 2. Load zoom and pan preferences or sync from mpv.conf/engine defaults
-    val prefZoom = playerPreferences.defaultVideoZoom.get()
+    // Aspect ratio and regular zoom are restored together after the video's saved state is available.
+    _videoZoom.value = MPVLib.getPropertyDouble("video-zoom")?.toFloat() ?: 0f
+
+    // Restore pan preferences or sync from mpv.conf/engine defaults.
     val prefPanX = playerPreferences.defaultVideoPanX.get()
     val prefPanY = playerPreferences.defaultVideoPanY.get()
-
-    if (prefZoom != 0f) {
-      MPVLib.setPropertyDouble("video-zoom", prefZoom.toDouble())
-      _videoZoom.value = prefZoom
-    } else {
-      val mpvZoom = MPVLib.getPropertyDouble("video-zoom")?.toFloat() ?: 0f
-      _videoZoom.value = mpvZoom
-    }
 
     if (prefPanX != 0f || prefPanY != 0f) {
       MPVLib.setPropertyDouble("video-pan-x", prefPanX.toDouble())
@@ -1377,6 +1303,33 @@ class PlayerViewModel(
     } else {
       changeVideoAspect(_videoAspect.value, showUpdate = false, resetZoomAndPan = false, persistToPreferences = false)
     }
+    setVideoZoom(_videoZoom.value, persistToPreferences = false)
+  }
+
+  fun restoreAspectAndZoom(
+    aspect: VideoAspect,
+    customAspectRatio: Double,
+    zoom: Float,
+  ) {
+    _cachedVideoRotation = MPVLib.getPropertyInt("video-params/rotate") ?: 0
+
+    if (customAspectRatio > 0.0) {
+      setCustomAspectRatio(
+        customAspectRatio,
+        resetZoomAndPan = false,
+        showUpdate = false,
+        persistToPreferences = false,
+      )
+    } else {
+      changeVideoAspect(
+        aspect,
+        showUpdate = false,
+        resetZoomAndPan = false,
+        persistToPreferences = false,
+      )
+    }
+
+    setVideoZoom(zoom, persistToPreferences = false)
   }
 
   fun changeVideoAspect(
@@ -1563,9 +1516,13 @@ class PlayerViewModel(
 
   // ==================== Video Zoom ====================
 
-  fun setVideoZoom(zoom: Float) {
+  fun setVideoZoom(zoom: Float, persistToPreferences: Boolean = true) {
     _videoZoom.value = zoom
     MPVLib.setPropertyDouble("video-zoom", zoom.toDouble())
+
+    if (persistToPreferences && playerPreferences.rememberVideoAspect.get()) {
+      playerPreferences.defaultVideoZoom.set(zoom)
+    }
   }
 
   // Video pan (for pan & zoom feature)

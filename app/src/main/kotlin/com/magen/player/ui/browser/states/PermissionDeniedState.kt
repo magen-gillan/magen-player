@@ -49,13 +49,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.magen.player.BuildConfig
@@ -220,8 +218,6 @@ fun PermissionDeniedState(
 
   // Explanation Dialog
   if (showExplanationDialog) {
-    val uriHandler = LocalUriHandler.current
-    val githubUrl = "https://github.com/MagenPlayer/Magen-Player"
 
     AlertDialog(
       onDismissRequest = { showExplanationDialog = false },
@@ -294,21 +290,6 @@ fun PermissionDeniedState(
               color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
           }
-
-          Text(
-            text = stringResource(R.string.opensource_github_notice),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-          )
-
-          Text(
-            text = githubUrl,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Medium,
-            textDecoration = TextDecoration.Underline,
-            modifier = Modifier.clickable { uriHandler.openUri(githubUrl) },
-          )
 
           Text(
             text = stringResource(R.string.privacy_assurance_final),

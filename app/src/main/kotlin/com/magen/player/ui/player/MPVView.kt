@@ -34,7 +34,49 @@ class MPVView(
   private val subtitlesPreferences: SubtitlesPreferences by inject()
   private val anime4kManager: Anime4KManager by inject()
 
+  // PRELOAD-RESUME-STATE-V1
+  private data class PendingOptionedLoad(
+    val filePath: String,
+    val loadOptions: String,
+    val beforeLoad: (issueLoad: () -> Unit) -> Boolean,
+    val onLoadFailure: (Throwable) -> Unit,
+  )
+
+  private val pendingOptionedLoadLock = Any()
+  private var pendingOptionedLoad: PendingOptionedLoad? = null
+
   var isExiting = false
+
+  /**
+   * Loads with per-file options while preserving BaseMPVView's deferred-first-load behavior.
+   * When the SurfaceView is not ready, only the newest requested item is retained.
+   */
+  fun playFileWithOptions(
+    filePath: String,
+    loadOptions: String,
+    beforeLoad: (issueLoad: () -> Unit) -> Boolean,
+    onLoadFailure: (Throwable) -> Unit,
+  ) {
+    val pending = PendingOptionedLoad(filePath, loadOptions, beforeLoad, onLoadFailure)
+    val loadNow = synchronized(pendingOptionedLoadLock) {
+      if (holder.surface.isValid) {
+        pendingOptionedLoad = null
+        true
+      } else {
+        pendingOptionedLoad = pending
+        false
+      }
+    }
+    if (loadNow) executeOptionedLoad(pending)
+  }
+
+  private fun executeOptionedLoad(load: PendingOptionedLoad) {
+    runCatching {
+      load.beforeLoad {
+        MPVLib.command("loadfile", load.filePath, "replace", "-1", load.loadOptions)
+      }
+    }.onFailure(load.onLoadFailure)
+  }
 
   /**
    * When the activity handles rotation itself (see `configChanges` in the manifest) the
@@ -194,6 +236,10 @@ class MPVView(
   override fun surfaceCreated(holder: SurfaceHolder) {
     super.surfaceCreated(holder)
     if (!MPVLifecycleLock.isNativeInitialized || MPVLifecycleLock.isTearingDown.value || isExiting) return
+    val pendingLoad = synchronized(pendingOptionedLoadLock) {
+      pendingOptionedLoad.also { pendingOptionedLoad = null }
+    }
+    pendingLoad?.let(::executeOptionedLoad)
 
     // Audio may have been loaded while vo=null with no video track selected. Unlike vid=auto,
     // selecting the attached-picture track by ID reliably starts its single-frame decoder.
@@ -318,9 +364,6 @@ class MPVView(
       "sub-pos" to MPVLib.MpvFormat.MPV_FORMAT_INT64,
       "secondary-sub-scale" to MPVLib.MpvFormat.MPV_FORMAT_DOUBLE,
       "secondary-sub-pos" to MPVLib.MpvFormat.MPV_FORMAT_INT64,
-      // Consumed via propInt["secondary-sid"] (subtitle settings panels); missing here
-      // froze the secondary-subtitle UI state after an mpv destroy/recreate cycle.
-      "secondary-sid" to MPVLib.MpvFormat.MPV_FORMAT_INT64,
       "sub-bold" to MPVLib.MpvFormat.MPV_FORMAT_FLAG,
       "sub-italic" to MPVLib.MpvFormat.MPV_FORMAT_FLAG,
       "sub-justify" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
@@ -329,17 +372,17 @@ class MPVView(
       "sub-border-style" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
       "sub-outline-size" to MPVLib.MpvFormat.MPV_FORMAT_INT64,
       "sub-shadow-offset" to MPVLib.MpvFormat.MPV_FORMAT_INT64,
-      "user-data/magenplayer/show_text" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
-      "user-data/magenplayer/toggle_ui" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
-      "user-data/magenplayer/show_panel" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
-      "user-data/magenplayer/set_button_title" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
-      "user-data/magenplayer/reset_button_title" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
-      "user-data/magenplayer/toggle_button" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
-      "user-data/magenplayer/seek_by" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
-      "user-data/magenplayer/seek_to" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
-      "user-data/magenplayer/seek_by_with_text" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
-      "user-data/magenplayer/seek_to_with_text" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
-      "user-data/magenplayer/software_keyboard" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/mpvex/show_text" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/mpvex/toggle_ui" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/mpvex/show_panel" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/mpvex/set_button_title" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/mpvex/reset_button_title" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/mpvex/toggle_button" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/mpvex/seek_by" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/mpvex/seek_to" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/mpvex/seek_by_with_text" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/mpvex/seek_to_with_text" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
+      "user-data/mpvex/software_keyboard" to MPVLib.MpvFormat.MPV_FORMAT_STRING,
     )
 
   private fun setupAudioOptions() {

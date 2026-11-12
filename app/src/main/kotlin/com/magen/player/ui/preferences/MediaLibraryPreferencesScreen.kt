@@ -67,7 +67,7 @@ object MediaLibraryPreferencesScreen : Screen {
     val advancedPreferences = koinInject<AdvancedPreferences>()
     val hybridMediaIndex = koinInject<HybridMediaIndexRepository>()
     val metadataCache = koinInject<VideoMetadataCacheRepository>()
-    val magenplayerDatabase = koinInject<MagenPlayerDatabase>()
+    val magenPlayerDatabase = koinInject<MagenPlayerDatabase>()
 
     val backstack = LocalBackStack.current
     val context = LocalContext.current
@@ -76,10 +76,10 @@ object MediaLibraryPreferencesScreen : Screen {
     val includeNoMediaContent by browserPreferences.includeNoMediaContent.collectAsState()
     val showAudioFiles by browserPreferences.showAudioFiles.collectAsState()
     val libraryScanRoots by foldersPreferences.libraryScanRoots.collectAsState()
-    val showNetworkThumbnails by appearancePreferences.showNetworkThumbnails.collectAsState()
     val autoScrollToLastPlayed by browserPreferences.autoScrollToLastPlayed.collectAsState()
     val watchedThreshold by browserPreferences.watchedThreshold.collectAsState()
     val showTreeViewPath by browserPreferences.showTreeViewPath.collectAsState()
+    val flattenFolders by browserPreferences.flattenFolders.collectAsState()
     val pinnedItemRepository = koinInject<com.magen.player.domain.pinned.PinnedItemRepository>()
     val isolatePinsByView by pinnedItemRepository.isolatedPreference.collectAsState()
     val unlimitedNameLines by appearancePreferences.unlimitedNameLines.collectAsState()
@@ -88,7 +88,6 @@ object MediaLibraryPreferencesScreen : Screen {
     val enableRecentlyPlayed by advancedPreferences.enableRecentlyPlayed.collectAsState()
     val autoRemoveDeleted by advancedPreferences.autoRemoveDeletedFromHistory.collectAsState()
     val excludeExternalPlayback by advancedPreferences.excludeExternalPlaybackFromHistory.collectAsState()
-    var showNetworkWarning by remember { mutableStateOf(false) }
     var showAutoPlaylistsSheet by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -171,60 +170,6 @@ object MediaLibraryPreferencesScreen : Screen {
                     )
                   },
                 )
-              }
-
-              GroupedPreferenceCard(
-                position = GroupPosition.MIDDLE,
-                highlightKey = R.string.pref_appearance_show_network_thumbnails_title,
-              ) {
-                Column {
-                  SwitchPreference(
-                    value = showNetworkThumbnails,
-                    onValueChange = { newValue ->
-                      if (newValue) {
-                        showNetworkWarning = true
-                      } else {
-                        appearancePreferences.showNetworkThumbnails.set(false)
-                      }
-                    },
-                    title = { Text(text = stringResource(id = R.string.pref_appearance_show_network_thumbnails_title)) },
-                    summary = {
-                      Text(
-                        text = stringResource(id = R.string.pref_appearance_show_network_thumbnails_summary),
-                        color = MaterialTheme.colorScheme.outline,
-                      )
-                    }
-                  )
-
-                  if (showNetworkWarning) {
-                    AlertDialog(
-                      onDismissRequest = { showNetworkWarning = false },
-                      title = { Text(stringResource(R.string.pref_appearance_network_thumbnails_dialog_title)) },
-                      text = {
-                        Column {
-                          Text(
-                            text = stringResource(R.string.pref_appearance_network_thumbnails_dialog_message),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                          )
-                        }
-                      },
-                      confirmButton = {
-                        TextButton(onClick = {
-                          appearancePreferences.showNetworkThumbnails.set(true)
-                          showNetworkWarning = false
-                        }) {
-                          Text(stringResource(R.string.generic_confirm))
-                        }
-                      },
-                      dismissButton = {
-                        TextButton(onClick = { showNetworkWarning = false }) {
-                          Text(stringResource(R.string.generic_cancel))
-                        }
-                      }
-                    )
-                  }
-                }
               }
 
               GroupedPreferenceCard(
@@ -352,7 +297,7 @@ object MediaLibraryPreferencesScreen : Screen {
               }
 
               GroupedPreferenceCard(
-                position = GroupPosition.LAST,
+                position = GroupPosition.MIDDLE,
                 highlightKey = R.string.pref_show_tree_view_path_title,
               ) {
                 SwitchPreference(
@@ -362,6 +307,23 @@ object MediaLibraryPreferencesScreen : Screen {
                   summary = {
                     Text(
                       text = stringResource(id = R.string.pref_show_tree_view_path_summary),
+                      color = MaterialTheme.colorScheme.outline,
+                    )
+                  }
+                )
+              }
+
+              GroupedPreferenceCard(
+                position = GroupPosition.LAST,
+                highlightKey = R.string.pref_flatten_folders_title,
+              ) {
+                SwitchPreference(
+                  value = flattenFolders,
+                  onValueChange = { browserPreferences.flattenFolders.set(it) },
+                  title = { Text(text = stringResource(id = R.string.pref_flatten_folders_title)) },
+                  summary = {
+                    Text(
+                      text = stringResource(id = R.string.pref_flatten_folders_summary),
                       color = MaterialTheme.colorScheme.outline,
                     )
                   }
@@ -513,7 +475,7 @@ object MediaLibraryPreferencesScreen : Screen {
                       onConfirm = {
                         scope.launch(Dispatchers.IO) {
                           runCatching {
-                            magenplayerDatabase.videoDataDao().clearAllPlaybackStates()
+                            magenPlayerDatabase.videoDataDao().clearAllPlaybackStates()
                             RecentlyPlayedOps.clearAll()
                           }.onSuccess {
                             withContext(Dispatchers.Main) {

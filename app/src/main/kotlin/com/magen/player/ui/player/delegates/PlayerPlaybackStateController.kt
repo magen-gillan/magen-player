@@ -4,6 +4,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
 import `is`.xyz.mpv.MPVLib
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -15,6 +16,7 @@ import com.magen.player.ui.player.PlayerOrientation
 import com.magen.player.ui.player.PlayerUpdates
 import com.magen.player.ui.player.ResumePlaybackMode
 import com.magen.player.ui.player.VideoAspect
+import java.util.Locale
 
 /**
  * Controller responsible for saving and restoring video playback state (resume position,
@@ -23,8 +25,23 @@ import com.magen.player.ui.player.VideoAspect
 class PlayerPlaybackStateController(
   private val activity: PlayerActivity,
 ) {
+  // PRELOAD-RESUME-STATE-V1
+  data class PreparedPlaybackState(
+    val generation: Long,
+    val mediaIdentifier: String,
+    val state: PlaybackStateEntity?,
+    val startPositionSeconds: String?,
+    val resumePosition: Int?,
+    val explicitPositionMs: Long?,
+    val resumeMode: ResumePlaybackMode,
+    val autoResumeOnAsk: Boolean,
+  )
+
   @Volatile
   var isPlaybackStateLoaded: Boolean = false
+
+  @Volatile
+  private var activeVisualsUseSharedMode = activity.playerPreferences.rememberVideoAspect.get()
 
   var savePlaybackStateJob: Job? = null
 
@@ -47,6 +64,7 @@ class PlayerPlaybackStateController(
     val currentZoom = activity.viewModel.videoZoom.value
     val currentAspect = activity.viewModel.videoAspect.value.name
     val currentCustomRatio = activity.viewModel.currentAspectRatio.value
+    val rememberSharedVisuals = activeVisualsUseSharedMode
     val currentSid = activity.player.sid
     val currentSecondarySid = activity.player.secondarySid
     val currentAid = activity.player.aid
@@ -70,16 +88,20 @@ class PlayerPlaybackStateController(
         val oldState = activity.playbackStateRepository.getVideoDataByTitle(identifier)
         Log.d(TAG, "Saving playback state for: $mediaTitle (identifier: $identifier) at position: $currentPos")
 
-        val currentZoomToSave = if (isStateLoaded) currentZoom else (oldState?.videoZoom ?: currentZoom)
-        val currentAspectToSave = if (isStateLoaded) {
-          currentAspect
-        } else {
-          oldState?.videoAspect ?: currentAspect
+        val currentZoomToSave = when {
+          rememberSharedVisuals -> oldState?.videoZoom ?: 0f
+          isStateLoaded -> currentZoom
+          else -> oldState?.videoZoom ?: currentZoom
         }
-        val currentCustomRatioToSave = if (isStateLoaded) {
-          currentCustomRatio
-        } else {
-          oldState?.customAspectRatio ?: currentCustomRatio
+        val currentAspectToSave = when {
+          rememberSharedVisuals -> oldState?.videoAspect ?: VideoAspect.Fit.name
+          isStateLoaded -> currentAspect
+          else -> oldState?.videoAspect ?: currentAspect
+        }
+        val currentCustomRatioToSave = when {
+          rememberSharedVisuals -> oldState?.customAspectRatio ?: -1.0
+          isStateLoaded -> currentCustomRatio
+          else -> oldState?.customAspectRatio ?: currentCustomRatio
         }
 
         val watchedThreshold = activity.browserPreferences.watchedThreshold.get()
@@ -129,24 +151,113 @@ class PlayerPlaybackStateController(
   }
 
   /**
-   * Loads and applies saved playback state from the database.
-   *
-   * @param mediaTitle The title of the media being played
-   * @return true if saved state was found and applied, false otherwise
+   * Reads the resume record before MPV starts opening the media. The resulting state object is
+   * carried through FILE_LOADED so restoration does not query the database or seek a second time.
    */
-  suspend fun loadVideoPlaybackState(mediaTitle: String): Boolean {
-    if (activity.mediaIdentifier.isBlank()) return false
+  suspend fun preparePlaybackState(
+    mediaIdentifier: String,
+    generation: Long,
+    explicitPositionMs: Long?,
+  ): PreparedPlaybackState {
+    val resumeMode = activity.playerPreferences.resumePlaybackMode.get()
+    val autoResumeOnAsk = activity.playerPreferences.autoResumeOnAsk.get()
+    val savePosition = activity.playerPreferences.savePositionOnQuit.get()
+    val state = if (mediaIdentifier.isBlank()) {
+      null
+    } else {
+      try {
+        withContext(Dispatchers.IO) {
+          activity.playbackStateRepository.getVideoDataByTitle(mediaIdentifier)
+        }
+      } catch (e: CancellationException) {
+        throw e
+      } catch (e: Exception) {
+        Log.e(TAG, "Error preparing playback state for $mediaIdentifier", e)
+        null
+      }
+    }
 
-    return runCatching {
-      val state = activity.playbackStateRepository.getVideoDataByTitle(activity.mediaIdentifier)
+    val resumePosition = state?.takeIf {
+      savePosition &&
+        resumeMode != ResumePlaybackMode.Never &&
+        it.lastPosition > 3 &&
+        !(it.hasBeenWatched && it.timeRemaining <= 0)
+    }?.lastPosition
+    val startPositionSeconds = when {
+      explicitPositionMs != null -> String.format(
+        Locale.US,
+        "%.3f",
+        explicitPositionMs.coerceAtLeast(0L) / 1000.0,
+      )
+      resumePosition != null && (
+        resumeMode == ResumePlaybackMode.Always ||
+          (resumeMode == ResumePlaybackMode.Ask && autoResumeOnAsk)
+        ) -> resumePosition.toString()
+      else -> null
+    }
 
+    return PreparedPlaybackState(
+      generation = generation,
+      mediaIdentifier = mediaIdentifier,
+      state = state,
+      startPositionSeconds = startPositionSeconds,
+      resumePosition = resumePosition,
+      explicitPositionMs = explicitPositionMs,
+      resumeMode = resumeMode,
+      autoResumeOnAsk = autoResumeOnAsk,
+    )
+  }
+
+  /**
+   * Loads and applies the state already prepared for this request. Unprepared MPV-native playlist
+   * transitions retain the legacy lookup path as a fallback.
+   */
+  suspend fun loadVideoPlaybackState(
+    mediaTitle: String,
+    preparedState: PreparedPlaybackState? = null,
+    expectedMediaIdentifier: String = activity.mediaIdentifier,
+  ): Boolean {
+    if (expectedMediaIdentifier.isBlank()) {
+      withContext(Dispatchers.Main) {
+        restoreVideoAspectAndZoom(null)
+      }
+      isPlaybackStateLoaded = true
+      return false
+    }
+    if (preparedState != null && preparedState.mediaIdentifier != expectedMediaIdentifier) return false
+
+    var stateForVisualRestore: PlaybackStateEntity? = null
+    var visualsRestored = false
+    return try {
+      val state = if (preparedState != null) {
+        preparedState.state
+      } else {
+        activity.playbackStateRepository.getVideoDataByTitle(expectedMediaIdentifier)
+      }
+
+      stateForVisualRestore = state
+      // Apply visual state first so track restoration cannot delay aspect/zoom.
+      withContext(Dispatchers.Main) {
+        restoreVideoAspectAndZoom(state)
+      }
+      visualsRestored = true
       applyPlaybackState(state)
       applyDefaultSettings(state)
-
+      isPlaybackStateLoaded = true
+      applyResumePosition(state, preparedState)
       state != null
-    }.onFailure { e ->
-      Log.e(TAG, "Error loading playback state", e)
-    }.getOrDefault(false)
+    } catch (e: CancellationException) {
+      throw e
+    } catch (e: Exception) {
+      Log.e(TAG, "Error loading playback state for $expectedMediaIdentifier", e)
+      if (!visualsRestored) {
+        withContext(Dispatchers.Main) {
+          restoreVideoAspectAndZoom(stateForVisualRestore)
+        }
+        isPlaybackStateLoaded = true
+      }
+      false
+    }
   }
 
   /**
@@ -233,55 +344,62 @@ class PlayerPlaybackStateController(
       }
     }
 
-    // Restore video zoom from saved state
-    MPVLib.setPropertyDouble("video-zoom", state.videoZoom.toDouble())
-    activity.viewModel.setVideoZoom(state.videoZoom)
 
-    // Restore video aspect ratio from saved state
-    if (state.videoAspect != null) {
-      val aspect = runCatching { VideoAspect.valueOf(state.videoAspect) }.getOrDefault(VideoAspect.Fit)
-      withContext(Dispatchers.Main) {
-        if (state.customAspectRatio > 0.0) {
-          activity.viewModel.setCustomAspectRatio(
-            state.customAspectRatio,
-            resetZoomAndPan = false,
-            showUpdate = false,
-            persistToPreferences = false,
-          )
-        } else {
-          activity.viewModel.changeVideoAspect(
-            aspect,
-            showUpdate = false,
-            resetZoomAndPan = false,
-            persistToPreferences = false,
-          )
-        }
-      }
+  }
+
+  private fun restoreVideoAspectAndZoom(state: PlaybackStateEntity?) {
+    val rememberSharedVisuals = activity.playerPreferences.rememberVideoAspect.get()
+    activeVisualsUseSharedMode = rememberSharedVisuals
+    val defaultZoom = activity.playerPreferences.defaultVideoZoom.get()
+    val aspect = if (rememberSharedVisuals) {
+      activity.playerPreferences.defaultVideoAspect.get()
+    } else {
+      state?.videoAspect?.let {
+        runCatching { VideoAspect.valueOf(it) }.getOrDefault(VideoAspect.Fit)
+      } ?: VideoAspect.Fit
     }
+    val customAspectRatio = if (rememberSharedVisuals) {
+      activity.playerPreferences.defaultCustomAspectRatio.get()
+    } else {
+      state?.customAspectRatio ?: -1.0
+    }
+    val zoom = if (rememberSharedVisuals) defaultZoom else state?.videoZoom ?: 0f
 
     isPlaybackStateLoaded = true
+    activity.viewModel.restoreAspectAndZoom(aspect, customAspectRatio, zoom)
+  }
 
-    val resumeMode = activity.playerPreferences.resumePlaybackMode.get()
-    val hasValidSavedPosition = state.lastPosition > 3
-
-    if (activity.startedAtSavedPosition) {
-      Log.d(TAG, "Media was already started at position ${state.lastPosition} via load options; skipping seek")
-      activity.startedAtSavedPosition = false
-      if (resumeMode == ResumePlaybackMode.Ask && activity.playerPreferences.autoResumeOnAsk.get()) {
+  private suspend fun applyResumePosition(
+    state: PlaybackStateEntity?,
+    preparedState: PreparedPlaybackState?,
+  ) {
+    if (preparedState != null) {
+      if (preparedState.explicitPositionMs != null) {
         withContext(Dispatchers.Main) {
-          activity.viewModel.playerUpdate.value = PlayerUpdates.ResumedFrom(state.lastPosition)
+          activity.viewModel.clearResumePrompt()
+        }
+      } else if (preparedState.resumeMode == ResumePlaybackMode.Ask && preparedState.resumePosition != null) {
+        withContext(Dispatchers.Main) {
+          activity.viewModel.playerUpdate.value = if (preparedState.autoResumeOnAsk) {
+            PlayerUpdates.ResumedFrom(preparedState.resumePosition)
+          } else {
+            PlayerUpdates.PromptResume(preparedState.resumePosition)
+          }
         }
       }
       return
     }
 
+    // Fallback for MPV-native playlist transitions that were not started by an app load request.
+    if (state == null) return
+    val resumeMode = activity.playerPreferences.resumePlaybackMode.get()
+    val hasValidSavedPosition = state.lastPosition > 3 &&
+      !(state.hasBeenWatched && state.timeRemaining <= 0)
+
     when {
-      !activity.playerPreferences.savePositionOnQuit.get() || resumeMode == ResumePlaybackMode.Never || !hasValidSavedPosition -> {
-        // No seek needed, playback continues from start
-      }
+      !activity.playerPreferences.savePositionOnQuit.get() || resumeMode == ResumePlaybackMode.Never || !hasValidSavedPosition -> Unit
       resumeMode == ResumePlaybackMode.Ask -> {
-        val autoResume = activity.playerPreferences.autoResumeOnAsk.get()
-        if (autoResume) {
+        if (activity.playerPreferences.autoResumeOnAsk.get()) {
           MPVLib.setPropertyInt("time-pos", state.lastPosition)
           withContext(Dispatchers.Main) {
             activity.viewModel.playerUpdate.value = PlayerUpdates.ResumedFrom(state.lastPosition)
@@ -292,9 +410,7 @@ class PlayerPlaybackStateController(
           }
         }
       }
-      resumeMode == ResumePlaybackMode.Always -> {
-        MPVLib.setPropertyInt("time-pos", state.lastPosition)
-      }
+      resumeMode == ResumePlaybackMode.Always -> MPVLib.setPropertyInt("time-pos", state.lastPosition)
     }
   }
 
@@ -306,7 +422,6 @@ class PlayerPlaybackStateController(
    * @param state The saved playback state entity (null if no saved state)
    */
   private fun applyDefaultSettings(state: PlaybackStateEntity?) {
-    isPlaybackStateLoaded = true
     if (state == null) {
       val defaultSubSpeed = activity.subtitlesPreferences.defaultSubSpeed.get().toDouble()
       MPVLib.setPropertyDouble("sub-speed", defaultSubSpeed)

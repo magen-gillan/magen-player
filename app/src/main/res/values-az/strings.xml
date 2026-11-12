@@ -21,8 +21,6 @@
     <string name="pref_appearance_tab_recents_summary">Əvvəlki videolara baxmağa qaldığın yerdən tez davam et</string>
     <string name="pref_appearance_tab_playlists_title">Pleylistlər</string>
     <string name="pref_appearance_tab_playlists_summary">Lokal fərdi video pleylistlərini göstər</string>
-    <string name="pref_appearance_tab_network_title">Şəbəkə yayımı</string>
-    <string name="pref_appearance_tab_network_summary">SMB, FTP və WebDAV disklərinə giriş</string>
     <string name="pref_appearance_summary">Qaranlıq rejim, Material You</string>
     <string name="pref_appearance_category_theme">Tema</string>
     <string name="pref_appearance_darkmode_system">Sistem</string>
@@ -55,8 +53,6 @@
     <string name="pref_appearance_unplayed_old_video_days_title">Yeni video etiketi üçün gün həddi</string>
     <string name="pref_appearance_unplayed_old_video_days_summary">Son %d gün ərzində əlavə edilmiş və oynatma tarixçəsi olmayan videolar yeni kimi işarələnəcək</string>
     <string name="pref_appearance_category_thumbnails">Kiçik şəkil</string>
-    <string name="pref_appearance_show_network_thumbnails_title">Şəbəkə kiçik şəkillərini göstər (sınaq)</string>
-    <string name="pref_appearance_show_network_thumbnails_summary">Şəbəkə yayımları üçün kiçik şəkillər yarat (mobil şəbəkələrdə məlumat istifadəsini artıra bilər)</string>
     <string name="pref_appearance_theme_picker_label">Tətbiqin teması</string>
     <string name="pref_appearance_auto_scroll_title">Son oynadılan videoya avtomatik sürüşdür</string>
     <string name="pref_appearance_auto_scroll_summary">Video siyahılarını açarkən son oynadılan videoya avtomatik sürüşdür</string>
@@ -274,8 +270,6 @@
 
     <string name="pref_subtitles">Altyazılar</string>
     <string name="pref_subtitles_summary">Üstünlük verilən dillər, şriftlər və axtarış</string>
-    <string name="pref_subtitle_search_title">Onlayn altyazı axtarışı</string>
-    <string name="pref_subtitle_search_summary">Onlayn mənbələrdən altyazı axtar və endir</string>
     <string name="pref_custom_lua_title">Fərdi Lua düymələri</string>
     <string name="pref_custom_lua_summary">Lua kodu ilə fərdi oynadıcı düymələrini idarə et</string>
     <string name="pref_preferred_languages">Üstünlük verilən dillər</string>
@@ -291,8 +285,6 @@
     <string name="pref_subtitles_custom_picker_folder_title">Standart seçim qovluğu</string>
     <string name="pref_subtitles_custom_picker_folder_summary">Altyazılar əl ilə əlavə edilərkən açılacaq seçilmiş qovluq</string>
     <string name="pref_subtitles_save_location">Altyazıların saxlanma məkanı</string>
-    <string name="pref_subtitles_search_online">Onlayn altyazı axtarışı…</string>
-    <string name="pref_subtitles_subdl_languages">Altyazı dilləri</string>
     <string name="all_languages">Hamısı (seçmə süzgəcləmə)</string>
     <string name="pref_subtitles_clear_downloads">Endirilmiş altyazıları təmizlə</string>
     <string name="pref_subtitles_clear_downloads_summary">Cari saxlanma məkanındakı bütün faylları sil</string>
@@ -300,13 +292,6 @@
     <string name="toast_subtitles_cleared">Endirilmiş altyazılar təmizləndi</string>
     <string name="pref_subtitles_searching">Axtarılır…</string>
     <string name="pref_subtitles_found">%d altyazı tapıldı</string>
-    <string name="pref_subtitles_online_search_title">Onlayn altyazı axtarışı</string>
-    <string name="pref_subtitles_wyzie_api_key_title">Wyzie API açarı</string>
-    <string name="pref_subtitles_wyzie_api_key_summary">Altyazı axtarışları üçün tələb olunur. Açarınızı sub.wyzie.io/redeem ünvanından əldə edin</string>
-    <string name="pref_subtitles_wyzie_api_key_hint">API açarını daxil et</string>
-    <string name="pref_subtitles_wyzie_api_key_not_set">Təyin edilməyib</string>
-    <string name="pref_subtitles_wyzie_api_key_masked">••••••••••••••••••••••</string>
-
     <string name="pref_audio">Audio</string>
     <string name="pref_audio_summary">Üstünlük verilən dillər, audio kanalları, səs tonunun düzəldilməsi</string>
     <string name="pref_audio_pitch_correction_title">Səs tonunun düzəldilməsini aktivləşdir</string>
@@ -377,10 +362,6 @@
     <string name="pref_about_oss_libraries">Kitabxanalar</string>
     <string name="pref_about_device_info">Cihaz məlumatları</string>
     <string name="pref_about_donate_title">İanə et</string>
-    <string name="pref_about_donate_kofi">Ko-fi</string>
-    <string name="pref_about_donate_kofi_summary">Ko-fi vasitəsilə tərtibatçıya dəstək ol</string>
-    <string name="pref_about_donate_paypal">PayPal</string>
-    <string name="pref_about_donate_paypal_summary">PayPal vasitəsilə tərtibatçıya dəstək ol</string>
     <string name="pref_about_donate_upi">UPI</string>
 
     <string name="player_sheets_add_ext_sub">Xarici altyazılar əlavə et</string>
@@ -481,7 +462,7 @@
     <string name="player_aspect_stretch">Dart</string>
 
     <string name="crash_screen_title">Xəta baş verdi</string>
-    <string name="crash_screen_subtitle">Deyəsən, %s gözlənilməz xəta ilə üzləşdi. Çökmə jurnallarını GitHub-da problem bildirərək paylaşa bilərsən.</string>
+    <string name="crash_screen_subtitle">An unexpected error occurred in %s.</string>
     <string name="crash_screen_logs_title">Çökmə jurnalları:</string>
     <string name="crash_screen_share">Çökmə jurnallarını paylaş</string>
     <string name="crash_screen_restart">Tətbiqi yenidən başlat</string>
@@ -621,22 +602,15 @@
 
     <!-- M3U Playlist Strings -->
     <string name="playlist_add_m3u_title">M3U pleylisti əlavə et</string>
-    <string name="playlist_add_m3u_description">M3U pleylist faylının URL-ini daxil et</string>
-    <string name="playlist_url_label">Pleylist URL-i</string>
-    <string name="playlist_url_placeholder">https://example.com/playlist.m3u</string>
-    <string name="playlist_url_hint">.m3u və .m3u8 formatlarını dəstəkləyir</string>
     <string name="playlist_add_success">M3U pleylisti uğurla əlavə edildi</string>
     <string name="playlist_add_error">M3U pleylistini əlavə etmək mümkün olmadı: %s</string>
     <string name="playlist_create_empty">Boş pleylist yarat</string>
-    <string name="playlist_add_from_url">M3U/M3U8 URL-indən əlavə et</string>
-    <string name="playlist_refresh_m3u">M3U pleylistini yenilə</string>
     <string name="playlist_refresh_success">Pleylist uğurla yeniləndi</string>
     <string name="playlist_refresh_error">Pleylisti yeniləmək mümkün olmadı: %s</string>
     <string name="playlist_m3u_badge">M3U</string>
 
     <string name="open_file">Fayl aç</string>
     <string name="recently_played">Son oynadılanlar</string>
-    <string name="open_link">Keçid aç</string>
     <string name="install">Quraşdır</string>
     <string name="download">Endir</string>
     <string name="failed_load_audio_invalid_uri">Səs faylını yükləmək mümkün olmadı: yanlış URI</string>
@@ -667,9 +641,7 @@
     <string name="remove">Çıxar</string>
     <string name="add">Əlavə et</string>
     <string name="ignore">Nəzərə alma</string>
-    <string name="check_for_updates_now">Yeniləmələri indi yoxla</string>
     <string name="loading_detailed_information">Ətraflı məlumat yüklənir…</string>
-    <string name="stream_url">Yayım URL-i</string>
     <string name="export_complete">İxrac tamamlandı</string>
     <string name="import_complete">İdxal tamamlandı</string>
     <string name="auto_picture_in_picture">Avtomatik şəkil içində şəkil</string>
@@ -678,18 +650,13 @@
     <string name="create_playlist">Pleylist yarat</string>
     <string name="add_connection">Əlaqə əlavə et</string>
     <string name="playlist_name">Pleylistin adı</string>
-    <string name="playlist_url">Pleylistin URL-i</string>
-    <string name="enter_url">URL daxil et</string>
     <string name="new_name">Yeni ad</string>
     <string name="folder_name">Qovluğun adı</string>
-    <string name="video_url">Videonun URL-i</string>
     <string name="choose_local_m3u_file">Lokal M3U faylı seç</string>
-    <string name="add_from_url">URL-dən əlavə et</string>
     <string name="home">Əsas səhifə</string>
     <string name="shorts">Qısa videolar</string>
     <string name="recents">Son oynadılanlar</string>
     <string name="playlists">Pleylistlər</string>
-    <string name="network">Şəbəkə</string>
     <string name="unit_seconds">Saniyə</string>
     <string name="milliseconds">Millisaniyə</string>
     <string name="name">Ad</string>
@@ -762,23 +729,11 @@
     <string name="media_info_default_file_name">Media faylı</string>
 
     <!-- Network Connection Card -->
-    <string name="network_connection_protocol_host">%1$s • %2$s:%3$s</string>
-    <string name="network_connection_edit">Redaktə et</string>
-    <string name="network_connection_delete">Sil</string>
-    <string name="network_connection_path_prefix">Yol: %1$s</string>
-    <string name="network_connection_user_prefix">İstifadəçi: %1$s</string>
-    <string name="network_connection_error_prefix">Xəta: %1$s</string>
-    <string name="network_connection_auto_connect">Tətbiq başladıqda avtomatik qoşul</string>
-    <string name="network_connection_connecting">Qoşulur</string>
-    <string name="network_connection_browse">Gözdən keçir</string>
-    <string name="network_connection_disconnect">Əlaqəni kəs</string>
-    <string name="network_connection_connect">Qoşul</string>
-
     <!-- Playlist Screen Empty and Search States -->
     <string name="no_playlists_found">Pleylist tapılmadı</string>
     <string name="try_different_search_term">Başqa axtarış sözü ilə cəhd et</string>
     <string name="no_playlists_yet">Hələ pleylist yoxdur</string>
-    <string name="no_playlists_yet_desc">Pleylist yarat və ya m3u URL-indən əlavə et</string>
+    <string name="no_playlists_yet_desc">Create a playlist or import a local M3U file.</string>
     <string name="empty_playlists_desc">Burada görünməsi üçün pleylist yarat</string>
 
     <!-- Recently Played Screen -->
@@ -809,8 +764,6 @@
     <string name="search_all_videos">Bütün videolarda axtarış…</string>
 
     <!-- Network Streaming Screen Strings -->
-    <string name="stream_link">Yayım keçidi</string>
-    <string name="video_url_placeholder">https://example.com/video.mp4</string>
     <string name="paste">Yapışdır</string>
     <string name="play">Oynat</string>
 
@@ -839,9 +792,6 @@
     <string name="moved_to_private_space">Şəxsi sahəyə köçürüldü</string>
     <string name="moved_to_private_space_desc">%1$d video şəxsi sahəyə uğurla köçürüldü.\n\nŞəxsi sahəyə daxil olmaq üçün əsas ekranın yuxarısındakı tətbiq adını basıb saxla.</string>
     <string name="save">Yadda saxla</string>
-    <string name="add_network_connection">Şəbəkə əlaqəsi əlavə et</string>
-    <string name="edit_network_connection">Şəbəkə əlaqəsini redaktə et</string>
-
     <!-- Add To Playlist Dialog Strings -->
     <string name="add_to_playlist">Pleylistə əlavə et</string>
     <string name="adding_one_video_to_playlist">Pleylistə 1 video əlavə edilir</string>
@@ -884,10 +834,6 @@
     <string name="name_cannot_contain_invalid_chars">Adda / və ya \\ ola bilməz</string>
 
     <!-- Sheets Strings -->
-    <string name="play_link">Keçidi oynat</string>
-    <string name="invalid_url_protocol">Yanlış URL protokolu</string>
-    <string name="valid_url">Etibarlı URL</string>
-    <string name="invalid_url">Yanlış URL</string>
     <string name="playlist_created_successfully">Pleylist uğurla yaradıldı</string>
     <string name="failed_create_playlist">Pleylist yaratmaq mümkün olmadı</string>
     <string name="m3u_playlist_added_successfully">M3U pleylisti uğurla əlavə edildi</string>
@@ -897,9 +843,6 @@
     <string name="playlist_options">Pleylist seçimləri</string>
     <string name="create_empty_playlist">Boş pleylist yarat</string>
     <string name="create_blank_playlist_desc">Yeni boş pleylist yarat</string>
-    <string name="add_m3u_playlist_from_url">URL-dən M3U pleylisti əlavə et</string>
-    <string name="import_playlist_url_desc">Veb URL-dən pleylist idxal et</string>
-
     <!-- Component Strings -->
     <string name="more_options">Daha çox seçim</string>
     <string name="move">Köçür</string>
@@ -915,7 +858,7 @@
     <string name="folders_count">Qovluqlar (%1$d)</string>
     <string name="media_count">Media (%1$d)</string>
     <string name="drag_to_reorder">Sıranı dəyişmək üçün sürüklə</string>
-
+    <string name="connect_social_media">Sosial mediada bizimlə əlaqə saxla</string>
     <!-- Sort Dialog Strings -->
     <string name="sort_and_view_options">Sıralama və görünüş seçimləri</string>
     <string name="view_options">Görünüş seçimləri</string>
@@ -925,14 +868,14 @@
     <string name="pref_category_playback_controls">Oynatma və idarəetmə</string>
     <string name="pref_category_file_management">Fayl idarəetməsi</string>
     <string name="pref_category_media_settings">Media parametrləri</string>
-    <string name="pref_category_rexshorts">Magen Shorts</string>
-    <string name="pref_category_rexshorts_settings">Magen Shorts parametrləri</string>
-    <string name="pref_category_rexshorts_settings_desc">Aktivləşdirməni, söndürməni, qarışdırmanı və bloklanmış məzmunu idarə et</string>
+    <string name="pref_category_magen_shorts">Magen Shorts</string>
+    <string name="pref_category_magen_shorts_settings">Magen Shorts parametrləri</string>
+    <string name="pref_category_magen_shorts_settings_desc">Aktivləşdirməni, söndürməni, qarışdırmanı və bloklanmış məzmunu idarə et</string>
     <string name="pref_category_advanced_about">Əlavə parametrlər və haqqında</string>
 
     <!-- Shorts preference screen -->
-    <string name="pref_enable_rexshorts">Magen Shorts funksiyasını aktivləşdir</string>
-    <string name="pref_enable_rexshorts_summary">Aşağı naviqasiya panelində qısa videolar vərəqini göstər</string>
+    <string name="pref_enable_magen_shorts">Magen Shorts funksiyasını aktivləşdir</string>
+    <string name="pref_enable_magen_shorts_summary">Aşağı naviqasiya panelində qısa videolar vərəqini göstər</string>
     <string name="pref_auto_swipe_shorts">Növbəti qısa videoya avtomatik keçid</string>
     <string name="pref_auto_swipe_shorts_summary">Cari qısa video bitdikdə növbətisinə avtomatik sürüşdür</string>
     <string name="pref_enable_glass_shorts_controls">Qısa videolarda şüşə üslublu idarəetmə düymələri</string>
@@ -958,27 +901,8 @@
     <string name="pref_select_sourced_folders_desc">Qısa videoların götürüləcəyi qovluqları seç. Qovluq seçilməsə, qısa videolar bütün qovluqlardan götürüləcək.</string>
 
     <!-- Update features -->
-    <string name="pref_category_updates">Yeniləmələr</string>
-    <string name="pref_about_auto_check_updates">Yeniləmələrin avtomatik yoxlanması</string>
-    <string name="pref_about_auto_check_updates_summary">Başlanğıcda yeni versiyaları yoxla</string>
-    <string name="pref_about_check_updates">Yeniləmələri yoxla</string>
     <string name="pref_about_checking">Yoxlanılır…</string>
-    <string name="pref_about_check_updates_summary">GitHub-da yeni versiyaları əl ilə yoxla</string>
     <string name="pref_about_up_to_date">Ən son versiyadan istifadə edirsiniz!</string>
-    <string name="pref_about_check_updates_failed">Yeniləmələri yoxlamaq mümkün olmadı</string>
-    <string name="update_ready_to_install">Quraşdırmağa hazırdır</string>
-    <string name="update_available_title">Yeniləmə mövcuddur</string>
-    <string name="update_current_version">Cari versiya</string>
-    <string name="update_latest_version">Ən son versiya</string>
-    <string name="update_release_date">Buraxılış tarixi</string>
-    <string name="update_size">Ölçü</string>
-    <string name="update_release_notes">Buraxılış qeydləri</string>
-    <string name="update_downloading">Endirilir…</string>
-    <string name="update_install">Quraşdır</string>
-    <string name="update_download">Endir</string>
-    <string name="update_ignore">Nəzərə alma</string>
-    <string name="update_cancel">Ləğv et</string>
-
     <!-- Player Button Labels -->
     <string name="btn_label_back">Geri oxu</string>
     <string name="btn_label_title">Videonun başlığı</string>
@@ -1021,18 +945,17 @@
     <string name="allow_access">Girişə icazə ver</string>
     <string name="why_do_i_see_this">Bunu niyə görürəm?</string>
     <string name="why_this_permission_is_needed">Bu icazə niyə lazımdır</string>
-    <string name="permission_explanation_playstore_intro">MagenPlayer media oynadıcısı kimi əsas funksiyalarını yerinə yetirmək üçün video fayllarınıza giriş tələb edir.</string>
+    <string name="permission_explanation_playstore_intro">magen player media oynadıcısı kimi əsas funksiyalarını yerinə yetirmək üçün video fayllarınıza giriş tələb edir.</string>
     <string name="permission_used_exclusively_for">İcazə yalnız bunlar üçün istifadə olunur:</string>
     <string name="permission_usage_bullet_list">• Video fayllarınızın tapılması və göstərilməsi\n• Media məzmununun oynadılması\n• Altyazı fayllarının yüklənməsi</string>
-    <string name="permission_explanation_standard_intro">MagenPlayer həmişə yaddaşa giriş icazəsi tələb edib, çünki bu icazə tətbiqin cihazınızdakı bütün media və altyazı fayllarını, o cümlədən sistemin dəstəkləmədiyi faylları tapması üçün vacibdir.</string>
+    <string name="permission_explanation_standard_intro">magen player həmişə yaddaşa giriş icazəsi tələb edib, çünki bu icazə tətbiqin cihazınızdakı bütün media və altyazı fayllarını, o cümlədən sistemin dəstəkləmədiyi faylları tapması üçün vacibdir.</string>
     <string name="permission_security_policy_change">Lakin təhlükəsizlik siyasətindəki dəyişikliyə görə Android 11 və daha yeni versiyalar üçün hazırlanmış tətbiqlərin həmin fayllara girişini davam etdirməsi üçün indi əlavə icazə tələb olunur.</string>
     <string name="permission_privacy_assurance_standard">Bu icazə yalnız cihazınızdakı media və altyazı fayllarını avtomatik aşkar etmək üçün istifadə olunur və digər tətbiqlərin saxladığı şəxsi məlumat fayllarına heç bir şəkildə daxil olmağımıza imkan vermir.</string>
-    <string name="opensource_github_notice">MagenPlayer açıq mənbəli layihədir. Mənbə kodunu nəzərdən keçirmək və icazələrin necə istifadə olunduğunu yoxlamaq üçün GitHub repozitoriyamıza keçin:</string>
     <string name="privacy_assurance_final">Əmin olun, məxfiliyiniz bizim üçün ən yüksək prioritetdir. Fayllarınıza başqa məqsədlərlə daxil olmur, onları serverlərimizə ötürmür və orada saxlamırıq. Fayllarınız cihazınızda təhlükəsiz qalır.</string>
     
-    <string name="permission_required_photos_videos">MagenPlayer cihazınızda saxlanan video fayllarına daxil olmaq və onları oynatmaq üçün \"Foto və videolar\" icazəsini tələb edir.</string>
-    <string name="permission_required_storage">MagenPlayer cihazınızda saxlanan media fayllarına daxil olmaq və onları oynatmaq üçün \"Yaddaş\" icazəsini tələb edir.</string>
-    <string name="permission_required_all_files">Android 11 və sonrakı versiyalarda təhlükəsizlik siyasəti dəyişdiyi üçün MagenPlayer cihazınızdakı media və altyazıları aşkar etmək üçün \"Bütün fayllara giriş\" icazəsini tələb edir.</string>
+    <string name="permission_required_photos_videos">magen player cihazınızda saxlanan video fayllarına daxil olmaq və onları oynatmaq üçün \"Foto və videolar\" icazəsini tələb edir.</string>
+    <string name="permission_required_storage">magen player cihazınızda saxlanan media fayllarına daxil olmaq və onları oynatmaq üçün \"Yaddaş\" icazəsini tələb edir.</string>
+    <string name="permission_required_all_files">Android 11 və sonrakı versiyalarda təhlükəsizlik siyasəti dəyişdiyi üçün magen player cihazınızdakı media və altyazıları aşkar etmək üçün \"Bütün fayllara giriş\" icazəsini tələb edir.</string>
     <string name="permission_explanation_tiramisu_plus">Android 13 və sonrakı versiyalarda bu icazə tətbiqə cihazınızın yaddaşından, o cümlədən endirmələr, filmlər və DCIM qovluqlarından video fayllarını oxumağa imkan verir.</string>
     <string name="permission_explanation_pre_tiramisu">Bu icazə tətbiqə video və audio oynatmaq üçün cihazınızın yaddaşından media fayllarını oxumağa imkan verir.</string>
 
@@ -1113,17 +1036,7 @@
     <string name="generic_edit_content_description">Redaktə et: %1$s</string>
 
     <!-- Network Streaming Screen -->
-    <string name="network_recent_links">Son keçidlər</string>
-    <string name="network_local_network">Lokal şəbəkə</string>
-    <string name="network_share_unreachable">Şəbəkədə paylaşılan resursa daxil olmaq mümkün deyil.</string>
-    <string name="network_empty_title">Şəbəkə əlaqəsi yoxdur</string>
-    <string name="network_empty_description">Şəbəkə fayllarına baxmaq üçün SMB, FTP və ya WebDAV əlaqələri əlavə edin</string>
-    <string name="network_remove_link_action">Keçidi çıxar</string>
-
     <!-- Appearance Preferences Screen -->
-    <string name="pref_appearance_network_thumbnails_dialog_title">Şəbəkə üçün kiçik şəkillər aktivləşdirilsin?</string>
-    <string name="pref_appearance_network_thumbnails_dialog_message">Şəbəkə yayımları (M3U/HTTP) üçün kiçik şəkillərin yaradılması arxa fonda məlumat istifadəsini və yüklənmə müddətini xeyli artıra bilər. Davam edilsin?</string>
-
     <!-- Control Layout Editor Screen -->
     <string name="control_layout_edit_title_top_right">Sağ üst hissənin redaktəsi</string>
     <string name="control_layout_edit_title_bottom_right">Sağ alt hissənin redaktəsi</string>
@@ -1231,7 +1144,7 @@
     <string name="pref_advanced_config_cache_cleared">Konfiqurasiya keşi təmizləndi</string>
     <string name="pref_advanced_delete_thumbnails_summary">Keşdəki bütün video kiçik şəkillərini sil (qovluqlara baxdıqca yenidən yaradılacaq)</string>
     <string name="pref_advanced_clear_thumbnail_cache_confirm_title">Kiçik şəkil keşi təmizlənsin?</string>
-    <string name="pref_advanced_clear_thumbnail_cache_confirm_subtitle">Bu əməliyyat keşdəki bütün kiçik şəkilləri (lokal və şəbəkə) saxlama yerindən və operativ yaddaşdan siləcək.</string>
+    <string name="pref_advanced_clear_thumbnail_cache_confirm_subtitle">This will delete all cached thumbnails from storage and memory.</string>
     <string name="pref_advanced_thumbnail_cache_cleared">Kiçik şəkil keşi təmizləndi</string>
     <string name="pref_advanced_remove_cached_fonts_summary">Keşdəki bütün altyazı şriftlərini çıxar</string>
     <string name="pref_advanced_enable_media_info_title">Media məlumatı pəncərəsini aktivləşdir</string>
@@ -1333,12 +1246,12 @@
     <string name="pref_appearance_language_title">Tətbiqin dili</string>
     <string name="pref_appearance_language_summary">Tətbiqin interfeys dilini dəyiş</string>
 
-    <string name="welcome_title">MagenPlayer tətbiqinə xoş gəlmisiniz</string>
+    <string name="welcome_title">magen player tətbiqinə xoş gəlmisiniz</string>
     <string name="welcome_subtitle">Müasir, güclü və fərdiləşdirilə bilən media oynadıcınız.</string>
     <string name="welcome_language_section_title">Üstünlük verilən dil</string>
     <string name="welcome_language_section_desc">İnterfeys dilini seçin</string>
     <string name="storage_access_granted">Yaddaşa giriş icazəsi verilib</string>
-    <string name="storage_access_granted_desc">İcazə verilib. MagenPlayer media fayllarınızı aşkar etməyə və oynatmağa hazırdır.</string>
+    <string name="storage_access_granted_desc">İcazə verilib. magen player media fayllarınızı aşkar etməyə və oynatmağa hazırdır.</string>
     <string name="welcome_grant_permission">İcazə ver</string>
     <string name="welcome_get_started">Başla</string>
     <string name="welcome_skip_permission">Yaddaşa giriş olmadan davam et</string>

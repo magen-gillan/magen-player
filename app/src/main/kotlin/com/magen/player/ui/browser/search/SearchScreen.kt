@@ -196,7 +196,7 @@ data class SearchScreen(
     var renameDialogOpen by rememberSaveable { mutableStateOf(false) }
     var addToPlaylistDialogOpen by rememberSaveable { mutableStateOf(false) }
     var showMarkAsSheet by remember { mutableStateOf(false) }
-    var mediaInfoUri by remember { mutableStateOf<Uri?>(null) }
+      var mediaInfoUri by remember { mutableStateOf<Uri?>(null) }
     var multiSelectionInfo by remember { mutableStateOf<Triple<Int, Long, Long>?>(null) }
     var multiSelectionUnit by remember { mutableStateOf("item") }
 

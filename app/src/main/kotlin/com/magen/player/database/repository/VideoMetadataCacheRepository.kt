@@ -16,11 +16,8 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeoutOrNull
 import java.io.File
-import java.util.concurrent.TimeoutException
 import kotlin.math.pow
 
 /**
@@ -36,8 +33,6 @@ class VideoMetadataCacheRepository(
     private const val PARALLEL_PROCESSING_LIMIT = 16 // Process 16 videos simultaneously for faster extraction
     private const val CACHE_VALIDITY_DAYS = 30L
     private const val RETRIEVER_SAFE_WIDTH = 4096
-    private const val PROBE_TIMEOUT_MS = 8_000L
-    private const val EXTRACT_TIMEOUT_MS = 12_000L
   }
 
   /**
@@ -144,38 +139,31 @@ class VideoMetadataCacheRepository(
    * low-end devices and does not need a detached file descriptor.
    * Returns null when no source could determine a landscape/portrait orientation.
    */
-  suspend fun probeResolution(video: Video): Pair<Int, Int>? {
-    val fromStore = resolveOrientation(video.width, video.height, video.rotation)
-    if (fromStore != null) return fromStore
+  suspend fun probeResolution(video: Video): Pair<Int, Int>? =
+    withContext(Dispatchers.IO) {
+      val fromStore = resolveOrientation(video.width, video.height, video.rotation)
+      if (fromStore != null) return@withContext fromStore
 
-    // MediaMetadataRetriever can hang indefinitely on some files/devices (seen on
-    // Android 15 FUSE passthrough); a timeout keeps shorts discovery moving.
-    return withTimeoutOrNull(PROBE_TIMEOUT_MS) {
-      withContext(Dispatchers.IO) {
-        runInterruptible {
-          val retriever = android.media.MediaMetadataRetriever()
-          try {
-            retriever.setDataSource(video.path)
-            val w = retriever
-              .extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
-              ?.toIntOrNull() ?: 0
-            val h = retriever
-              .extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
-              ?.toIntOrNull() ?: 0
-            val rotation = retriever
-              .extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
-              ?.toIntOrNull() ?: video.rotation
-            resolveOrientation(w, h, rotation)
-          } catch (e: Exception) {
-            Log.d(TAG, "Resolution probe failed for ${video.displayName}: ${e.message}")
-            null
-          } finally {
-            runCatching { retriever.release() }
-          }
-        }
+      val retriever = android.media.MediaMetadataRetriever()
+      try {
+        retriever.setDataSource(video.path)
+        val w = retriever
+          .extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
+          ?.toIntOrNull() ?: 0
+        val h = retriever
+          .extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
+          ?.toIntOrNull() ?: 0
+        val rotation = retriever
+          .extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
+          ?.toIntOrNull() ?: video.rotation
+        resolveOrientation(w, h, rotation)
+      } catch (e: Exception) {
+        Log.d(TAG, "Resolution probe failed for ${video.displayName}: ${e.message}")
+        null
+      } finally {
+        runCatching { retriever.release() }
       }
     }
-  }
 
   /** Applies display rotation, then reports whether the frame is portrait. */
   private fun resolveOrientation(width: Int, height: Int, rotation: Int): Pair<Int, Int>? {
@@ -218,12 +206,9 @@ class VideoMetadataCacheRepository(
         )
       }
 
-      // Cache miss - extract metadata (bounded: a hung MediaInfo pass must not block
-      // folder browsing / shorts discovery forever)
+      // Cache miss - extract metadata
       Log.d(TAG, "Cache miss for $displayName, extracting metadata")
-      val result = withTimeoutOrNull(EXTRACT_TIMEOUT_MS) {
-        MediaInfoOps.extractBasicMetadata(context, uri, displayName)
-      } ?: Result.failure(TimeoutException("Metadata extraction timed out for $displayName"))
+      val result = MediaInfoOps.extractBasicMetadata(context, uri, displayName)
 
       result.onSuccess { metadata ->
         // Save to cache

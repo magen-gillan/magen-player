@@ -30,7 +30,7 @@ class CustomButtonManager(
 ) {
     companion object {
         private const val TAG = "CustomButtonManager"
-        private const val CUSTOM_BUTTONS_LOADED_FLAG = "user-data/magenplayer/custombuttons_loaded"
+        private const val CUSTOM_BUTTONS_LOADED_FLAG = "user-data/mpvex/custombuttons_loaded"
     }
 
     data class CustomButtonState(

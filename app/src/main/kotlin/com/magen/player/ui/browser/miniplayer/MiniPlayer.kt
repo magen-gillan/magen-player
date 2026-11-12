@@ -630,7 +630,7 @@ fun MiniPlayer(
             )
 
             Text(
-              text = state.artist.ifBlank { "Magen Player" },
+              text = state.artist.ifBlank { "magen player" },
               style = MaterialTheme.typography.bodySmall,
               maxLines = 1,
               overflow = TextOverflow.Ellipsis,

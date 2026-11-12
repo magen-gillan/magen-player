@@ -28,8 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
-import kotlinx.coroutines.launch
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.clickable
@@ -37,17 +35,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.TextButton
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -59,13 +52,11 @@ import com.magen.player.presentation.components.GroupPosition
 import com.magen.player.presentation.components.GroupedListColumn
 import com.magen.player.ui.utils.LocalBackStack
 import com.magen.player.ui.utils.navigateBack
+import com.magen.player.ui.browser.shorts.ShortsScreen
 import kotlinx.serialization.Serializable
 import me.zhanghai.compose.preference.Preference
 import me.zhanghai.compose.preference.ProvidePreferenceLocals
 import me.zhanghai.compose.preference.SliderPreference
-import me.zhanghai.compose.preference.ListPreference
-import androidx.compose.ui.text.AnnotatedString
-import com.magen.player.preferences.ShortsSortType
 import com.magen.player.ui.preferences.components.SwitchPreference
 import org.koin.compose.koinInject
 import kotlin.math.roundToInt
@@ -79,10 +70,9 @@ object ShortsPreferencesScreen : Screen {
         val browserPreferences = koinInject<BrowserPreferences>()
         val enableShorts by browserPreferences.enableShorts.collectAsState()
         val autoSwipeShorts by browserPreferences.autoSwipeShorts.collectAsState()
-        val quickDeleteShorts by browserPreferences.quickDeleteShorts.collectAsState()
-        val shortsSortType by browserPreferences.shortsSortType.collectAsState()
         val enableGlassShortsControls by browserPreferences.enableGlassShortsControls.collectAsState()
         val showShortsBackButton by browserPreferences.showShortsBackButton.collectAsState()
+        val quickDeleteShorts by browserPreferences.quickDeleteShorts.collectAsState()
         val includeHorizontal by browserPreferences.includeShortHorizontalVideos.collectAsState()
         val maxDuration by browserPreferences.maxHorizontalVideoDurationMinutes.collectAsState()
         val context = LocalContext.current
@@ -90,37 +80,9 @@ object ShortsPreferencesScreen : Screen {
         
         var showFolderSelector by remember { mutableStateOf(false) }
         var allFolders by remember { mutableStateOf<List<com.magen.player.domain.media.model.MediaFolder>>(emptyList()) }
-        var foldersLoading by remember { mutableStateOf(false) }
-        val folderScope = rememberCoroutineScope()
-
-        // Reload every time the picker opens. The old one-shot load ran once on screen
-        // entry and could race the cold-start media scan, leaving the list empty — and
-        // since the dialog was gated on a non-empty list, tapping the setting silently
-        // did nothing ("as if I never pressed it").
-        LaunchedEffect(showFolderSelector) {
-            if (!showFolderSelector) return@LaunchedEffect
-            foldersLoading = true
-            try {
-                // Hybrid-index-backed (same fast source as the main browser's folder
-                // list). The previous CoreMediaScanner.getFlatMediaFolders call built
-                // the full media tree — recursive volume walk + O(n^2) hierarchy — and
-                // could run for minutes, which is exactly the endless spinner that
-                // was reported from this dialog.
-                allFolders = com.magen.player.utils.media.ShortsDiscoveryOps.getSourceFolders(context)
-            } finally {
-                foldersLoading = false
-            }
-        }
-
-        fun refreshFolders() {
-            folderScope.launch {
-                foldersLoading = true
-                try {
-                    allFolders = com.magen.player.utils.media.ShortsDiscoveryOps.getSourceFolders(context)
-                } finally {
-                    foldersLoading = false
-                }
-            }
+        
+        LaunchedEffect(Unit) {
+            allFolders = com.magen.player.utils.storage.CoreMediaScanner.getFlatMediaFolders(context)
         }
 
         Scaffold(
@@ -128,7 +90,7 @@ object ShortsPreferencesScreen : Screen {
                 TopAppBar(
                     title = {
                         Text(
-                            text = stringResource(R.string.pref_category_rexshorts_settings),
+                            text = stringResource(R.string.pref_category_magen_shorts_settings),
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.ExtraBold,
                             color = MaterialTheme.colorScheme.primary,
@@ -164,13 +126,13 @@ object ShortsPreferencesScreen : Screen {
                         GroupedListColumn {
                             GroupedPreferenceCard(
                                 position = GroupPosition.FIRST,
-                                highlightKey = listOf(R.string.pref_category_rexshorts_settings, R.string.pref_enable_rexshorts),
+                                highlightKey = listOf(R.string.pref_category_magen_shorts_settings, R.string.pref_enable_magen_shorts),
                             ) {
                                 SwitchPreference(
                                     value = enableShorts,
                                     onValueChange = { browserPreferences.enableShorts.set(it) },
-                                    title = { Text(stringResource(R.string.pref_enable_rexshorts)) },
-                                    summary = { Text(stringResource(R.string.pref_enable_rexshorts_summary)) },
+                                    title = { Text(stringResource(R.string.pref_enable_magen_shorts)) },
+                                    summary = { Text(stringResource(R.string.pref_enable_magen_shorts_summary)) },
                                 )
                             }
 
@@ -188,31 +150,6 @@ object ShortsPreferencesScreen : Screen {
 
                             GroupedPreferenceCard(
                                 position = GroupPosition.MIDDLE,
-                                highlightKey = R.string.pref_quick_delete_shorts,
-                            ) {
-                                SwitchPreference(
-                                    value = quickDeleteShorts,
-                                    onValueChange = { browserPreferences.quickDeleteShorts.set(it) },
-                                    title = { Text(stringResource(R.string.pref_quick_delete_shorts)) },
-                                    summary = { Text(stringResource(R.string.pref_quick_delete_shorts_summary)) },
-                                )
-                            }
-
-                            GroupedPreferenceCard(
-                                position = GroupPosition.MIDDLE,
-                                highlightKey = R.string.pref_shorts_sort,
-                            ) {
-                                ListPreference(
-                                    value = shortsSortType,
-                                    onValueChange = { browserPreferences.shortsSortType.set(it) },
-                                    values = ShortsSortType.entries,
-                                    valueToText = { AnnotatedString(context.getString(it.stringRes)) },
-                                    title = { Text(stringResource(R.string.pref_shorts_sort)) },
-                                    summary = { Text(context.getString(shortsSortType.stringRes), color = MaterialTheme.colorScheme.outline) },
-                                )
-                            }
-                            GroupedPreferenceCard(
-                                position = GroupPosition.MIDDLE,
                                 highlightKey = R.string.pref_enable_glass_shorts_controls,
                             ) {
                                 SwitchPreference(
@@ -224,7 +161,7 @@ object ShortsPreferencesScreen : Screen {
                             }
 
                             GroupedPreferenceCard(
-                                position = GroupPosition.LAST,
+                                position = GroupPosition.MIDDLE,
                                 highlightKey = R.string.pref_show_shorts_back_button,
                             ) {
                                 SwitchPreference(
@@ -232,6 +169,18 @@ object ShortsPreferencesScreen : Screen {
                                     onValueChange = { browserPreferences.showShortsBackButton.set(it) },
                                     title = { Text(stringResource(R.string.pref_show_shorts_back_button)) },
                                     summary = { Text(stringResource(R.string.pref_show_shorts_back_button_summary)) },
+                                )
+                            }
+
+                            GroupedPreferenceCard(
+                                position = GroupPosition.LAST,
+                                highlightKey = R.string.pref_shorts_quick_delete,
+                            ) {
+                                SwitchPreference(
+                                    value = quickDeleteShorts,
+                                    onValueChange = { browserPreferences.quickDeleteShorts.set(it) },
+                                    title = { Text(stringResource(R.string.pref_shorts_quick_delete)) },
+                                    summary = { Text(stringResource(R.string.pref_shorts_quick_delete_summary)) },
                                 )
                             }
                         }
@@ -311,7 +260,18 @@ object ShortsPreferencesScreen : Screen {
                     item {
                         GroupedListColumn {
                             GroupedPreferenceCard(
-                                position = GroupPosition.ONLY,
+                                position = GroupPosition.FIRST,
+                                highlightKey = R.string.pref_shorts_favorites_manager,
+                            ) {
+                                Preference(
+                                    title = { Text(stringResource(R.string.pref_shorts_favorites_manager)) },
+                                    summary = { Text(stringResource(R.string.pref_shorts_favorites_manager_summary)) },
+                                    onClick = { backstack.add(ShortsScreen(favoritesOnly = true)) },
+                                )
+                            }
+
+                            GroupedPreferenceCard(
+                                position = GroupPosition.LAST,
                                 highlightKey = R.string.pref_blocked_videos,
                             ) {
                                 Preference(
@@ -331,7 +291,7 @@ object ShortsPreferencesScreen : Screen {
             }
         }
 
-        if (showFolderSelector) {
+        if (showFolderSelector && allFolders.isNotEmpty()) {
             var selectedFolders by remember { mutableStateOf(shortsSourceFolders) }
             AlertDialog(
                 onDismissRequest = { showFolderSelector = false },
@@ -344,33 +304,6 @@ object ShortsPreferencesScreen : Screen {
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(bottom = 12.dp)
                         )
-                        if (allFolders.isEmpty()) {
-                            // Empty state instead of a silent no-op: tell the user why the
-                            // list is empty and offer a manual re-scan.
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .heightIn(min = 120.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center,
-                            ) {
-                                if (foldersLoading) {
-                                    CircularProgressIndicator(modifier = Modifier.size(28.dp))
-                                } else {
-                                    Text(
-                                        text = stringResource(R.string.pref_sourced_folders_empty),
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.outline,
-                                        textAlign = TextAlign.Center,
-                                        modifier = Modifier.padding(horizontal = 8.dp),
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    TextButton(onClick = { refreshFolders() }) {
-                                        Text(stringResource(R.string.generic_refresh))
-                                    }
-                                }
-                            }
-                        } else {
                         LazyColumn(modifier = Modifier.heightIn(max = 300.dp)) {
                             items(allFolders) { folder ->
                                 val isChecked = selectedFolders.contains(folder.path)
@@ -408,7 +341,6 @@ object ShortsPreferencesScreen : Screen {
                                     }
                                 }
                             }
-                        }
                         }
                     }
                 },

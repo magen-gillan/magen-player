@@ -477,9 +477,8 @@ fun ControlsTab(
   // Data needed for visibility checks
   val chapters by viewModel.chapters.collectAsState(persistentListOf())
   val playlist by viewModel.playlistManager.playlist.collectAsState(emptyList())
-  val availableVideoQualities by viewModel.availableVideoQualities.collectAsState()
   val hasPlaylistSupport = playlist.size > 1
-  val hasMultipleQualities = availableVideoQualities.size > 1
+  val hasMultipleQualities = false
 
   // 1. Determine what's on screen (to hide from sheet)
   val visibleOnScreen = remember(
@@ -500,7 +499,6 @@ fun ControlsTab(
                   PlayerButton.BOOKMARKS_CHAPTERS -> true
                   PlayerButton.SHUFFLE -> hasPlaylistSupport
                   PlayerButton.CURRENT_CHAPTER -> false
-                  PlayerButton.VIDEO_QUALITY -> hasMultipleQualities
                   PlayerButton.NONE -> false
                   else -> true
               }
@@ -516,7 +514,6 @@ fun ControlsTab(
                   PlayerButton.BOOKMARKS_CHAPTERS -> true
                   PlayerButton.SHUFFLE -> hasPlaylistSupport
                   PlayerButton.CURRENT_CHAPTER -> true
-                  PlayerButton.VIDEO_QUALITY -> hasMultipleQualities
                   PlayerButton.NONE -> false
                   else -> true
               }
@@ -550,7 +547,6 @@ fun ControlsTab(
               PlayerButton.BOOKMARKS_CHAPTERS -> true
               PlayerButton.CURRENT_CHAPTER -> true
               PlayerButton.AB_LOOP -> true // Always show in more sheet if missing from UI
-              PlayerButton.VIDEO_QUALITY -> hasMultipleQualities
               else -> true
           }
       }

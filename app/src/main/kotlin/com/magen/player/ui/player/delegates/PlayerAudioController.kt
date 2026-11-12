@@ -94,9 +94,7 @@ class PlayerAudioController(
               .build(),
           ).setOnAudioFocusChangeListener(audioFocusChangeListener)
           .setAcceptsDelayedFocusGain(true)
-          // false so AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK is actually delivered — the
-          // duck branch above was dead code with true (system pauses instead).
-          .setWillPauseWhenDucked(false)
+          .setWillPauseWhenDucked(true)
           .build()
       if (autoplayOnOpen) {
         requestAudioFocus()
@@ -164,6 +162,6 @@ class PlayerAudioController(
   }
 
   companion object {
-    private const val TAG = "magenplayer"
+    private const val TAG = "MagenPlayer"
   }
 }

@@ -17,8 +17,8 @@ android {
     applicationId = "com.magen.player"
     minSdk = 26
     targetSdk = 36
-    versionCode = 221
-    versionName = "5.6.2"
+    versionCode = 218
+    versionName = "5.5.2"
 
     vectorDrawables {
       useSupportLibrary = true
@@ -26,8 +26,6 @@ android {
 
     buildConfigField("String", "GIT_SHA", "\"${getCommitSha()}\"")
     buildConfigField("int", "GIT_COUNT", getCommitCount())
-    // Enable update feature by default
-    buildConfigField("boolean", "ENABLE_UPDATE_FEATURE", "false")
     buildConfigField("boolean", "SCOPED_STORAGE_ONLY", "false")
     buildConfigField("boolean", "IS_PREVIEW", "false")
   }
@@ -113,14 +111,8 @@ android {
       excludes += "META-INF/NOTICE*"
       excludes += "META-INF/*.kotlin_module"
       excludes += "META-INF/versions/9/OSGI-INF/MANIFEST.MF"
-      // BouncyCastle PQC test vectors (post-quantum crypto data files) are never used
-      // at runtime by the WebDAV/SMB dependencies that pull them in.
-      excludes += "org/bouncycastle/pqc/**"
     }
     jniLibs {
-      // Compressed native libs inside the APK (legacy packaging): libmpv/ffmpeg/mediainfo
-      // .so files are ~52MB uncompressed. Compression roughly halves the download size;
-      // they are extracted to /data at install time, which every supported API level does.
       useLegacyPackaging = true
     }
   }
@@ -163,7 +155,7 @@ kotlin {
 }
 
 composeCompiler {
-  includeSourceInformation = false
+  includeSourceInformation = true
 }
 
 room {
@@ -206,21 +198,12 @@ dependencies {
 
   implementation(libs.kotlinx.immutable.collections)
   implementation(libs.kotlinx.serialization.json)
-  implementation(libs.okhttp)
-  implementation(libs.smbj)
-  implementation(libs.commons.net)
-  implementation(libs.sardine.android) {
-    exclude(group = "xpp3", module = "xpp3")
-  }
-  implementation(libs.nanohttpd)
 
   implementation(libs.truetype.parser)
   implementation(libs.fsaf)
   implementation(libs.mediainfo.lib)
   implementation(libs.mpv.lib)
-  implementation(libs.androidx.security.crypto)
 
-  // Network protocol libraries
   implementation(libs.lazycolumnscrollbar)
   implementation(libs.reorderable)
   implementation(libs.compose.markdown)
@@ -234,6 +217,12 @@ dependencies {
 
 /* ---------------- Git helpers ---------------- */
 
-fun getCommitCount(): String = "0"
+fun getCommitCount(): String =
+  providers.exec {
+    commandLine("git", "rev-list", "--count", "HEAD")
+  }.standardOutput.asText.get().trim().ifEmpty { "0" }
 
-fun getCommitSha(): String = "unknown"
+fun getCommitSha(): String =
+  providers.exec {
+    commandLine("git", "rev-parse", "--short", "HEAD")
+  }.standardOutput.asText.get().trim().ifEmpty { "unknown" }

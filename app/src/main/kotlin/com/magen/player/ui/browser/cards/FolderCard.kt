@@ -48,6 +48,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.graphics.ImageBitmap
 
 import com.magen.player.preferences.UiSettings
+import java.io.File
 
 @Composable
 fun FolderCard(
@@ -79,11 +80,14 @@ fun FolderCard(
   val totalSize = folder.activeSize(showAudioFiles)
   val totalDuration = folder.activeDuration(showAudioFiles)
   val countLabel = if (totalCount == 1) "1 Item" else "$totalCount Items"
-  val maxLines = if (uiSettings.unlimitedNameLines) Int.MAX_VALUE else 2
+  val maxLines = if (uiSettings.unlimitedNameLines) Int.MAX_VALUE else if (isGridMode) 4 else 3
+  val folderTitle = folder.name.ifBlank {
+    File(folder.path.trimEnd('/', '\\')).name.ifBlank { folder.path.trimEnd('/', '\\').ifBlank { "Folder" } }
+  }
   val parentPath = folder.path.substringBeforeLast("/", folder.path)
 
   BaseMediaCard(
-    title = folder.name,
+    title = folderTitle,
     modifier = modifier,
     thumbnail = thumbnail,
     thumbnailAspectRatio = thumbnailAspectRatio,

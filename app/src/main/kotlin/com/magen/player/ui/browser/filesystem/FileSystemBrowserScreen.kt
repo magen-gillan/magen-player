@@ -126,7 +126,6 @@ import com.magen.player.ui.browser.dialogs.FileSystemSortDialog
 import androidx.compose.material.icons.filled.VideoLibrary
 import com.magen.player.ui.browser.selection.rememberSelectionManager
 import com.magen.player.ui.browser.sheets.MarkAsBottomSheet
-import com.magen.player.ui.browser.sheets.PlayLinkSheet
 import com.magen.player.utils.history.RecentlyPlayedOps
 import com.magen.player.ui.browser.states.EmptyState
 import com.magen.player.ui.browser.states.PermissionDeniedState
@@ -274,7 +273,6 @@ fun FileSystemBrowserScreen(path: String? = null) {
   
   // UI state
   val isRefreshing = remember { mutableStateOf(false) }
-  val showLinkDialog = remember { mutableStateOf(false) }
   val sortDialogOpen = rememberSaveable { mutableStateOf(false) }
   val deleteDialogOpen = rememberSaveable { mutableStateOf(false) }
   val renameDialogOpen = rememberSaveable { mutableStateOf(false) }
@@ -660,6 +658,11 @@ fun FileSystemBrowserScreen(path: String? = null) {
                   onClick = {
                     viewModel.blacklistFolders(folderSelectionManager.getSelectedItems())
                     folderSelectionManager.clear()
+                    Toast.makeText(
+                      context,
+                      context.getString(R.string.pref_folders_blacklisted),
+                      Toast.LENGTH_SHORT,
+                    ).show()
                   },
                 ))
               }
@@ -807,15 +810,6 @@ fun FileSystemBrowserScreen(path: String? = null) {
               },
               icon = { Icon(Icons.Filled.History, contentDescription = null) },
               text = { Text(text = stringResource(R.string.recently_played)) },
-            )
-
-            FloatingActionButtonMenuItem(
-              onClick = {
-                isFabExpanded.value = false
-                showLinkDialog.value = true
-              },
-              icon = { Icon(Icons.Filled.Link, contentDescription = null) },
-              text = { Text(text = stringResource(R.string.open_link)) },
             )
           }
         }
@@ -965,11 +959,6 @@ fun FileSystemBrowserScreen(path: String? = null) {
     }
 
     // Dialogs
-    PlayLinkSheet(
-      isOpen = showLinkDialog.value,
-      onDismiss = { showLinkDialog.value = false },
-      onPlayLink = { url -> MediaUtils.playFile(url, context, "play_link") },
-    )
 
     FileSystemSortDialog(
       isOpen = sortDialogOpen.value,
@@ -1176,12 +1165,12 @@ suspend fun searchRecursively(
           }
         }
         is FileSystemItem.Folder -> {
-          if ((isAudioFilesVisible || item.videoCount > 0) && item.name.contains(query, ignoreCase = true)) {
+          if (item.activeCount(isAudioFilesVisible) > 0 && item.name.contains(query, ignoreCase = true)) {
             Log.d("FileSystemBrowserScreen", "Found matching folder: ${item.name}")
             results.add(item)
           }
           // Recursively search in subdirectories if they have content we care about
-          if (isAudioFilesVisible || item.videoCount > 0) {
+          if (item.activeCount(isAudioFilesVisible) > 0) {
             try {
               val subResults = searchRecursively(context, item.path, query)
               results.addAll(subResults)
@@ -1227,7 +1216,7 @@ private suspend fun collectVideosRecursively(
 
     // Recursively scan subfolders that have relevant content
     items.filterIsInstance<FileSystemItem.Folder>().forEach { folder ->
-      if (isAudioFilesVisible || folder.videoCount > 0) {
+      if (folder.activeCount(isAudioFilesVisible) > 0) {
         val subVideos = collectVideosRecursively(context, folder.path)
         videos.addAll(subVideos)
       }

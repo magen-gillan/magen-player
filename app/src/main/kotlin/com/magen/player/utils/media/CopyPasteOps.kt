@@ -266,6 +266,57 @@ object CopyPasteOps {
       }
     }
 
+  /** Move one video and return its updated path/URI for callers that retain the item in a feed. */
+  suspend fun moveVideo(
+    context: Context,
+    video: Video,
+    destinationPath: String,
+  ): Result<Video> =
+    withContext(Dispatchers.IO) {
+      try {
+        val movedPath =
+          if (canUseDirectFileOperations()) {
+            resetOperation()
+            val destDir =
+              prepareDestinationDirectory(destinationPath)
+                ?: throw IOException("Cannot create or write to destination folder: $destinationPath")
+            val source = File(video.path)
+            if (!source.exists()) throw IOException("Source video no longer exists: ${video.displayName}")
+            if (source.parentFile?.absolutePath == destDir.absolutePath) {
+              return@withContext Result.success(video)
+            }
+            val (paths, historyUpdates) = performMoveOperation(listOf(video), destDir, video.size.coerceAtLeast(0L))
+            historyUpdates.forEach { (oldPath, newPath) ->
+              RecentlyPlayedOps.onVideoRenamed(oldPath, newPath)
+              PlaybackStateOps.onVideoRenamed(oldPath, newPath)
+            }
+            paths.singleOrNull() ?: throw IOException("Move completed without a destination path")
+          } else {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+              throw IOException("Moving favorites requires Android 10 or newer when broad storage access is unavailable")
+            }
+            performScopedMoveOperation(context, listOf(video), destinationPath).singleOrNull()
+              ?: throw IOException("Move completed without a destination path")
+          }
+
+        val newFile = File(movedPath)
+        val newUri = findMediaStoreUri(context, movedPath) ?: Uri.fromFile(newFile)
+        val updated = video.copy(
+          id = newUri.lastPathSegment?.toLongOrNull() ?: video.id,
+          displayName = newFile.name,
+          path = movedPath,
+          uri = newUri,
+          bucketDisplayName = "المفضلة",
+        )
+        MediaLibraryEvents.notifyChanged()
+        triggerMediaScan(context, listOf(movedPath))
+        Result.success(updated)
+      } catch (e: Exception) {
+        Log.e(TAG, "Move to favorites failed: ${e.message}", e)
+        Result.failure(e)
+      }
+    }
+
   /**
    * Copy files to a SAF tree Uri (Play Store-safe, supports arbitrary user-picked folders).
    */
@@ -603,7 +654,9 @@ object CopyPasteOps {
         }
 
         ContentValues().apply { put(MediaStore.MediaColumns.IS_PENDING, 0) }.also {
-          context.contentResolver.update(insertedUri, it, null, null)
+          if (context.contentResolver.update(insertedUri, it, null, null) <= 0) {
+            throw IOException("Failed to publish copied video in MediaStore: ${video.displayName}")
+          }
         }
 
         val newPath = resolveOutputPath(relativePath, uniqueName)
@@ -631,65 +684,69 @@ object CopyPasteOps {
     videos: List<Video>,
     destinationPath: String,
   ): List<String> {
-    // Only operate on files the copy step will actually copy. The copy operation
-    // silently skips sources already in the destination folder; deleting the full
-    // unfiltered list afterwards destroyed those files without ever copying them.
-    val validVideos =
-      videos.filter { video ->
-        val sameDir = File(video.path).parent == destinationPath
-        if (sameDir) {
-          Log.w(TAG, "Source and destination are the same, skipping: ${video.displayName}")
-        }
-        !sameDir
-      }
-    if (validVideos.isEmpty()) {
-      throw IllegalArgumentException("No valid files to move")
-    }
-
-    val movedPaths = performScopedCopyOperation(context, validVideos, destinationPath)
-
-    val contentUrisToDelete =
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        validVideos
-          .filter { it.uri.scheme == "content" }
-          .map { it.uri }
-      } else {
-        emptyList()
-      }
-
-    if (contentUrisToDelete.isNotEmpty()) {
-      val granted = PermissionUtils.requestScopedDeleteAccess(context, contentUrisToDelete)
-      if (!granted) {
-        throw IOException("Move cancelled: source delete permission denied")
-      }
-    }
-
-    validVideos.forEachIndexed { index, video ->
-      val deleted =
-        if (video.uri.scheme == "content") {
-          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            true
-          } else {
-            context.contentResolver.delete(video.uri, null, null) > 0
-          }
+    val movedPaths = performScopedCopyOperation(context, videos, destinationPath)
+    try {
+      val contentUrisToDelete =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+          videos.filter { it.uri.scheme == "content" }.map { it.uri }
         } else {
-          val sourceFile = File(video.path)
-          !sourceFile.exists() || sourceFile.delete()
+          emptyList()
         }
 
-      if (!deleted) {
-        throw IOException("Failed to delete source after move: ${video.displayName}")
+      if (contentUrisToDelete.isNotEmpty() && !PermissionUtils.requestScopedDeleteAccess(context, contentUrisToDelete)) {
+        throw IOException("Move cancelled: permission to remove the original video was denied")
       }
 
-      // Indices now align: movedPaths[i] corresponds to validVideos[i].
-      val newPath = movedPaths.getOrNull(index)
-      if (newPath != null) {
-        RecentlyPlayedOps.onVideoRenamed(video.path, newPath)
-        PlaybackStateOps.onVideoRenamed(video.path, newPath)
+      videos.forEachIndexed { index, video ->
+        val deleted =
+          if (video.uri.scheme == "content") {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) true
+            else context.contentResolver.delete(video.uri, null, null) > 0
+          } else {
+            val sourceFile = File(video.path)
+            !sourceFile.exists() || sourceFile.delete()
+          }
+
+        if (!deleted) throw IOException("Failed to delete original video after copying: ${video.displayName}")
+        movedPaths.getOrNull(index)?.let { newPath ->
+          RecentlyPlayedOps.onVideoRenamed(video.path, newPath)
+          PlaybackStateOps.onVideoRenamed(video.path, newPath)
+        }
       }
+      return movedPaths
+    } catch (e: Exception) {
+      // A failed delete must not leave a second copy in the Favorites folder.
+      movedPaths.forEach { path -> runCatching { deleteMediaStoreItemByPath(context, path) } }
+      throw e
     }
+  }
 
-    return movedPaths
+  private fun findMediaStoreUri(context: Context, path: String): Uri? =
+    runCatching {
+      context.contentResolver.query(
+        MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+        arrayOf(MediaStore.Video.Media._ID),
+        "${MediaStore.Video.Media.DATA} = ?",
+        arrayOf(path),
+        null,
+      )?.use { cursor ->
+        if (cursor.moveToFirst()) {
+          Uri.withAppendedPath(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, cursor.getLong(0).toString())
+        } else null
+      }
+    }.getOrNull()
+
+  private fun deleteMediaStoreItemByPath(context: Context, path: String) {
+    val uri = findMediaStoreUri(context, path)
+    if (uri != null) {
+      context.contentResolver.delete(uri, null, null)
+    } else {
+      context.contentResolver.delete(
+        MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+        "${MediaStore.Video.Media.DATA} = ?",
+        arrayOf(path),
+      )
+    }
   }
 
   private fun prepareDestinationDirectory(path: String): File? {
@@ -934,7 +991,8 @@ object CopyPasteOps {
     // Delete source
     if (!source.delete()) {
       Log.w(TAG, "Failed to delete source file after copy: ${source.absolutePath}")
-      // Don't throw - the file was successfully copied
+      destination.delete()
+      throw IOException("Failed to delete original video after copying: $fileName")
     }
   }
 

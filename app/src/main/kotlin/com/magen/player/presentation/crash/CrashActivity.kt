@@ -139,7 +139,7 @@ class CrashActivity : ComponentActivity() {
         "sqlite",
         "room",
         "magenplayer.db",
-        "magenplayerDatabase",
+        "magenplayerdatabase",
         "android.database",
         "androidx.room",
         "SQLiteException",
@@ -163,7 +163,7 @@ class CrashActivity : ComponentActivity() {
       activity: Activity,
     ) {
       withContext(NonCancellable) {
-        val file = File(activity.cacheDir, "magenplayer_logs.txt")
+        val file = File(activity.cacheDir, "magen_player_logs.txt")
         if (file.exists()) file.delete()
         file.createNewFile()
         file.appendText(concatLogs(deviceInfo, exceptionString, logcat))

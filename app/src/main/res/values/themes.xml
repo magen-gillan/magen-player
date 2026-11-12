@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.magenplayer" parent="Theme.Material3.DynamicColors.DayNight.NoActionBar" />
+    <style name="Theme.MagenPlayer" parent="Theme.Material3.DynamicColors.DayNight.NoActionBar" />
 
-    <style name="Theme.magenplayer.Launcher" parent="Theme.SplashScreen">
+    <style name="Theme.MagenPlayer.Launcher" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/splash_screen_background</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-        <item name="postSplashScreenTheme">@style/Theme.magenplayer</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo_animated</item>
+        <item name="postSplashScreenTheme">@style/Theme.MagenPlayer</item>
     </style>
 
-    <style name="Theme.magenplayer.Player" parent="Theme.magenplayer">
+    <style name="Theme.MagenPlayer.Player" parent="Theme.MagenPlayer">
         <item name="android:windowBackground">@android:color/black</item>
     </style>
 
-    <style name="Theme.magenplayer.Transparent" parent="Theme.magenplayer">
+    <style name="Theme.MagenPlayer.Transparent" parent="Theme.MagenPlayer">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowElevation">0dp</item>

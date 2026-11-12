@@ -13,5 +13,6 @@ data class ShortsMediaEntity(
     val isLoved: Boolean = false,
     val isBlocked: Boolean = false,
     val isManuallyAdded: Boolean = false,
-    val addedDate: Long = System.currentTimeMillis()
+    val addedDate: Long = System.currentTimeMillis(),
+    val originalPath: String? = null,
 )

@@ -137,7 +137,6 @@ import com.magen.player.ui.browser.sheets.MarkAsBottomSheet
 import com.magen.player.utils.media.CopyPasteOps
 import com.magen.player.utils.media.OpenDocumentTreeContract
 import com.magen.player.ui.browser.sheets.MultiSelectionInfoSheet
-import com.magen.player.ui.browser.sheets.PlayLinkSheet
 import com.magen.player.ui.browser.states.EmptyState
 import com.magen.player.ui.browser.states.LoadingState
 import com.magen.player.ui.browser.states.PermissionDeniedState
@@ -330,8 +329,7 @@ object FolderListScreen : Screen {
     val isRefreshing = remember { mutableStateOf(false) }
     val sortDialogOpen = rememberSaveable { mutableStateOf(false) }
     val deleteDialogOpen = rememberSaveable { mutableStateOf(false) }
-    val showLinkDialog = remember { mutableStateOf(false) }
-    var showMarkAsSheet by remember { mutableStateOf(false) }
+      var showMarkAsSheet by remember { mutableStateOf(false) }
     val folderPickerOpen = rememberSaveable { mutableStateOf(false) }
     val progressDialogOpen = rememberSaveable { mutableStateOf(false) }
     val operationType = remember { mutableStateOf<CopyPasteOps.OperationType?>(null) }
@@ -674,15 +672,6 @@ object FolderListScreen : Screen {
             icon = { Icon(Icons.Filled.History, contentDescription = null) },
             text = { Text(text = "Recently Played") },
           )
-
-          FloatingActionButtonMenuItem(
-            onClick = {
-              isFabExpanded.value = false
-              showLinkDialog.value = true
-            },
-            icon = { Icon(Icons.Filled.Link, contentDescription = null) },
-            text = { Text(text = "Open Link") },
-          )
         }
         }
       },
@@ -736,11 +725,6 @@ object FolderListScreen : Screen {
       }
 
       // Dialogs
-      PlayLinkSheet(
-        isOpen = showLinkDialog.value,
-        onDismiss = { showLinkDialog.value = false },
-        onPlayLink = { url -> MediaUtils.playFile(url, context, "play_link") },
-      )
 
       FolderSortDialog(
         isOpen = sortDialogOpen.value,

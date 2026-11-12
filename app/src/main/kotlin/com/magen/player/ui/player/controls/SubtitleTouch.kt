@@ -39,7 +39,7 @@ private const val STYLE_PREFIX = "sub"
 
 /**
  * Primary native ASS/SSA tracks ignore the shared `sub-*` style unless `sub-ass-override=force`
- * (REX runs the primary at `scale` when "override ASS" is off; the secondary is always forced).
+ * (the player runs the primary at `scale` when "override ASS" is off; the secondary is always forced).
  *
  * Forcing the override while grabbed was tried and reverted: it makes mpv re-style the ASS with the
  * global `sub-*` font/size, so the subtitle visibly changed font for the duration of the touch.
@@ -132,7 +132,7 @@ internal fun subtitleUnitScale(height: Float, prefs: SubtitlesPreferences): Floa
  *    placement, so the box estimated from `sub-pos` is somewhere else entirely (and dragging
  *    could not move it anyway). This guard is deliberately kept: forcing the override only AFTER
  *    the touch cannot help, because the hit test has to succeed first and mpv exposes no real
- *    bounds for such a track. In REX this state is not reachable once a file is loaded:
+ *    bounds for such a track. In the player this state is not reachable once a file is loaded:
  *    applySubtitlePreferences() sets the primary override to `force` or `scale` on every file load.
  */
 private fun isSubtitleBoxEstimable(prefix: String): Boolean {

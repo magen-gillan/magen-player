@@ -5,7 +5,6 @@ import com.magen.player.domain.pinned.PinnedItemRepository
 import com.magen.player.domain.pinned.PinnedItemRepositoryImpl
 import com.magen.player.preferences.AdvancedPreferences
 import com.magen.player.preferences.AppearancePreferences
-import com.magen.player.preferences.YtdlPreferences
 import com.magen.player.preferences.AudioPreferences
 import com.magen.player.preferences.BrowserPreferences
 import com.magen.player.preferences.DecoderPreferences
@@ -40,6 +39,4 @@ val PreferencesModule =
     singleOf(::SettingsManager)
     singleOf(::UiPreferences)
     singleOf(::PlayerTutorialManager)
-    // Was missing: VideoQualitySheet crashes with NoDefinitionFoundException on inject()
-    singleOf(::YtdlPreferences)
   }

@@ -22,10 +22,10 @@ internal const val MPV_SCALED_PIXEL_REFERENCE_HEIGHT = 720f
  *
  * mpv has two separate options: `sub-scale-by-window` (default yes) and `sub-scale-with-window`
  * (default yes). With by-window=yes the size follows the window height. With by-window=no and
- * with-window=yes (REX never touches with-window) the size no longer follows the window, so the
+ * with-window=yes (the player does not use with-window) the size no longer follows the window, so the
  * value is used as is (factor 1). The with-window=no / video-height mode is NOT modelled.
  *
- * Why plain height / 720 holds in REX's configuration (by-window and with-window both yes,
+ * Why plain height / 720 holds in the current configuration (by-window and with-window both yes,
  * sub-use-margins yes), also with letterboxing: mpv's get_libass_scale_height() determines the
  * effective height libass uses to scale subtitle text (video area / 720). With with-window=yes
  * sd_ass compensates by window height / that height, so the resulting window-relative factor is

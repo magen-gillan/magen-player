@@ -1,5 +1,6 @@
 package com.magen.player.ui.player.controls
 
+import com.magen.player.utils.storage.FileTypeUtils
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -443,15 +444,27 @@ fun PlayerControls(
         val mediaTitle by remember(rawMediaTitle, activity) {
           derivedStateOf {
             val title = activity.getTitleForControls()
-            if (title.startsWith("http://") || title.startsWith("https://") || title.contains(".m3u8") || title.contains(".m3u")) {
-              val raw = rawMediaTitle
-              if (raw != null && raw.isNotBlank() && !raw.startsWith("http://") && !raw.startsWith("https://") && !raw.contains(".m3u8") && !raw.contains(".m3u")) {
-                raw
+            val resolvedTitle =
+              if (title.startsWith("http://") || title.startsWith("https://") ||
+                  title.contains(".m3u8") || title.contains(".m3u")) {
+                val raw = rawMediaTitle
+                if (raw != null && raw.isNotBlank() &&
+                    !raw.startsWith("http://") && !raw.startsWith("https://") &&
+                    !raw.contains(".m3u8") && !raw.contains(".m3u")) {
+                  raw
+                } else {
+                  title
+                }
               } else {
                 title
               }
+
+            val extension = resolvedTitle.substringAfterLast('.', "").lowercase()
+            if (extension in FileTypeUtils.VIDEO_EXTENSIONS ||
+                extension in FileTypeUtils.AUDIO_EXTENSIONS) {
+              resolvedTitle.substringBeforeLast('.')
             } else {
-              title
+              resolvedTitle
             }
           }
         }
@@ -1444,6 +1457,8 @@ fun PlayerControls(
               },
         ) {
           val invertDuration by playerPreferences.invertDuration.collectAsState()
+          val speedAdjustedRemaining by playerPreferences.speedAdjustedRemainingTime.collectAsState()
+          val playbackSpeed by MPVLib.propFloat["speed"].collectAsState()
           val seekbarStyle by appearancePreferences.seekbarStyle.collectAsState()
           val effectiveDuration = if (preciseDuration > 0f) preciseDuration else if (isLoadingFile) 0f else duration?.toFloat() ?: 0f
 
@@ -1524,6 +1539,8 @@ fun PlayerControls(
                 viewModel.showControls()
               },
               timersInverted = Pair(false, invertDuration),
+              speed = { MPVLib.getPropertyFloat("speed") ?: playbackSpeed ?: 1f },
+              speedAdjustedRemaining = speedAdjustedRemaining,
               durationTimerOnCLick = {
                 resetControlsTimestamp = System.currentTimeMillis()
                 playerPreferences.invertDuration.set(!invertDuration)
@@ -1610,8 +1627,18 @@ fun PlayerControls(
           visible = controlsShown && !areControlsLocked,
           enter =
             if (!reduceMotion) {
-              slideInHorizontally(playerControlsEnterAnimationSpec()) { it } +
-                fadeIn(playerControlsEnterAnimationSpec())
+              slideInHorizontally(
+                animationSpec = tween(
+                  durationMillis = 180,
+                  easing = LinearOutSlowInEasing,
+                ),
+              ) { it / 3 } +
+                fadeIn(
+                  tween(
+                    durationMillis = 180,
+                    easing = LinearOutSlowInEasing,
+                  ),
+                )
             } else {
               fadeIn(playerControlsEnterAnimationSpec())
             },
@@ -2093,7 +2120,6 @@ fun PlayerControls(
     val currentStopLineup by viewModel.currentStopLineup.collectAsState()
     val subtitles by viewModel.subtitleTracks.collectAsState(persistentListOf())
     val audioTracks by viewModel.audioTracks.collectAsState(persistentListOf())
-    val alternateAudio by viewModel.availableAlternateAudio.collectAsState(persistentListOf())
     val sleepTimerTimeRemaining by viewModel.remainingTime.collectAsState()
     val speedPresets by playerPreferences.speedPresets.collectAsState()
     val speedCyclePresets by playerPreferences.speedCyclePresets.collectAsState()
@@ -2111,8 +2137,6 @@ fun PlayerControls(
       onSelectAudio = {
         viewModel.selectAudioTrack(it.id, it.title, it.lang)
       },
-      alternateAudio = alternateAudio.toImmutableList(),
-      onSelectAlternateAudio = viewModel::selectAlternateAudio,
       chapter = chapters.getOrNull(currentChapter ?: 0),
       chapters = chapters.toImmutableList(),
       currentChapterIndex = currentChapter ?: 0,

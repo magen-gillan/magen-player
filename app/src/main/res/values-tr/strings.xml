@@ -21,8 +21,6 @@
     <string name="pref_appearance_tab_recents_summary">Önceki video oturumlarına hızlıca devam et</string>
     <string name="pref_appearance_tab_playlists_title">Oynatma Listeleri</string>
     <string name="pref_appearance_tab_playlists_summary">Yerel özel video oynatma listelerini göster</string>
-    <string name="pref_appearance_tab_network_title">Ağ Üzerinden Yayın</string>
-    <string name="pref_appearance_tab_network_summary">SMB, FTP ve WebDAV sürücülerine eriş</string>
     <string name="pref_appearance_summary">Karanlık mod, Material You</string>
     <string name="pref_appearance_category_theme">Tema</string>
     <string name="pref_appearance_darkmode_system">Sistem</string>
@@ -55,8 +53,6 @@
     <string name="pref_appearance_unplayed_old_video_days_title">Yeni video etiketi için gün eşiği</string>
     <string name="pref_appearance_unplayed_old_video_days_summary">Son %d gün içinde eklenen ve oynatma geçmişi olmayan videolar yeni olarak işaretlenir</string>
     <string name="pref_appearance_category_thumbnails">Küçük Resim</string>
-    <string name="pref_appearance_show_network_thumbnails_title">Ağ küçük resimlerini göster (Deneysel)</string>
-    <string name="pref_appearance_show_network_thumbnails_summary">Ağ üzerindeki yayınlar için küçük resim oluştur (mobil ağlarda veri kullanımını artırabilir)</string>
     <string name="pref_appearance_theme_picker_label">Uygulama Teması</string>
     <string name="pref_appearance_auto_scroll_title">Son oynatılana otomatik kaydır</string>
     <string name="pref_appearance_auto_scroll_summary">Video listeleri açıldığında son oynatılan videoya otomatik olarak kaydır</string>
@@ -275,8 +271,6 @@
 
     <string name="pref_subtitles">Altyazılar</string>
     <string name="pref_subtitles_summary">Tercih edilen diller, yazı tipleri ve arama</string>
-    <string name="pref_subtitle_search_title">Çevrimiçi Altyazı Arama</string>
-    <string name="pref_subtitle_search_summary">Çevrimiçi kaynaklardan altyazı ara ve indir</string>
     <string name="pref_custom_lua_title">Özel Lua Düğmeleri</string>
     <string name="pref_custom_lua_summary">Lua koduyla özel oynatıcı düğmelerini yönet</string>
     <string name="pref_preferred_languages">Tercih edilen diller</string>
@@ -292,8 +286,6 @@
     <string name="pref_subtitles_custom_picker_folder_title">Varsayılan seçim klasörü</string>
     <string name="pref_subtitles_custom_picker_folder_summary">Manuel olarak altyazı eklerken açılacak seçilmiş klasör</string>
     <string name="pref_subtitles_save_location">Altyazı Kayıt Konumu</string>
-    <string name="pref_subtitles_search_online">Çevrimiçi Altyazı Arama…</string>
-    <string name="pref_subtitles_subdl_languages">Altyazı Dilleri</string>
     <string name="all_languages">Tümü (Seçici Filtreleme)</string>
     <string name="pref_subtitles_clear_downloads">Altyazı İndirmelerini Temizle</string>
     <string name="pref_subtitles_clear_downloads_summary">Geçerli kayıt konumundaki tüm dosyaları sil</string>
@@ -301,13 +293,6 @@
     <string name="toast_subtitles_cleared">Altyazı indirmeleri temizlendi</string>
     <string name="pref_subtitles_searching">Aranıyor…</string>
     <string name="pref_subtitles_found">%d altyazı bulundu</string>
-    <string name="pref_subtitles_online_search_title">Çevrimiçi Altyazı Arama</string>
-    <string name="pref_subtitles_wyzie_api_key_title">Wyzie API Anahtarı</string>
-    <string name="pref_subtitles_wyzie_api_key_summary">Altyazı aramaları için gereklidir. Kendi anahtarını sub.wyzie.io/redeem adresinden al</string>
-    <string name="pref_subtitles_wyzie_api_key_hint">API Anahtarını Gir</string>
-    <string name="pref_subtitles_wyzie_api_key_not_set">Ayarlanmadı</string>
-    <string name="pref_subtitles_wyzie_api_key_masked">••••••••••••••••••••••</string>
-
     <string name="pref_audio">Ses</string>
     <string name="pref_audio_summary">Tercih edilen diller, ses kanalları, perde düzeltmesi</string>
     <string name="pref_audio_pitch_correction_title">Ses perdesi düzeltmeyi etkinleştir</string>
@@ -378,10 +363,6 @@
     <string name="pref_about_oss_libraries">Kütüphaneler</string>
     <string name="pref_about_device_info">Cihaz Bilgisi</string>
     <string name="pref_about_donate_title">Bağış Yap</string>
-    <string name="pref_about_donate_kofi">Ko-fi</string>
-    <string name="pref_about_donate_kofi_summary">Geliştiriciyi Ko-fi üzerinden destekle</string>
-    <string name="pref_about_donate_paypal">PayPal</string>
-    <string name="pref_about_donate_paypal_summary">Geliştiriciyi PayPal üzerinden destekle</string>
     <string name="pref_about_donate_upi">UPI</string>
 
     <string name="player_sheets_add_ext_sub">Harici altyazı ekle</string>
@@ -482,7 +463,7 @@
     <string name="player_aspect_stretch">Uzat</string>
 
     <string name="crash_screen_title">Hay aksi</string>
-    <string name="crash_screen_subtitle">Görünüşe göre %s beklenmedik bir hatayla karşılaştı. Çökme günlüklerini bir GitHub sorununda paylaşmayı düşünebilirsin.</string>
+    <string name="crash_screen_subtitle">An unexpected error occurred in %s.</string>
     <string name="crash_screen_logs_title">Çökme günlükleri:</string>
     <string name="crash_screen_share">Çökme günlüklerini paylaş</string>
     <string name="crash_screen_restart">Uygulamayı yeniden başlat</string>
@@ -622,22 +603,15 @@
 
     <!-- M3U Playlist Strings -->
     <string name="playlist_add_m3u_title">M3U Oynatma Listesi Ekle</string>
-    <string name="playlist_add_m3u_description">Bir M3U oynatma listesi dosyasının URL\'sini gir</string>
-    <string name="playlist_url_label">Oynatma Listesi URL\'si</string>
-    <string name="playlist_url_placeholder">https://example.com/playlist.m3u</string>
-    <string name="playlist_url_hint">.m3u ve .m3u8 biçimlerini destekler</string>
     <string name="playlist_add_success">M3U oynatma listesi başarıyla eklendi</string>
     <string name="playlist_add_error">M3U oynatma listesi eklenemedi: %s</string>
     <string name="playlist_create_empty">Boş oynatma listesi oluştur</string>
-    <string name="playlist_add_from_url">M3U/M3U8 URL\'sinden ekle</string>
-    <string name="playlist_refresh_m3u">M3U oynatma listesini yenile</string>
     <string name="playlist_refresh_success">Oynatma listesi başarıyla yenilendi</string>
     <string name="playlist_refresh_error">Oynatma listesi yenilenemedi: %s</string>
     <string name="playlist_m3u_badge">M3U</string>
 
     <string name="open_file">Dosya aç</string>
     <string name="recently_played">Son oynatılanlar</string>
-    <string name="open_link">Bağlantıyı aç</string>
     <string name="install">Yükle</string>
     <string name="download">İndir</string>
     <string name="failed_load_audio_invalid_uri">Ses dosyası yüklenemedi: Geçersiz URI</string>
@@ -668,9 +642,7 @@
     <string name="remove">Kaldır</string>
     <string name="add">Ekle</string>
     <string name="ignore">Yok say</string>
-    <string name="check_for_updates_now">Şimdi güncellemeleri kontrol et</string>
     <string name="loading_detailed_information">Ayrıntılı bilgi yükleniyor…</string>
-    <string name="stream_url">Yayın URL\'si</string>
     <string name="export_complete">Dışa aktarma tamamlandı</string>
     <string name="import_complete">İçe aktarma tamamlandı</string>
     <string name="auto_picture_in_picture">Otomatik resim içinde resim</string>
@@ -679,18 +651,13 @@
     <string name="create_playlist">Oynatma listesi oluştur</string>
     <string name="add_connection">Bağlantı ekle</string>
     <string name="playlist_name">Oynatma listesi adı</string>
-    <string name="playlist_url">Oynatma Listesi URL\'si</string>
-    <string name="enter_url">URL gir</string>
     <string name="new_name">Yeni ad</string>
     <string name="folder_name">Klasör adı</string>
-    <string name="video_url">Video URL\'si</string>
     <string name="choose_local_m3u_file">Yerel M3U dosyası seç</string>
-    <string name="add_from_url">URL\'den ekle</string>
     <string name="home">Ana Sayfa</string>
     <string name="shorts">Shorts</string>
     <string name="recents">Son Oynatılanlar</string>
     <string name="playlists">Oynatma Listeleri</string>
-    <string name="network">Ağ</string>
     <string name="unit_seconds">Saniye</string>
     <string name="milliseconds">Milisaniye</string>
     <string name="name">Ad</string>
@@ -763,23 +730,11 @@
     <string name="media_info_default_file_name">Medya Dosyası</string>
 
     <!-- Network Connection Card -->
-    <string name="network_connection_protocol_host">%1$s • %2$s:%3$s</string>
-    <string name="network_connection_edit">Düzenle</string>
-    <string name="network_connection_delete">Sil</string>
-    <string name="network_connection_path_prefix">Yol: %1$s</string>
-    <string name="network_connection_user_prefix">Kullanıcı: %1$s</string>
-    <string name="network_connection_error_prefix">Hata: %1$s</string>
-    <string name="network_connection_auto_connect">Uygulama açılışında otomatik bağlan</string>
-    <string name="network_connection_connecting">Bağlanıyor</string>
-    <string name="network_connection_browse">Göz at</string>
-    <string name="network_connection_disconnect">Bağlantıyı kes</string>
-    <string name="network_connection_connect">Bağlan</string>
-
     <!-- Playlist Screen Empty and Search States -->
     <string name="no_playlists_found">Oynatma listesi bulunamadı</string>
     <string name="try_different_search_term">Farklı bir arama terimi dene</string>
     <string name="no_playlists_yet">Henüz oynatma listesi yok</string>
-    <string name="no_playlists_yet_desc">Bir oynatma listesi oluştur veya bir m3u URL\'sinden ekle</string>
+    <string name="no_playlists_yet_desc">Create a playlist or import a local M3U file.</string>
     <string name="empty_playlists_desc">Burada listelenmesi için bir oynatma listesi oluştur</string>
 
     <!-- Recently Played Screen -->
@@ -810,8 +765,6 @@
     <string name="search_all_videos">Tüm videolarda ara…</string>
 
     <!-- Network Streaming Screen Strings -->
-    <string name="stream_link">Yayın Bağlantısı</string>
-    <string name="video_url_placeholder">https://example.com/video.mp4</string>
     <string name="paste">Yapıştır</string>
     <string name="play">Oynat</string>
 
@@ -840,9 +793,6 @@
     <string name="moved_to_private_space">Özel Alana Taşındı</string>
     <string name="moved_to_private_space_desc">%1$d video başarıyla özel alana taşındı.\n\nÖzel alana erişmek için ana ekranın üstündeki uygulama adına uzun bas.</string>
     <string name="save">Kaydet</string>
-    <string name="add_network_connection">Ağ Bağlantısı Ekle</string>
-    <string name="edit_network_connection">Ağ Bağlantısını Düzenle</string>
-
     <!-- Add To Playlist Dialog Strings -->
     <string name="add_to_playlist">Oynatma Listesine Ekle</string>
     <string name="adding_one_video_to_playlist">Oynatma listesine 1 video ekleniyor</string>
@@ -885,10 +835,6 @@
     <string name="name_cannot_contain_invalid_chars">Ad / veya \\ içeremez</string>
 
     <!-- Sheets Strings -->
-    <string name="play_link">Bağlantıyı Oynat</string>
-    <string name="invalid_url_protocol">Geçersiz URL protokolü</string>
-    <string name="valid_url">Geçerli URL</string>
-    <string name="invalid_url">Geçersiz URL</string>
     <string name="playlist_created_successfully">Oynatma listesi başarıyla oluşturuldu</string>
     <string name="failed_create_playlist">Oynatma listesi oluşturulamadı</string>
     <string name="m3u_playlist_added_successfully">M3U Oynatma Listesi başarıyla eklendi</string>
@@ -898,9 +844,6 @@
     <string name="playlist_options">Oynatma Listesi Seçenekleri</string>
     <string name="create_empty_playlist">Boş Oynatma Listesi Oluştur</string>
     <string name="create_blank_playlist_desc">Yeni boş bir oynatma listesi oluştur</string>
-    <string name="add_m3u_playlist_from_url">URL\'den M3U Oynatma Listesi Ekle</string>
-    <string name="import_playlist_url_desc">Bir web URL\'sinden oynatma listesi içe aktar</string>
-
     <!-- Component Strings -->
     <string name="more_options">Daha fazla seçenek</string>
     <string name="move">Taşı</string>
@@ -916,7 +859,7 @@
     <string name="folders_count">Klasörler (%1$d)</string>
     <string name="media_count">Medya (%1$d)</string>
     <string name="drag_to_reorder">Yeniden sıralamak için sürükle</string>
-
+    <string name="connect_social_media">Sosyal medyada bizimle bağlantı kur</string>
     <!-- Sort Dialog Strings -->
     <string name="sort_and_view_options">Sıralama ve Görünüm Seçenekleri</string>
     <string name="view_options">Görünüm Seçenekleri</string>
@@ -926,14 +869,14 @@
     <string name="pref_category_playback_controls">Oynatma ve Kontroller</string>
     <string name="pref_category_file_management">Dosya Yönetimi</string>
     <string name="pref_category_media_settings">Medya Ayarları</string>
-    <string name="pref_category_rexshorts">Magen Shorts</string>
-    <string name="pref_category_rexshorts_settings">Magen Shorts Ayarları</string>
-    <string name="pref_category_rexshorts_settings_desc">Etkinleştirme/devre dışı bırakma, karıştırma ve engellenen içeriği yönet</string>
+    <string name="pref_category_magen_shorts">Magen Shorts</string>
+    <string name="pref_category_magen_shorts_settings">Magen Shorts Ayarları</string>
+    <string name="pref_category_magen_shorts_settings_desc">Etkinleştirme/devre dışı bırakma, karıştırma ve engellenen içeriği yönet</string>
     <string name="pref_category_advanced_about">Gelişmiş ve Hakkında</string>
 
     <!-- Shorts preference screen -->
-    <string name="pref_enable_rexshorts">Magen Shorts\'u Etkinleştir</string>
-    <string name="pref_enable_rexshorts_summary">Alt gezinme çubuğunda Shorts sekmesini göster</string>
+    <string name="pref_enable_magen_shorts">Magen Shorts\'u Etkinleştir</string>
+    <string name="pref_enable_magen_shorts_summary">Alt gezinme çubuğunda Shorts sekmesini göster</string>
     <string name="pref_auto_swipe_shorts">Sıradaki Short\'a Otomatik Geç</string>
     <string name="pref_auto_swipe_shorts_summary">Geçerli short bittiğinde otomatik olarak sıradakine geç</string>
     <string name="pref_enable_glass_shorts_controls">Cam efektli shorts kontrolleri</string>
@@ -959,27 +902,8 @@
     <string name="pref_select_sourced_folders_desc">Shorts\'ların alınacağı dizinleri seç. Hiçbiri seçilmezse shorts tüm klasörlerden alınır.</string>
 
     <!-- Update features -->
-    <string name="pref_category_updates">Güncellemeler</string>
-    <string name="pref_about_auto_check_updates">Güncellemeleri Otomatik Kontrol Et</string>
-    <string name="pref_about_auto_check_updates_summary">Açılışta yeni sürümleri kontrol et</string>
-    <string name="pref_about_check_updates">Güncellemeleri Kontrol Et</string>
     <string name="pref_about_checking">Kontrol ediliyor…</string>
-    <string name="pref_about_check_updates_summary">GitHub\'da yeni sürümleri manuel olarak kontrol et</string>
     <string name="pref_about_up_to_date">Güncelsin!</string>
-    <string name="pref_about_check_updates_failed">Güncellemeler kontrol edilemedi</string>
-    <string name="update_ready_to_install">Yüklemeye Hazır</string>
-    <string name="update_available_title">Güncelleme Mevcut</string>
-    <string name="update_current_version">Geçerli Sürüm</string>
-    <string name="update_latest_version">En Son Sürüm</string>
-    <string name="update_release_date">Yayın Tarihi</string>
-    <string name="update_size">Boyut</string>
-    <string name="update_release_notes">Sürüm Notları</string>
-    <string name="update_downloading">İndiriliyor…</string>
-    <string name="update_install">Yükle</string>
-    <string name="update_download">İndir</string>
-    <string name="update_ignore">Yok say</string>
-    <string name="update_cancel">İptal</string>
-
     <!-- Player Button Labels -->
     <string name="btn_label_back">Geri Oku</string>
     <string name="btn_label_title">Video Başlığı</string>
@@ -1023,18 +947,17 @@
     <string name="allow_access">ERİŞİME İZİN VER</string>
     <string name="why_do_i_see_this">Bunu neden görüyorum?</string>
     <string name="why_this_permission_is_needed">Bu izin neden gerekli</string>
-    <string name="permission_explanation_playstore_intro">MagenPlayer, temel bir medya oynatıcı işlevi sunabilmek için video dosyalarına erişime ihtiyaç duyar.</string>
+    <string name="permission_explanation_playstore_intro">magen player, temel bir medya oynatıcı işlevi sunabilmek için video dosyalarına erişime ihtiyaç duyar.</string>
     <string name="permission_used_exclusively_for">Bu izin yalnızca şunlar için kullanılır:</string>
     <string name="permission_usage_bullet_list">• Video dosyalarını bulma ve görüntüleme\n• Medya içeriğini oynatma\n• Altyazı dosyalarını yükleme</string>
-    <string name="permission_explanation_standard_intro">MagenPlayer, sistem tarafından desteklenmeyenler de dahil olmak üzere cihazındaki tüm medya ve altyazı dosyalarını bulabilmek için her zaman depolama erişim izni gerektirmiştir.</string>
+    <string name="permission_explanation_standard_intro">magen player, sistem tarafından desteklenmeyenler de dahil olmak üzere cihazındaki tüm medya ve altyazı dosyalarını bulabilmek için her zaman depolama erişim izni gerektirmiştir.</string>
     <string name="permission_security_policy_change">Ancak güvenlik politikasındaki bir değişiklik nedeniyle, Android 11 ve üzeri için oluşturulan uygulamaların aynı erişime devam edebilmesi için ek izin gerekmektedir.</string>
     <string name="permission_privacy_assurance_standard">Bu iznin yalnızca cihazındaki medya/altyazı dosyalarının otomatik olarak bulunması için kullanıldığını ve diğer uygulamalar tarafından saklanan özel veri dosyalarına hiçbir şekilde erişim sağlamadığını bilmeni isteriz.</string>
-    <string name="opensource_github_notice">MagenPlayer açık kaynaklı bir projedir. Kaynak kodunu inceleyebilir ve izinlerin nasıl kullanıldığını GitHub deposumuzu ziyaret ederek doğrulayabilirsin:</string>
     <string name="privacy_assurance_final">Emin ol ki gizliliğin bizim için en önemli önceliktir; dosyalarına başka amaçlarla erişmeyiz ve onları sunucularımıza aktarmayız ya da saklamayız. Dosyaların cihazında güvende kalır.</string>
     
-    <string name="permission_required_photos_videos">MagenPlayer, cihazında depolanan video dosyalarına erişmek ve onları oynatmak için \"Fotoğraflar ve videolar\" iznine ihtiyaç duyar.</string>
-    <string name="permission_required_storage">MagenPlayer, cihazında depolanan medya dosyalarına erişmek ve onları oynatmak için \"Depolama\" iznine ihtiyaç duyar.</string>
-    <string name="permission_required_all_files">MagenPlayer, Android 11 ve sonraki sürümlerdeki güvenlik politikası değişikliği nedeniyle cihazındaki medya ve altyazıları bulmak için \"Tüm dosyalara erişim\" iznine ihtiyaç duyar.</string>
+    <string name="permission_required_photos_videos">magen player, cihazında depolanan video dosyalarına erişmek ve onları oynatmak için \"Fotoğraflar ve videolar\" iznine ihtiyaç duyar.</string>
+    <string name="permission_required_storage">magen player, cihazında depolanan medya dosyalarına erişmek ve onları oynatmak için \"Depolama\" iznine ihtiyaç duyar.</string>
+    <string name="permission_required_all_files">magen player, Android 11 ve sonraki sürümlerdeki güvenlik politikası değişikliği nedeniyle cihazındaki medya ve altyazıları bulmak için \"Tüm dosyalara erişim\" iznine ihtiyaç duyar.</string>
     <string name="permission_explanation_tiramisu_plus">Android 13 ve üzerinde bu izin, uygulamanın İndirilenler, Filmler ve DCIM klasörleri dahil olmak üzere cihazının depolama alanından video dosyalarını okumasına olanak tanır.</string>
     <string name="permission_explanation_pre_tiramisu">Bu izin, uygulamanın video ve ses oynatabilmesi için cihazının depolama alanından medya dosyalarını okumasına olanak tanır.</string>
 
@@ -1115,17 +1038,7 @@
     <string name="generic_edit_content_description">%1$s öğesini düzenle</string>
 
     <!-- Network Streaming Screen -->
-    <string name="network_recent_links">Son Bağlantılar</string>
-    <string name="network_local_network">Yerel Ağ</string>
-    <string name="network_share_unreachable">Ağ paylaşımına ulaşılamıyor.</string>
-    <string name="network_empty_title">Ağ bağlantısı yok</string>
-    <string name="network_empty_description">Ağ dosyalarına göz atmak için SMB, FTP veya WebDAV bağlantısı ekle</string>
-    <string name="network_remove_link_action">Bağlantıyı Kaldır</string>
-
     <!-- Appearance Preferences Screen -->
-    <string name="pref_appearance_network_thumbnails_dialog_title">Ağ Küçük Resimleri Etkinleştirilsin mi?</string>
-    <string name="pref_appearance_network_thumbnails_dialog_message">Ağ üzerindeki yayınlar (M3U/HTTP) için küçük resim oluşturmak, arka plan veri kullanımını ve yüklenme sürelerini önemli ölçüde artırabilir. Devam edilsin mi?</string>
-
     <!-- Control Layout Editor Screen -->
     <string name="control_layout_edit_title_top_right">Sağ Üstü Düzenle</string>
     <string name="control_layout_edit_title_bottom_right">Sağ Altı Düzenle</string>
@@ -1233,7 +1146,7 @@
     <string name="pref_advanced_config_cache_cleared">Yapılandırma önbelleği temizlendi</string>
     <string name="pref_advanced_delete_thumbnails_summary">Önbelleğe alınmış tüm video küçük resimlerini sil (klasörlere göz atarken yeniden oluşturulur)</string>
     <string name="pref_advanced_clear_thumbnail_cache_confirm_title">Küçük resim önbelleği temizlensin mi?</string>
-    <string name="pref_advanced_clear_thumbnail_cache_confirm_subtitle">Bu, önbelleğe alınmış tüm küçük resimleri (yerel ve ağ) depolamadan ve bellekten silecek.</string>
+    <string name="pref_advanced_clear_thumbnail_cache_confirm_subtitle">This will delete all cached thumbnails from storage and memory.</string>
     <string name="pref_advanced_thumbnail_cache_cleared">Küçük resim önbelleği temizlendi</string>
     <string name="pref_advanced_remove_cached_fonts_summary">Önbelleğe alınmış tüm altyazı yazı tiplerini kaldır</string>
     <string name="pref_advanced_enable_media_info_title">Medya Bilgisi Etkinliğini Etkinleştir</string>
@@ -1335,12 +1248,12 @@
     <string name="pref_appearance_language_title">Uygulama Dili</string>
     <string name="pref_appearance_language_summary">Uygulamanın görüntüleme dilini değiştir</string>
 
-    <string name="welcome_title">MagenPlayer\'e Hoş Geldin</string>
+    <string name="welcome_title">magen player\'e Hoş Geldin</string>
     <string name="welcome_subtitle">Modern, güçlü ve özelleştirilebilir medya oynatıcın.</string>
     <string name="welcome_language_section_title">Tercih Edilen Dil</string>
     <string name="welcome_language_section_desc">Görüntüleme dilini seç</string>
     <string name="storage_access_granted">Depolama Erişimi Verildi</string>
-    <string name="storage_access_granted_desc">İzin verildi. MagenPlayer, medyanı bulmaya ve oynatmaya hazır.</string>
+    <string name="storage_access_granted_desc">İzin verildi. magen player, medyanı bulmaya ve oynatmaya hazır.</string>
     <string name="welcome_grant_permission">İzin Ver</string>
     <string name="welcome_get_started">Başla</string>
     <string name="welcome_skip_permission">Depolama erişimi olmadan devam et</string>
