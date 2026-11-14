@@ -12,23 +12,15 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.PlaylistPlay
-import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.VideoLibrary
-import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -56,15 +48,11 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.magen.player.R
-import com.magen.player.preferences.AppearancePreferences
 import com.magen.player.preferences.BrowserPreferences
 import com.magen.player.preferences.preference.collectAsState
 import com.magen.player.presentation.Screen
 import com.magen.player.ui.browser.folderlist.FolderListScreen
-import com.magen.player.ui.browser.playlist.PlaylistScreen
-import com.magen.player.ui.browser.recentlyplayed.RecentlyPlayedScreen
 import com.magen.player.ui.browser.shorts.ShortsScreen
-import com.magen.player.ui.browser.you.YouScreen
 import com.magen.player.ui.browser.selection.SelectionManager
 import com.magen.player.ui.browser.miniplayer.MiniPlayer
 import com.magen.player.ui.browser.miniplayer.MiniPlayerDefaults
@@ -171,39 +159,18 @@ object MainScreen : Screen {
     val density = LocalDensity.current
     val haptic = LocalHapticFeedback.current
     val browserPreferences = koinInject<BrowserPreferences>()
-    val appearancePreferences = koinInject<AppearancePreferences>()
     val miniPlayerStateManager = koinInject<MiniPlayerStateManager>()
     val miniPlayerState by miniPlayerStateManager.state.collectAsState()
     val isShortsEnabled by browserPreferences.enableShorts.collectAsState()
-    val enableTabYou by browserPreferences.enableTabYou.collectAsState()
-    val enableTabRecents by browserPreferences.enableTabRecents.collectAsState()
-    val enableTabPlaylists by browserPreferences.enableTabPlaylists.collectAsState()
     val bottomNavOrder by browserPreferences.bottomNavOrder.collectAsState()
-    val customProfileImagePath by appearancePreferences.customProfileImagePath.collectAsState()
-
-    val customAvatarBitmap = remember(customProfileImagePath) {
-      if (customProfileImagePath.isNotBlank()) {
-        val file = java.io.File(customProfileImagePath)
-        if (file.exists()) {
-          try {
-            android.graphics.BitmapFactory.decodeFile(file.absolutePath)?.asImageBitmap()
-          } catch (e: Exception) {
-            null
-          }
-        } else null
-      } else null
-    }
 
     val homeLabel = stringResource(R.string.home)
     val shortsLabel = stringResource(R.string.shorts)
-    val youLabel = stringResource(R.string.you)
-    val recentsLabel = stringResource(R.string.recents)
-    val playlistsLabel = stringResource(R.string.playlists)
+    val favoritesLabel = stringResource(R.string.favorites)
 
     val visibleTabs = remember(
-      isShortsEnabled, enableTabYou, enableTabRecents, enableTabPlaylists,
-      bottomNavOrder,
-      homeLabel, shortsLabel, youLabel, recentsLabel, playlistsLabel
+      isShortsEnabled, bottomNavOrder,
+      homeLabel, shortsLabel, favoritesLabel
     ) {
       val rawTabs = buildList {
         add(
@@ -214,33 +181,16 @@ object MainScreen : Screen {
         if (isShortsEnabled) {
           add(
             VisibleTab("shorts", shortsLabel, Icons.Outlined.VideoLibrary) {
-              ShortsScreen().Content()
+              ShortsScreen(vmKey = "tab_shorts").Content()
             }
           )
         }
-        if (!enableTabYou) {
-          if (enableTabRecents) {
-            add(
-              VisibleTab("recents", recentsLabel, Icons.Filled.History) {
-                RecentlyPlayedScreen.Content()
-              }
-            )
+        add(
+          // Favorites tab: the loved shorts, rendered in the same Shorts experience.
+          VisibleTab("favorites", favoritesLabel, Icons.Filled.Favorite) {
+            ShortsScreen(favoritesOnly = true, vmKey = "tab_favorites").Content()
           }
-          if (enableTabPlaylists) {
-            add(
-              VisibleTab("playlists", playlistsLabel, Icons.AutoMirrored.Filled.PlaylistPlay) {
-                PlaylistScreen.Content()
-              }
-            )
-          }
-        }
-        if (enableTabYou) {
-          add(
-            VisibleTab("you", youLabel, Icons.Filled.AccountCircle) {
-              YouScreen.Content()
-            }
-          )
-        }
+        )
       }
 
       val orderList = browserPreferences.getBottomNavOrder()
@@ -297,9 +247,11 @@ object MainScreen : Screen {
       modifier = Modifier.fillMaxSize(),
       bottomBar = {
         // Animated bottom navigation bar with slide animations
-        // Also hide if Shorts tab is active (index 1 when enabled, index -1 when disabled)
-        val shortsIdx = visibleTabs.indexOfFirst { it.id == "shorts" }
-        val isShortsTabActive = isShortsEnabled && shortsIdx != -1 && selectedTab == shortsIdx
+        // Hidden while the fullscreen Shorts/Favorites experience is active.
+        val fullscreenIdxs = visibleTabs.mapIndexedNotNull { index, tab ->
+          if (tab.id == "shorts" || tab.id == "favorites") index else null
+        }.toSet()
+        val isShortsTabActive = selectedTab in fullscreenIdxs
         
         AnimatedVisibility(
             visible = !hideNavigationBar && !isShortsTabActive && visibleTabs.size > 1,
@@ -337,27 +289,10 @@ object MainScreen : Screen {
               }
 
               visibleTabs.forEachIndexed { index, tab ->
-                val isYouTabWithCustomAvatar = tab.id == "you" && customAvatarBitmap != null
                 NavigationBarItem(
                   modifier = Modifier.offset(y = 2.dp),
                   icon = {
-                    if (isYouTabWithCustomAvatar) {
-                      Image(
-                        bitmap = customAvatarBitmap!!,
-                        contentDescription = tab.label,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                          .size(24.dp)
-                          .clip(CircleShape)
-                          .border(
-                            width = if (selectedTab == index) 1.5.dp else 1.dp,
-                            color = if (selectedTab == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                            shape = CircleShape,
-                          ),
-                      )
-                    } else {
-                      Icon(tab.icon, contentDescription = tab.label)
-                    }
+                    Icon(tab.icon, contentDescription = tab.label)
                   },
                   label = { Text(tab.label) },
                   selected = selectedTab == index,

@@ -15,10 +15,6 @@
     <string name="pref_appearance_tab_home_summary">عرض المجلدات المحلية ومستعرض الملفات</string>
     <string name="pref_appearance_tab_shorts_title">Magen Shorts</string>
     <string name="pref_appearance_tab_shorts_summary">تفعيل/تعطيل محتوى الفيديوهات العمودية السريعة</string>
-    <string name="pref_appearance_tab_recents_title">المشغَّل مؤخراً</string>
-    <string name="pref_appearance_tab_recents_summary">استئناف جلسات الفيديو السابقة بسرعة</string>
-    <string name="pref_appearance_tab_playlists_title">قوائم التشغيل</string>
-    <string name="pref_appearance_tab_playlists_summary">عرض قوائم تشغيل الفيديو المحلية المخصصة</string>
     <string name="pref_appearance_summary">الوضع الداكن، الألوان الديناميكية</string>
     <string name="pref_appearance_category_theme">السمة</string>
     <string name="pref_appearance_darkmode_system">النظام</string>
@@ -544,7 +540,6 @@
     <string name="folder_name">اسم المجلد</string>
     <string name="choose_local_m3u_file">اختر ملف M3U المحلي</string>
     <string name="home">الرئيسية</string>
-    <string name="recents">الأخيرة</string>
     <string name="playlists">قوائم التشغيل</string>
     <string name="unit_seconds">ثوانٍ</string>
     <string name="milliseconds">ميلي ثانية</string>
@@ -653,7 +648,6 @@
     <string name="auto_swipe_to_next_short_desc">التمرير تلقائياً عند انتهاء الفيديو</string>
     <string name="long_press_speed">سرعة الضغط المطوّل</string>
     <string name="video_information">معلومات الفيديو</string>
-    <string name="blocked_videos_manager">مدير الفيديوهات المحظورة</string>
     <string name="delete_short">حذف المقطع القصير</string>
     <string name="delete_short_desc">حذف هذا الملف نهائياً من الجهاز</string>
     <string name="long_press_speed_desc">اضغط مطولاً لتقفل السرعة، وضغطة عادية لتغيرها</string>
@@ -746,8 +740,6 @@
     <string name="pref_sourced_folders_count">مصدرها %1$d مجلد/مجلدات</string>
     <string name="pref_sourced_folders_list">المصدر: %1$s</string>
     <string name="pref_category_content_management">إدارة المحتوى</string>
-    <string name="pref_blocked_videos">الفيديوهات المحظورة</string>
-    <string name="pref_blocked_videos_summary">عرض وإدارة المقاطع القصيرة المحظورة</string>
     <string name="pref_shorts_favorites_manager">إدارة المقاطع القصيرة المفضلة</string>
     <string name="pref_shorts_favorites_manager_summary">فتح الفيديوهات المفضلة في مشغّل المقاطع القصيرة وإعادتها إلى مجلدها الأصلي بزر القلب</string>
     <string name="pref_select_sourced_folders">اختيار المجلدات المصدر</string>
@@ -1021,8 +1013,6 @@
     <string name="pref_advanced_enable_media_info_title">تفعيل خيار معلومات الوسائط</string>
     <string name="pref_advanced_enable_media_info_summary">إظهار \"معلومات الوسائط\" كخيار في قوائم \"فتح باستخدام\" على مستوى النظام</string>
 
-    <string name="blocked_shorts_empty_state">لا توجد فيديوهات محظورة</string>
-    <string name="blocked_shorts_unblock_button">محظور</string>
 
     <string name="playlist_now_playing">قيد التشغيل الآن</string>
     <string name="playlist_playing">قيد التشغيل</string>
@@ -1048,16 +1038,22 @@
     <string name="player_sheets_tab_gestures">الإيماءات</string>
 
         <!-- Shorts Player Action Buttons -->
-    <string name="shorts_action_love">إعجاب</string>
+        <string name="favorites">المفضلة</string>
+    <string name="pref_appearance_tab_favorites_title">تبويب المفضلة</string>
+    <string name="pref_appearance_tab_favorites_summary">عرض الفيديوهات المفضلة بوضع الفيديوهات القصيرة</string>
+    <string name="shorts_sort_name_ascending">الاسم · أ إلى ي</string>
+    <string name="shorts_sort_name_descending">الاسم · ي إلى أ</string>
+    <string name="shorts_sort_size_ascending">الحجم · من الأصغر إلى الأكبر</string>
+    <string name="shorts_sort_size_descending">الحجم · من الأكبر إلى الأصغر</string>
+    <string name="shorts_sort_date_ascending">تاريخ الإضافة · من الأقدم إلى الأحدث</string>
+    <string name="shorts_sort_date_descending">تاريخ الإضافة · من الأحدث إلى الأقدم</string>
+<string name="shorts_action_love">إعجاب</string>
     <string name="shorts_action_loved">أعجبني</string>
-    <string name="shorts_action_block">حظر</string>
-    <string name="shorts_action_blocked">محظور</string>
     <string name="shorts_action_free">حـر</string>
     <string name="shorts_action_back">رجوع</string>
     <string name="shorts_action_more">المزيد</string>
 
         <!-- Shorts Empty / Exhausted States -->
-    <string name="shorts_no_blocked_videos_found">لم يُعثر على فيديوهات محظورة</string>
     <string name="shorts_favorites_empty">لا توجد مقاطع قصيرة مفضلة بعد</string>
     <string name="shorts_no_vertical_videos_found">لم يُعثر على فيديوهات قصيرة</string>
     <string name="shorts_favorite_original_path_unavailable">لا يتوفر مسار المجلد الأصلي لهذه المفضلة القديمة، لذلك لا يمكن إعادتها تلقائيًا.</string>
@@ -1324,8 +1320,6 @@
     <string name="pref_appearance_show_next_previous_buttons_title">إظهار زري التالي/السابق</string>
     <string name="pref_appearance_show_next_previous_buttons_summary">إظهار زرّي التخطي للأمام والخلف في طبقة التحكم</string>
     <string name="video_quality">جودة الفيديو</string>
-    <string name="pref_appearance_tab_you_title">تبويبك</string>
-    <string name="pref_appearance_tab_you_summary">دمج المشغَّلة حديثًا وقوائم التشغيل في تبويبٍ واحد </string>
     <string name="pref_player_gestures_pinch_to_resize_subtitle_title">تغيير حجم الترجمة بايماءة القرص</string>
     <string name="pref_player_gestures_pinch_to_resize_subtitle_summary">قرص الترجمة بإصبعين لتغيير حجمها، وقرص ما سواها يكبر الفيديو ويصغره</string>
     <string name="pref_gesture_double_tap_chapter_skip_title">النقر المزدوج على الفصل لتخطيه</string>
@@ -1334,7 +1328,6 @@
     <string name="pref_subtitles_encoding_summary">ترميز الحروف المستخدم للترجمات الخارجية</string>
     <string name="pref_appearance_hide_play_fab_show_in_header_title">إظهار زر التشغيل في الترويسة</string>
     <string name="pref_appearance_hide_play_fab_show_in_header_summary">إخفاء زر التشغيل العائم وإظهار أيقونة التشغيل بالترويسة بدلاً منه</string>
-    <string name="you">تبويبك</string>
     <string name="view_all">عرض الكل</string>
     <string name="watched">شُوهد</string>
     <string name="media_info_folder_path">مسار المجلد</string>

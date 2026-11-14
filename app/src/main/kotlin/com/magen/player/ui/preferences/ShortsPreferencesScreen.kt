@@ -260,29 +260,13 @@ object ShortsPreferencesScreen : Screen {
                     item {
                         GroupedListColumn {
                             GroupedPreferenceCard(
-                                position = GroupPosition.FIRST,
+                                position = GroupPosition.LAST,
                                 highlightKey = R.string.pref_shorts_favorites_manager,
                             ) {
                                 Preference(
                                     title = { Text(stringResource(R.string.pref_shorts_favorites_manager)) },
                                     summary = { Text(stringResource(R.string.pref_shorts_favorites_manager_summary)) },
                                     onClick = { backstack.add(ShortsScreen(favoritesOnly = true)) },
-                                )
-                            }
-
-                            GroupedPreferenceCard(
-                                position = GroupPosition.LAST,
-                                highlightKey = R.string.pref_blocked_videos,
-                            ) {
-                                Preference(
-                                    title = { Text(stringResource(R.string.pref_blocked_videos)) },
-                                    summary = { 
-                                        Text(
-                                            text = stringResource(R.string.pref_blocked_videos_summary),
-                                            color = MaterialTheme.colorScheme.outline
-                                        ) 
-                                    },
-                                    onClick = { backstack.add(BlockedShortsScreen) }
                                 )
                             }
                         }

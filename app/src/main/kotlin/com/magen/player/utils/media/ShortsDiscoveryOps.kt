@@ -88,10 +88,6 @@ object ShortsDiscoveryOps {
                 .filter { it.isManuallyAdded }
                 .map { it.path }
                 .toSet(),
-            blocked = shortsMediaDao.getAllShortsMedia()
-                .filter { it.isBlocked }
-                .map { it.path }
-                .toSet(),
         )
 
         // Final feed order is decided up-front from MediaStore-backed fields
@@ -207,10 +203,8 @@ object ShortsDiscoveryOps {
         private val maxHorizontalMs: Long,
         val includeAllSourceVideos: Boolean,
         private val manuallyAdded: Set<String>,
-        private val blocked: Set<String>,
     ) {
         fun isAccepted(path: String, width: Int, height: Int, durationMs: Long): Boolean {
-            if (path in blocked) return false
             if (includeAllSourceVideos) return true
 
             val isVertical = height > width && height > 0

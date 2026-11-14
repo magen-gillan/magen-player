@@ -19,7 +19,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.animation.animateContentSize
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -242,136 +241,37 @@ object AppearancePreferencesScreen : Screen {
                     }
 
                     item {
+                        // Fixed tab set: home and favorites are always on; only
+                        // the Shorts tab can be switched off.
                         val enableShorts by browserPreferences.enableShorts.collectAsState()
-                        val enableTabYou by browserPreferences.enableTabYou.collectAsState()
-                        val enableTabRecents by browserPreferences.enableTabRecents.collectAsState()
-                        val enableTabPlaylists by browserPreferences.enableTabPlaylists.collectAsState()
-                        val bottomNavOrder by browserPreferences.bottomNavOrder.collectAsState()
 
-                        val orderedTabIds = remember(bottomNavOrder) {
-                            browserPreferences.getBottomNavOrder()
-                        }
+                        data class FixedTabConfig(val titleRes: Int, val summaryRes: Int, val isShorts: Boolean)
 
-                        val visibleTabConfigs = remember(
-                            orderedTabIds,
-                            enableShorts,
-                            enableTabYou,
-                            enableTabRecents,
-                            enableTabPlaylists,
-                        ) {
-                            val items = mutableListOf<BottomNavTabItem>()
-                            for (id in orderedTabIds) {
-                                when (id) {
-                                    "home" -> items.add(
-                                        BottomNavTabItem(
-                                            id = "home",
-                                            titleRes = R.string.pref_appearance_tab_home_title,
-                                            summaryRes = R.string.pref_appearance_tab_home_summary,
-                                            value = true,
-                                            enabled = false,
-                                            onValueChange = {}
-                                        )
-                                    )
-                                    "shorts" -> items.add(
-                                        BottomNavTabItem(
-                                            id = "shorts",
-                                            titleRes = R.string.pref_appearance_tab_shorts_title,
-                                            summaryRes = R.string.pref_appearance_tab_shorts_summary,
-                                            value = enableShorts,
-                                            enabled = true,
-                                            onValueChange = { browserPreferences.enableShorts.set(it) }
-                                        )
-                                    )
-                                    "recents" -> if (!enableTabYou) {
-                                        items.add(
-                                            BottomNavTabItem(
-                                                id = "recents",
-                                                titleRes = R.string.pref_appearance_tab_recents_title,
-                                                summaryRes = R.string.pref_appearance_tab_recents_summary,
-                                                value = enableTabRecents,
-                                                enabled = true,
-                                                onValueChange = { browserPreferences.enableTabRecents.set(it) }
-                                            )
-                                        )
-                                    }
-                                    "playlists" -> if (!enableTabYou) {
-                                        items.add(
-                                            BottomNavTabItem(
-                                                id = "playlists",
-                                                titleRes = R.string.pref_appearance_tab_playlists_title,
-                                                summaryRes = R.string.pref_appearance_tab_playlists_summary,
-                                                value = enableTabPlaylists,
-                                                enabled = true,
-                                                onValueChange = { browserPreferences.enableTabPlaylists.set(it) }
-                                            )
-                                        )
-                                    }
-                                    "you" -> items.add(
-                                        BottomNavTabItem(
-                                            id = "you",
-                                            titleRes = R.string.pref_appearance_tab_you_title,
-                                            summaryRes = R.string.pref_appearance_tab_you_summary,
-                                            value = enableTabYou,
-                                            enabled = true,
-                                            onValueChange = { browserPreferences.enableTabYou.set(it) }
-                                        )
-                                    )
-                                }
-                            }
-                            items
-                        }
+                        val tabConfigs = listOf(
+                            FixedTabConfig(R.string.pref_appearance_tab_home_title, R.string.pref_appearance_tab_home_summary, false),
+                            FixedTabConfig(R.string.pref_appearance_tab_shorts_title, R.string.pref_appearance_tab_shorts_summary, true),
+                            FixedTabConfig(R.string.pref_appearance_tab_favorites_title, R.string.pref_appearance_tab_favorites_summary, false),
+                        )
 
-                        sh.calvin.reorderable.ReorderableColumn(
-                            list = visibleTabConfigs,
-                            onSettle = { fromIndex, toIndex ->
-                                val updated = visibleTabConfigs.map { it.id }.toMutableList()
-                                val moved = updated.removeAt(fromIndex)
-                                updated.add(toIndex, moved)
-                                val fullOrder = browserPreferences.getBottomNavOrder().toMutableList()
-                                val reorderedFull = updated + fullOrder.filterNot { it in updated }
-                                browserPreferences.setBottomNavOrder(reorderedFull)
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .animateContentSize(),
-                            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(1.dp)
-                        ) { index, item, isDragging ->
-                            ReorderableItem {
-                                val position = when {
-                                    visibleTabConfigs.size == 1 -> GroupPosition.ONLY
-                                    index == 0 -> GroupPosition.FIRST
-                                    index == visibleTabConfigs.lastIndex -> GroupPosition.LAST
-                                    else -> GroupPosition.MIDDLE
-                                }
-
-                                val elevation by androidx.compose.animation.core.animateDpAsState(
-                                    targetValue = if (isDragging) 8.dp else 1.dp,
-                                    label = "elevation"
-                                )
-
+                        GroupedListColumn {
+                            tabConfigs.forEachIndexed { index, config ->
                                 GroupedPreferenceCard(
-                                    position = position,
-                                    highlightKey = item.titleRes,
-                                    tonalElevation = elevation,
+                                    position = when {
+                                        tabConfigs.size == 1 -> GroupPosition.ONLY
+                                        index == 0 -> GroupPosition.FIRST
+                                        index == tabConfigs.lastIndex -> GroupPosition.LAST
+                                        else -> GroupPosition.MIDDLE
+                                    },
+                                    highlightKey = config.titleRes,
                                 ) {
                                     SwitchPreference(
-                                        value = item.value,
-                                        onValueChange = item.onValueChange,
-                                        enabled = item.enabled,
-                                        icon = {
-                                            Icon(
-                                                imageVector = Icons.Default.DragHandle,
-                                                contentDescription = stringResource(R.string.drag_to_reorder),
-                                                modifier = Modifier
-                                                    .draggableHandle()
-                                                    .padding(end = 4.dp),
-                                                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                                            )
-                                        },
-                                        title = { Text(text = stringResource(id = item.titleRes)) },
+                                        value = if (config.isShorts) enableShorts else true,
+                                        onValueChange = { if (config.isShorts) browserPreferences.enableShorts.set(it) },
+                                        enabled = config.isShorts,
+                                        title = { Text(text = stringResource(id = config.titleRes)) },
                                         summary = {
                                             Text(
-                                                text = stringResource(id = item.summaryRes),
+                                                text = stringResource(id = config.summaryRes),
                                                 color = MaterialTheme.colorScheme.outline,
                                             )
                                         }
@@ -474,12 +374,3 @@ object AppearancePreferencesScreen : Screen {
         }
     }
 }
-
-private data class BottomNavTabItem(
-    val id: String,
-    val titleRes: Int,
-    val summaryRes: Int,
-    val value: Boolean,
-    val enabled: Boolean,
-    val onValueChange: (Boolean) -> Unit,
-)

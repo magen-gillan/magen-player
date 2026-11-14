@@ -36,8 +36,6 @@ class AppearancePreferences(
   val enableBounceAnimation = preferenceStore.getBoolean("enable_bounce_animation", false)
 
   val showHiddenFiles = preferenceStore.getBoolean("show_hidden_files", false)
-  val customProfileName = preferenceStore.getString("custom_profile_name", "")
-  val customProfileImagePath = preferenceStore.getString("custom_profile_image_path", "")
   val showUnplayedOldVideoLabel = preferenceStore.getBoolean("show_unplayed_old_video_label", true)
   val unplayedOldVideoDays = preferenceStore.getInt("unplayed_old_video_days", 7)
   val seekbarStyle = preferenceStore.getEnum("seekbar_style", SeekbarStyle.Standard)

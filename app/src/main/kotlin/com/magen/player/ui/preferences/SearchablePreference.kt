@@ -100,25 +100,9 @@ object SearchablePreferences {
                 targetIndex = 5,
             ))
             add(SearchablePreference(
-                titleRes = R.string.pref_appearance_tab_you_title,
-                summaryRes = R.string.pref_appearance_tab_you_summary,
-                keywords = listOf("you", "tab", "navigation", "bottom bar", "profile"),
-                category = "Appearance",
-                screen = AppearancePreferencesScreen,
-                targetIndex = 5,
-            ))
-            add(SearchablePreference(
-                titleRes = R.string.pref_appearance_tab_recents_title,
-                summaryRes = R.string.pref_appearance_tab_recents_summary,
-                keywords = listOf("recents", "history", "tab", "navigation", "bottom bar"),
-                category = "Appearance",
-                screen = AppearancePreferencesScreen,
-                targetIndex = 5,
-            ))
-            add(SearchablePreference(
-                titleRes = R.string.pref_appearance_tab_playlists_title,
-                summaryRes = R.string.pref_appearance_tab_playlists_summary,
-                keywords = listOf("playlists", "tab", "navigation", "bottom bar"),
+                titleRes = R.string.pref_appearance_tab_favorites_title,
+                summaryRes = R.string.pref_appearance_tab_favorites_summary,
+                keywords = listOf("favorites", "loved", "tab", "navigation", "bottom bar", "المفضلة"),
                 category = "Appearance",
                 screen = AppearancePreferencesScreen,
                 targetIndex = 5,
@@ -1280,14 +1264,6 @@ object SearchablePreferences {
                 category = "Magen Shorts",
                 screen = ShortsPreferencesScreen,
                 targetIndex = 3,
-            ))
-            add(SearchablePreference(
-                titleRes = R.string.pref_blocked_videos,
-                summaryRes = R.string.pref_blocked_videos_summary,
-                keywords = listOf("blocked", "blacklist", "hide", "shorts", "manage"),
-                category = "Magen Shorts",
-                screen = ShortsPreferencesScreen,
-                targetIndex = 5,
             ))
 
             // About

@@ -18,7 +18,6 @@ import com.magen.player.preferences.BrowserPreferences
 import com.magen.player.preferences.ShortsSortType
 import com.magen.player.R
 import com.magen.player.utils.media.CopyPasteOps
-import com.magen.player.utils.media.MediaFormatter
 import com.magen.player.utils.media.ShortsDiscoveryOps
 import com.magen.player.utils.permission.PermissionUtils
 import com.magen.player.utils.sort.SortUtils
@@ -59,15 +58,14 @@ class ShortsViewModel(
     private val _sortType = MutableStateFlow(browserPreferences.shortsSortType.get())
     val sortType: StateFlow<ShortsSortType> = _sortType.asStateFlow()
 
+    private val _sortDescending = MutableStateFlow(browserPreferences.shortsSortDescending.get())
+    val sortDescending: StateFlow<Boolean> = _sortDescending.asStateFlow()
+
     val quickDeleteEnabled: StateFlow<Boolean> = browserPreferences.quickDeleteShorts.changes()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), browserPreferences.quickDeleteShorts.get())
 
     val lovedPaths: StateFlow<Set<String>> = shortsMediaDao.observeAllShortsMedia()
         .map { list -> list.filter { it.isLoved }.map { it.path }.toSet() }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptySet())
-
-    val blockedPaths: StateFlow<Set<String>> = shortsMediaDao.observeAllShortsMedia()
-        .map { list -> list.filter { it.isBlocked }.map { it.path }.toSet() }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptySet())
 
     val autoSwipe: StateFlow<Boolean> = browserPreferences.autoSwipeShorts.changes()
@@ -76,7 +74,7 @@ class ShortsViewModel(
     private val _currentSpeed = MutableStateFlow(1.0)
     val currentSpeed: StateFlow<Double> = _currentSpeed.asStateFlow()
 
-    private var currentLoadedMode: Pair<Boolean, Boolean>? = null
+    private var currentLoadedMode: Boolean? = null
     private var loadJob: Job? = null
 
     init {
@@ -92,15 +90,24 @@ class ShortsViewModel(
                 }
             }
         }
+        viewModelScope.launch {
+            browserPreferences.shortsSortDescending.changes().collect { descending ->
+                if (descending != _sortDescending.value) {
+                    _sortDescending.value = descending
+                    if (_shorts.value.isNotEmpty()) {
+                        _shorts.value = orderVideos(_shorts.value)
+                    }
+                }
+            }
+        }
     }
 
     fun loadShorts(
         initialVideoPath: String? = null,
-        blockedOnly: Boolean = false,
         favoritesOnly: Boolean = false,
         forceRefresh: Boolean = false,
     ) {
-        val requestedMode = blockedOnly to favoritesOnly
+        val requestedMode = favoritesOnly
         if (!forceRefresh && _shorts.value.isNotEmpty() && currentLoadedMode == requestedMode && initialVideoPath == null) {
             return
         }
@@ -119,14 +126,6 @@ class ShortsViewModel(
 
             try {
                 val received = mutableListOf<Video>()
-
-                if (blockedOnly) {
-                    val blockedShorts = loadBlockedShorts()
-                    val ordered = orderVideos(blockedShorts)
-                    _totalShortsCount.value = ordered.size
-                    _shorts.value = ordered
-                    return@launch
-                }
 
                 if (favoritesOnly) {
                     val ordered = orderVideos(loadFavoriteShorts())
@@ -203,74 +202,31 @@ class ShortsViewModel(
         return listOf(pending) + received
     }
 
-    /** Apply a sort immediately and return the new page of the video currently being watched. */
-    fun sortShorts(type: ShortsSortType, currentPath: String?): Int {
+    /** Apply a sort (type + direction) immediately and return the new page of the video currently being watched. */
+    fun sortShorts(type: ShortsSortType, descending: Boolean, currentPath: String?): Int {
         _sortType.value = type
+        _sortDescending.value = descending
         browserPreferences.shortsSortType.set(type)
+        browserPreferences.shortsSortDescending.set(descending)
         val sorted = orderVideos(_shorts.value)
         _shorts.value = sorted
         return currentPath?.let { path -> sorted.indexOfFirst { it.path == path }.takeIf { it >= 0 } } ?: 0
     }
 
-    /** Comparator matching the currently selected shorts sort. */
-    private fun currentComparator(): Comparator<Video> =
-        when (_sortType.value) {
+    /** Comparator matching the currently selected shorts sort and direction. */
+    private fun currentComparator(): Comparator<Video> {
+        val base = when (_sortType.value) {
             ShortsSortType.Name -> Comparator { first, second ->
                 SortUtils.NaturalOrderComparator.DEFAULT.compare(first.displayName, second.displayName)
             }
-            ShortsSortType.Size -> compareByDescending<Video> { it.size }
-            ShortsSortType.DateAdded -> compareByDescending<Video> { it.dateAdded }
+            ShortsSortType.Size -> compareBy<Video> { it.size }
+            ShortsSortType.DateAdded -> compareBy<Video> { it.dateAdded }
         }
+        return if (_sortDescending.value) base.reversed() else base
+    }
 
     private fun orderVideos(videos: List<Video>): List<Video> =
         videos.sortedWith(currentComparator())
-
-    /** Blocked-only feed; inherently a full scan, so it stays a single pass. */
-    private suspend fun loadBlockedShorts(): List<Video> = runCatching {
-        loadBlockedShortsInternal()
-    }.onFailure { error ->
-        Log.e(TAG, "Failed to load blocked shorts", error)
-    }.getOrDefault(emptyList())
-
-    private suspend fun loadBlockedShortsInternal(): List<Video> {
-        val blockedInDb = shortsMediaDao.getAllShortsMedia().filter { it.isBlocked }
-        val configuredFoldersSet = browserPreferences.shortsSourceFolders.get()
-        val flatFolders = com.magen.player.utils.storage.CoreMediaScanner.getFlatMediaFolders(getApplication())
-        val filteredFolders = if (configuredFoldersSet.isNotEmpty()) {
-            flatFolders.filter { it.path in configuredFoldersSet }
-        } else {
-            flatFolders
-        }
-        val allVideos = filteredFolders.flatMap { folder ->
-            com.magen.player.utils.storage.VideoScanUtils.getVideosInFolder(getApplication(), folder.path)
-        }.filter { !it.isAudio }
-
-        val blockedPathsSet = blockedInDb.map { it.path }.toSet()
-        val blockedVideos = allVideos.filter { it.path in blockedPathsSet }
-
-        val fileTriples = blockedVideos.mapNotNull { video ->
-            val file = java.io.File(video.path)
-            if (file.exists()) Triple(file, video.uri, video.displayName) else null
-        }
-        val metadataMap = metadataCache.getOrExtractMetadataBatch(fileTriples)
-        return blockedVideos.map { video ->
-            val metadata = metadataMap[video.path]
-            if (metadata != null) {
-                video.copy(
-                    duration = metadata.durationMs,
-                    durationFormatted = MediaFormatter.formatDuration(metadata.durationMs),
-                    width = metadata.width,
-                    height = metadata.height,
-                    fps = metadata.fps,
-                    resolution = MediaFormatter.formatResolutionWithFps(metadata.width, metadata.height, metadata.fps),
-                    hasEmbeddedSubtitles = metadata.hasEmbeddedSubtitles,
-                    subtitleCodec = metadata.subtitleCodec
-                )
-            } else {
-                video
-            }
-        }
-    }
 
     private suspend fun loadFavoriteShorts(): List<Video> = runCatching {
         loadFavoriteShortsInternal()
@@ -279,24 +235,58 @@ class ShortsViewModel(
     }.getOrDefault(emptyList())
 
     private suspend fun loadFavoriteShortsInternal(): List<Video> {
-        val favoriteRecords = shortsMediaDao.getAllShortsMedia().filter { it.isLoved }
-        if (favoriteRecords.isEmpty()) return emptyList()
-        val parents = favoriteRecords.map { File(it.path) }
-            .filter { it.isFile }
-            .mapNotNull { it.parent }
-            .distinct()
-        val videosByPath = parents.flatMap { parent ->
+        // Anything physically inside Movies/المفضلة is a favorite — even when the
+        // database has no row for it (e.g. after a reinstall with a new signature,
+        // or a video moved into the folder manually with a file manager).
+        val favoriteDirectory = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES),
+            "المفضلة",
+        )
+        val folderFavorites = if (favoriteDirectory.isDirectory) {
             runCatching {
                 VideoScanUtils.getVideosInFolder(
                     getApplication(),
-                    parent,
+                    favoriteDirectory.absolutePath,
                     MediaScanPolicy(includeNoMediaContent = true),
                 )
             }.onFailure { error ->
-                Log.e(TAG, "Failed to scan favorite folder: $parent", error)
+                Log.e(TAG, "Failed to scan favorites folder", error)
             }.getOrDefault(emptyList())
-        }.associateBy { it.path }
-        return favoriteRecords.mapNotNull { videosByPath[it.path] }
+        } else {
+            emptyList()
+        }
+
+        val favorites = LinkedHashMap<String, Video>()
+        folderFavorites.forEach { favorites[it.path] = it }
+
+        // Loved rows pointing outside the favorites folder still resolve through
+        // their own folders, exactly as before.
+        val favoriteRecords = shortsMediaDao.getAllShortsMedia().filter { it.isLoved }
+        val lovedOutsideParents = favoriteRecords
+            .map { it.path }
+            .filterNot { it in favorites }
+            .map { File(it) }
+            .filter { it.isFile }
+            .mapNotNull { it.parent }
+            .distinct()
+        if (lovedOutsideParents.isNotEmpty()) {
+            val outsideByPath = lovedOutsideParents.flatMap { parent ->
+                runCatching {
+                    VideoScanUtils.getVideosInFolder(
+                        getApplication(),
+                        parent,
+                        MediaScanPolicy(includeNoMediaContent = true),
+                    )
+                }.onFailure { error ->
+                    Log.e(TAG, "Failed to scan favorite folder: $parent", error)
+                }.getOrDefault(emptyList())
+            }.associateBy { it.path }
+            favoriteRecords.forEach { record ->
+                val video = outsideByPath[record.path] ?: return@forEach
+                favorites.putIfAbsent(video.path, video)
+            }
+        }
+        return favorites.values.toList()
     }
 
     fun getInitialPageIndex(initialVideoPath: String? = null): Int {
@@ -438,7 +428,7 @@ class ShortsViewModel(
     }
 
     private fun updateAfterFavoriteMove(original: Video, moved: Video, removeFromFavorites: Boolean) {
-        val updated = if (currentLoadedMode?.second == true && removeFromFavorites) {
+        val updated = if (currentLoadedMode == true && removeFromFavorites) {
             _shorts.value.filterNot { it.path == original.path || it.path == moved.path }
         } else {
             _shorts.value.map { if (it.path == original.path) moved else it }
@@ -456,16 +446,6 @@ class ShortsViewModel(
             ),
             Toast.LENGTH_LONG,
         ).show()
-    }
-
-    fun toggleBlock(video: Video) {
-        viewModelScope.launch {
-            val current = shortsMediaDao.getShortsMediaByPath(video.path)
-            val isBlocked = current?.isBlocked ?: false
-            val newEntity = current?.copy(isBlocked = !isBlocked)
-                ?: ShortsMediaEntity(path = video.path, isBlocked = true, addedDate = System.currentTimeMillis())
-            shortsMediaDao.upsert(newEntity)
-        }
     }
 
     suspend fun deleteShort(video: Video): Boolean {

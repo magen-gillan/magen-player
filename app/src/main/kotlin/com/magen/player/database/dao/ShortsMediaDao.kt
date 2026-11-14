@@ -28,7 +28,4 @@ interface ShortsMediaDao {
 
     @Query("UPDATE shorts_media SET isLoved = :isLoved WHERE path = :path")
     suspend fun updateLoved(path: String, isLoved: Boolean)
-
-    @Query("UPDATE shorts_media SET isBlocked = :isBlocked WHERE path = :path")
-    suspend fun updateBlocked(path: String, isBlocked: Boolean)
 }

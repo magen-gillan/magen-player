@@ -133,17 +133,19 @@ class BrowserPreferences(
   val shortsSourceFolders = preferenceStore.getStringSet("shorts_source_folders", emptySet())
   val lastWatchedShortPath = preferenceStore.getString("shorts_last_watched_path", "")
   val shortsSortType = preferenceStore.getEnum("shorts_sort_type", ShortsSortType.Name)
+  // Direction toggle for the shorts sort menu (false = ascending: name A→Z, size small→large,
+  // date added oldest→newest; true = the exact reverse). Applied instantly on selection.
+  val shortsSortDescending = preferenceStore.getBoolean("shorts_sort_descending", false)
   val quickDeleteShorts = preferenceStore.getBoolean("shorts_quick_delete", false)
 
-  // Bottom navigation visibility and ordering preferences
-  val enableTabYou = preferenceStore.getBoolean("enable_tab_you", true)
-  val enableTabRecents = preferenceStore.getBoolean("enable_tab_recents", true)
-  val enableTabPlaylists = preferenceStore.getBoolean("enable_tab_playlists", true)
-  val bottomNavOrder = preferenceStore.getString("bottom_nav_order", "home,shorts,recents,playlists,you")
+  // Bottom navigation ordering. The tab set is fixed: home, shorts, favorites.
+  val bottomNavOrder = preferenceStore.getString("bottom_nav_order", "home,shorts,favorites")
 
   fun getBottomNavOrder(): List<String> {
-    val defaultOrder = listOf("home", "shorts", "recents", "playlists", "you")
-    val saved = bottomNavOrder.get().split(",").map { it.trim() }.filter { it.isNotEmpty() }
+    val defaultOrder = listOf("home", "shorts", "favorites")
+    // Older installs may still store removed tab ids (recents/playlists/you); drop them
+    // and append any tab missing from the saved order so nothing disappears.
+    val saved = bottomNavOrder.get().split(",").map { it.trim() }.filter { it in defaultOrder }
     val missing = defaultOrder.filterNot { it in saved }
     return saved + missing
   }
