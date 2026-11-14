@@ -12,7 +12,7 @@
 <p align="center"><em>Hello! I’m Alisha. Watch your local videos freely, quickly, and completely offline.</em></p>
 
 <p align="center">
-  <a href="https://github.com/magen-gillan/magen-player/releases/latest/download/magen-player-arm64-v8a.apk"><img src="https://img.shields.io/badge/%E2%AC%87%EF%B8%8F_%D8%AA%D8%AD%D9%85%D9%8A%D9%84_%D8%A7%D9%84%D8%AA%D8%B7%D8%A8%D9%8A%D9%82-00C853?style=for-the-badge&logo=android&logoColor=white" alt="تحميل آخر إصدار"></a>
+  <a href="https://github.com/magen-gillan/magen-player/releases/latest/download/latest.apk"><img src="docs/download_button.svg" width="560" alt="تحميل أحدث نسخة | Download latest APK"></a>
 </p>
 
 <p align="center"><a href="https://github.com/magen-gillan/magen-player/releases/latest">عرض جميع الإصدارات | View all releases</a></p>
@@ -50,7 +50,7 @@
 2. افتح الملف واسمح بالتثبيت من مصادر غير معروفة.
 3. اختر فيديو من مكتبة الهاتف وابدأ المشاهدة.
 
-1. Press the green button above to download the latest arm64-v8a APK.
+1. Press the green button above to download the latest arm64-v8a APK. The link updates automatically for every new release.
 2. Open the file and allow installation from unknown sources.
 3. Choose a video from your device library and start watching.
 
