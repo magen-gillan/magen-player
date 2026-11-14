@@ -1,79 +1,67 @@
-<div align="center">
-
-<img src="docs/logo_green.gif" alt="magen player" width="280"/>
-
-# magen player
-
-<p><b>مشغّل فيديو محلي لأندرويد — سريع، خفيف، وبدون إنترنت</b></p>
-<p><sub>Local-first Android video player powered by libmpv</sub></p>
-
-<p>
-  <img src="https://img.shields.io/github/v/release/magen-gillan/magen-player?style=flat-square&color=00C853&label=latest%20release" alt="latest release"/>
-  <img src="https://img.shields.io/badge/Android-8.0%2B-3DDC84?style=flat-square&logo=android&logoColor=white" alt="Android 8.0+"/>
-  <img src="https://img.shields.io/badge/No%20Internet%20Permission-2E7D32?style=flat-square" alt="No Internet Permission"/>
-  <img src="https://img.shields.io/github/license/magen-gillan/magen-player?style=flat-square&color=FBC02D&label=license" alt="license"/>
+<p align="center">
+  <img src="docs/logo.gif" width="150" alt="Magen animated logo">
 </p>
 
-<br/>
+<h1 align="center">Magen Player</h1>
 
-<a href="https://github.com/magen-gillan/magen-player/releases/latest/download/magen-player-arm64-v8a.apk">
-  <img src="docs/download-button.svg" alt="تحميل آخر نسخة APK" width="440"/>
-</a>
+<p align="center">
+  <img src="docs/alisha.png" width="420" alt="Alisha character">
+</p>
 
-<p><a href="https://github.com/magen-gillan/magen-player/releases">تصفّح جميع الإصدارات</a></p>
+<p align="center"><strong>مرحبًا! أنا أليشا. شاهد فيديوهاتك المحلية بحرية، بسرعة، وبدون إنترنت.</strong></p>
+<p align="center"><em>Hello! I’m Alisha. Watch your local videos freely, quickly, and completely offline.</em></p>
 
-</div>
+<p align="center">
+  <a href="https://github.com/magen-gillan/magen-player/releases/latest/download/magen-player-arm64-v8a.apk"><img src="https://img.shields.io/badge/%E2%AC%87%EF%B8%8F_%D8%AA%D8%AD%D9%85%D9%8A%D9%84_%D8%A7%D9%84%D8%AA%D8%B7%D8%A8%D9%8A%D9%82-00C853?style=for-the-badge&logo=android&logoColor=white" alt="تحميل آخر إصدار"></a>
+</p>
 
-<div dir="rtl">
+<p align="center"><a href="https://github.com/magen-gillan/magen-player/releases/latest">عرض جميع الإصدارات | View all releases</a></p>
 
-## ما هو magen player؟
+---
 
-مشغّل فيديو يعمل بالكامل على الجهاز، مبني على libmpv بواجهة Jetpack Compose. يكتشف الفيديوهات المخزّنة على الهاتف ويشغّلها دون أي اتصال بالإنترنت أو خدمات بعيدة — لا بثّ من المواقع ولا شبكات وسائط خارجية.
+## عن التطبيق | About
 
-## الميزات
+**العربية:** Magen Player مشغل فيديو محلي يعمل بالكامل على الجهاز، مبني على libmpv وJetpack Compose. يكتشف فيديوهاتك ويشغلها دون اتصال بالإنترنت أو بث خارجي، مع واجهة زجاجية سريعة وقابلة للتخصيص.
 
-- تشغيل الفيديو المحلي عبر libmpv مع إيماءات قابلة للتخصيص، والتنقل بين الإطارات، والتكبير والتحريك.
-- تصفّح مجلدات الجهاز، وتنظيم قوائم تشغيل محلية، وتتبّع الفيديوهات المشاهدة.
-- وضع **الفيديوهات القصيرة** مع فرز فوري (الاسم بالترتيب الطبيعي أو الحجم أو تاريخ الإضافة) ومجلد **المفضلة** المحلي.
-- واجهة زجاجية أنيقة وتبويبات قابلة للتخصيص ودعم ملفات الترجمة المحلية وتعيين نغمات HDR إلى SDR.
-- **بدون إذن الإنترنت**: لا اتصال شبكي إطلاقًا داخل التطبيق.
+**English:** Magen Player is a local-first video player built with libmpv and Jetpack Compose. It discovers and plays your videos without internet access or remote streaming, with a fast, customizable glass-style interface.
 
-## التحميل والتثبيت
+## المميزات | Features
 
-1. اضغط زر التحميل الأخضر في الأعلى — ينزّل آخر نسخة `magen-player-arm64-v8a.apk` مباشرةً من الإصدار الأحدث.
-2. افتح الملف على الهاتف واسمح بالتثبيت من مصادر غير معروفة عند الطلب.
-3. إن كانت لديك نسخة أقدم فاحذفها أولًا ثم ثبّت النسخة الجديدة — توقيع التطبيق موحّد نهائيًا بدءًا من v5.5.4.
-4. للتحقق من سلامة الملف قارن بصمة `SHA-256` مع ملف `.sha256` المرفق مع كل إصدار.
+- تشغيل محلي قوي عبر libmpv مع إيماءات قابلة للتخصيص.
+- Powerful local playback through libmpv with customizable gestures.
+- التنقل بين الإطارات، والتكبير، والتحريك.
+- Frame stepping, zooming, and panning controls.
+- تصفح مجلدات الهاتف وإنشاء قوائم تشغيل محلية.
+- Browse device folders and organize local playlists.
+- تتبع الفيديوهات المشاهدة ووضع الفيديوهات القصيرة.
+- Watched-video tracking and a dedicated Shorts mode.
+- فرز فوري بالاسم الطبيعي أو الحجم أو تاريخ الإضافة، مع المفضلة.
+- Instant sorting by natural name, size, or date, plus local favorites.
+- دعم ملفات الترجمة المحلية وتحويل HDR إلى SDR.
+- Local subtitle support and HDR-to-SDR tone mapping.
+- بدون إذن الإنترنت؛ لا توجد اتصالات شبكية داخل التطبيق.
+- No internet permission; the app makes no network connections.
+- واجهة قابلة للتخصيص ودعم العربية والإنجليزية.
+- Customizable interface with Arabic and English support.
 
-**متطلبات التشغيل:** أندرويد 8.0 فأحدث (minSdk 26) — معمارية `arm64-v8a` — حجم الملف حوالي 36 ميجابايت.
+## التثبيت | Installation
 
-## آخر التحديثات — v5.5.4
+1. اضغط زر التحميل الأخضر أعلاه لتنزيل آخر APK لمعمارية arm64-v8a.
+2. افتح الملف واسمح بالتثبيت من مصادر غير معروفة.
+3. اختر فيديو من مكتبة الهاتف وابدأ المشاهدة.
 
-- فتح **المفضلة** من وضع الفيديوهات القصيرة لم يعد يخرج من التطبيق؛ المفضلة تعمل بنفس وضع الفيديوهات القصيرة مع رسالة ودّية عند عدم وجود مفضلات.
-- الفرز بالحجم أو تاريخ الإضافة أو الاسم يُطبّق **فورًا** عند الاختيار.
-- الترتيب الطبيعي للاسم: 1، 2، … 10، 100، 800 بدل 1، 10، 100.
-- لم تعد الفيديوهات تتخطى عرض بعضها أثناء جلب معلوماتها.
-- أيقونة التطبيق تظهر **كاملة دون قصّ** (adaptive safe-zone).
-- أسماء المجلدات في عرض الشبكة لم تعد تختفي خلف شريط التنقل السفلي.
+1. Press the green button above to download the latest arm64-v8a APK.
+2. Open the file and allow installation from unknown sources.
+3. Choose a video from your device library and start watching.
 
-## البناء من المصدر
+**المتطلبات | Requirements:** Android 8.0+ (API 26+)، arm64-v8a | Current release: v5.5.4.
+
+## البناء والترخيص | Build & License
 
 ```bash
 ./gradlew :app:assembleRelease
 ```
 
-نسخة Release مُعدّة لمعمارية `arm64-v8a` للحصول على أصغر APK ممكن، وتتطلب توفّر تبعيات Gradle في الكاش المحلي للبناء دون اتصال.
+مرخص تحت Apache License 2.0. يعتمد على libmpv ومشروعات Android مفتوحة المصدر ذات الصلة.
 
-## الترجمات
-
-تُخزّن ترجمات الواجهة في `app/src/main/res/values*/strings.xml` — راجع `CONTRIBUTING.md` لسير العمل الخاص بالمساهمات المحلية.
-
-## الشكر والاعتمادات
-
-مبني على libmpv، ويستفيد من أفكار وشيفرات المشروعات: mpvEx وmpv-android وmpvKt وNext Player وGramophone — مع حفظ تراخيصها وإشعاراتها مع الشيفرة المصدرية.
-
-## الترخيص
-
-موزّع تحت رخصة Apache License 2.0 — انظر ملف `LICENSE`.
-
-</div>
+Licensed under Apache License 2.0. Built with libmpv and related open-source Android projects.
