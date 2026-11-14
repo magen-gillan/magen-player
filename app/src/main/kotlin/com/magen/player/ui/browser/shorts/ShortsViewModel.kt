@@ -202,14 +202,25 @@ class ShortsViewModel(
         return listOf(pending) + received
     }
 
-    /** Apply a sort (type + direction) immediately and return the new page of the video currently being watched. */
+    /**
+     * Apply a sort (type + direction) immediately.
+     *
+     * Returns the page the pager must show afterwards. When the option actually
+     * changes, playback restarts from the FIRST video of the newly ordered feed
+     * (page 0): reversing A→Z into Z→A moves the previously watched video to the
+     * opposite end of the list, and following it there stranded the viewer on the
+     * last video. Re-selecting the same option is a no-op and keeps the current
+     * video in place.
+     */
     fun sortShorts(type: ShortsSortType, descending: Boolean, currentPath: String?): Int {
+        val optionChanged = type != _sortType.value || descending != _sortDescending.value
         _sortType.value = type
         _sortDescending.value = descending
         browserPreferences.shortsSortType.set(type)
         browserPreferences.shortsSortDescending.set(descending)
         val sorted = orderVideos(_shorts.value)
         _shorts.value = sorted
+        if (optionChanged) return 0
         return currentPath?.let { path -> sorted.indexOfFirst { it.path == path }.takeIf { it >= 0 } } ?: 0
     }
 
