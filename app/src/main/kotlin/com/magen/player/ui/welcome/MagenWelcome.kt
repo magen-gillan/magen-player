@@ -298,16 +298,19 @@ fun MagenWelcomeScreen(
             val mh = ms.first { it.layoutId == "h" }
             val mp = ms.first { it.layoutId == "p" }
             fun fixedW(x: Int) = Constraints(minWidth = x, maxWidth = x)
-            // pass 1: natural heights → scale; pass 2: re-measure wider so the scaled block fills the column
-            val b0 = mb.measure(fixedW(colW))
-            val p0 = mp.measure(fixedW(colW))
+            // Natural heights at the column width come from intrinsics: a Measurable may be
+            // measured only ONCE per measure pass, so the probe pass uses minIntrinsicHeight.
+            val natB = mb.minIntrinsicHeight(colW).coerceAtLeast(1)
+            val natP = mp.minIntrinsicHeight(colW).coerceAtLeast(1)
             val avail = if (land) h else (h * 0.78f).toInt()
-            val s = (avail.toFloat() / (b0.height + p0.height)).coerceIn(0.5f, 1f)
+            val s = (avail.toFloat() / (natB + natP)).coerceIn(0.5f, 1f)
             val wide = (colW / s).toInt()
             val b = mb.measure(fixedW(wide))
             val p = mp.measure(fixedW(wide))
             val bH = (b.height * s).toInt()
             val pH = (p.height * s).toInt()
+            val hh = (h - bH - pH).coerceAtLeast(0)
+            val mhr = if (land) mh.measure(Constraints.fixed(heroW, h)) else mh.measure(Constraints.fixed(w, hh))
             fun px(x: Int, width: Int) = if (rtl) w - x - width else x
             layout(w, h) {
                 val colX = if (land) heroW + gap else 0
@@ -319,10 +322,9 @@ fun MagenWelcomeScreen(
                     scaleX = s; scaleY = s; transformOrigin = TransformOrigin(0f, 0f)
                 }
                 if (land) {
-                    mh.measure(Constraints.fixed(heroW, h)).place(px(0, heroW), 0)
+                    mhr.place(px(0, heroW), 0)
                 } else {
-                    val hh = (h - bH - pH).coerceAtLeast(0)
-                    mh.measure(Constraints.fixed(w, hh)).place(0, bH)
+                    mhr.place(0, bH)
                 }
             }
         }

@@ -1,6 +1,8 @@
 import com.android.build.api.variant.FilterConfiguration
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+import org.gradle.api.artifacts.component.ModuleComponentSelector
+
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.compose.compiler)
@@ -17,8 +19,8 @@ android {
     applicationId = "com.magen.player"
     minSdk = 26
     targetSdk = 36
-    versionCode = 223
-    versionName = "5.5.5"
+    versionCode = 224
+    versionName = "5.5.6"
 
     vectorDrawables {
       useSupportLibrary = true
@@ -160,6 +162,24 @@ composeCompiler {
 
 room {
   schemaDirectory("$projectDir/schemas")
+}
+
+// seeker (com.github.abdallahmehiz, JitPack) publishes JVM-only metadata, which drags
+// org.jetbrains.compose.material:material-desktop into the Android runtime classpath and
+// duplicates androidx.compose.material classes. The Android target of JetBrains CMP material
+// is a pure alias of androidx.compose.material, so redirect it unconditionally.
+configurations.configureEach {
+  resolutionStrategy.dependencySubstitution.all {
+    val sel = requested as? ModuleComponentSelector
+    if (sel != null && sel.group == "org.jetbrains.compose.material" &&
+      (sel.module == "material" || sel.module == "material-desktop")
+    ) {
+      useTarget(
+        "androidx.compose.material:material:${sel.version}",
+        "JetBrains CMP material on Android is an alias of androidx.compose.material",
+      )
+    }
+  }
 }
 
 dependencies {
