@@ -20,10 +20,8 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.RippleConfiguration
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -142,7 +140,6 @@ private fun ThemeTransitionOverlay(
     val isAnimating = state.isAnimating
     val bitmap = state.screenshotBitmap
     val progress = state.animationProgress.value
-
 
     Box(modifier = Modifier.fillMaxSize()) {
         // 1. Render the new content at the base layer (underneath the overlay)
@@ -274,125 +271,6 @@ private fun ThemeTransitionContent(content: @Composable () -> Unit) {
 // Main Theme
 // ============================================================================
 
-private val lightScheme =
-  lightColorScheme(
-    primary = primaryLight,
-    onPrimary = onPrimaryLight,
-    primaryContainer = primaryContainerLight,
-    onPrimaryContainer = onPrimaryContainerLight,
-    secondary = secondaryLight,
-    onSecondary = onSecondaryLight,
-    secondaryContainer = secondaryContainerLight,
-    onSecondaryContainer = onSecondaryContainerLight,
-    tertiary = tertiaryLight,
-    onTertiary = onTertiaryLight,
-    tertiaryContainer = tertiaryContainerLight,
-    onTertiaryContainer = onTertiaryContainerLight,
-    error = errorLight,
-    onError = onErrorLight,
-    errorContainer = errorContainerLight,
-    onErrorContainer = onErrorContainerLight,
-    background = backgroundLight,
-    onBackground = onBackgroundLight,
-    surface = surfaceLight,
-    onSurface = onSurfaceLight,
-    surfaceVariant = surfaceVariantLight,
-    onSurfaceVariant = onSurfaceVariantLight,
-    outline = outlineLight,
-    outlineVariant = outlineVariantLight,
-    scrim = scrimLight,
-    inverseSurface = inverseSurfaceLight,
-    inverseOnSurface = inverseOnSurfaceLight,
-    inversePrimary = inversePrimaryLight,
-    surfaceDim = surfaceDimLight,
-    surfaceBright = surfaceBrightLight,
-    surfaceContainerLowest = surfaceContainerLowestLight,
-    surfaceContainerLow = surfaceContainerLowLight,
-    surfaceContainer = surfaceContainerLight,
-    surfaceContainerHigh = surfaceContainerHighLight,
-    surfaceContainerHighest = surfaceContainerHighestLight,
-  )
-
-private val darkScheme =
-  darkColorScheme(
-    primary = primaryDark,
-    onPrimary = onPrimaryDark,
-    primaryContainer = primaryContainerDark,
-    onPrimaryContainer = onPrimaryContainerDark,
-    secondary = secondaryDark,
-    onSecondary = onSecondaryDark,
-    secondaryContainer = secondaryContainerDark,
-    onSecondaryContainer = onSecondaryContainerDark,
-    tertiary = tertiaryDark,
-    onTertiary = onTertiaryDark,
-    tertiaryContainer = tertiaryContainerDark,
-    onTertiaryContainer = onTertiaryContainerDark,
-    error = errorDark,
-    onError = onErrorDark,
-    errorContainer = errorContainerDark,
-    onErrorContainer = onErrorContainerDark,
-    background = backgroundDark,
-    onBackground = onBackgroundDark,
-    surface = surfaceDark,
-    onSurface = onSurfaceDark,
-    surfaceVariant = surfaceVariantDark,
-    onSurfaceVariant = onSurfaceVariantDark,
-    outline = outlineDark,
-    outlineVariant = outlineVariantDark,
-    scrim = scrimDark,
-    inverseSurface = inverseSurfaceDark,
-    inverseOnSurface = inverseOnSurfaceDark,
-    inversePrimary = inversePrimaryDark,
-    surfaceDim = surfaceDimDark,
-    surfaceBright = surfaceBrightDark,
-    surfaceContainerLowest = surfaceContainerLowestDark,
-    surfaceContainerLow = surfaceContainerLowDark,
-    surfaceContainer = surfaceContainerDark,
-    surfaceContainerHigh = surfaceContainerHighDark,
-    surfaceContainerHighest = surfaceContainerHighestDark,
-  )
-
-private val pureBlackColorScheme =
-  darkColorScheme(
-    primary = primaryPureBlack,
-    onPrimary = onPrimaryPureBlack,
-    primaryContainer = primaryContainerPureBlack,
-    onPrimaryContainer = onPrimaryContainerPureBlack,
-    secondary = secondaryPureBlack,
-    onSecondary = onSecondaryPureBlack,
-    secondaryContainer = secondaryContainerPureBlack,
-    onSecondaryContainer = onSecondaryContainerPureBlack,
-    tertiary = tertiaryPureBlack,
-    onTertiary = onTertiaryPureBlack,
-    tertiaryContainer = tertiaryContainerPureBlack,
-    onTertiaryContainer = onTertiaryContainerPureBlack,
-    error = errorPureBlack,
-    onError = onErrorPureBlack,
-    errorContainer = errorContainerPureBlack,
-    onErrorContainer = onErrorContainerPureBlack,
-    background = backgroundPureBlack,
-    onBackground = onBackgroundPureBlack,
-    surface = surfacePureBlack,
-    onSurface = onSurfacePureBlack,
-    surfaceVariant = surfaceVariantPureBlack,
-    onSurfaceVariant = onSurfaceVariantPureBlack,
-    outline = outlinePureBlack,
-    outlineVariant = outlineVariantPureBlack,
-    scrim = scrimPureBlack,
-    inverseSurface = inverseSurfacePureBlack,
-    inverseOnSurface = inverseOnSurfacePureBlack,
-    inversePrimary = inversePrimaryPureBlack,
-    surfaceDim = surfaceDimPureBlack,
-    surfaceBright = surfaceBrightPureBlack,
-    surfaceContainerLowest = surfaceContainerLowestPureBlack,
-    surfaceContainerLow = surfaceContainerLowPureBlack,
-    surfaceContainer = surfaceContainerPureBlack,
-    surfaceContainerHigh = surfaceContainerHighPureBlack,
-    surfaceContainerHighest = surfaceContainerHighestPureBlack,
-  )
-
-internal var darkColorScheme = darkColorScheme()
-
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MagenPlayerTheme(content: @Composable () -> Unit) {
@@ -519,7 +397,6 @@ fun MagenPlayerVideoTheme(content: @Composable () -> Unit) {
         }
     }
 }
-
 
 enum class DarkMode(
   @StringRes val titleRes: Int,

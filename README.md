@@ -54,7 +54,7 @@
 2. Open the file and allow installation from unknown sources.
 3. Choose a video from your device library and start watching.
 
-**المتطلبات | Requirements:** Android 8.0+ (API 26+)، arm64-v8a | Current release: v5.5.4.
+**المتطلبات | Requirements:** Android 8.0+ (API 26+)، arm64-v8a | **آخر إصدار | Latest release:** [v5.5.9](https://github.com/magen-gillan/magen-player/releases/latest).
 
 ## البناء والترخيص | Build & License
 

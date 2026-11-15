@@ -5,7 +5,6 @@
     <string name="generic_confirm">確認</string>
     <string name="generic_cancel">取消</string>
     <string name="generic_ok">確認</string>
-    <string name="generic_unit_ms">毫秒</string>
     <string name="generic_disabled">已停用</string>
 
     <string name="pref_preferences">偏好設定</string>
@@ -35,7 +34,6 @@
     <string name="pref_appearance_show_unplayed_old_video_label_summary">在指定天數內新增且從未播放過的影片上顯示「新」標籤</string>
     <string name="pref_appearance_unplayed_old_video_days_title">新影片標籤的天數閾值</string>
     <string name="pref_appearance_unplayed_old_video_days_summary">在過去 %d 天內新增且無播放記錄的影片將被標記為新影片</string>
-    <string name="pref_appearance_category_thumbnails">縮圖</string>
     <string name="pref_appearance_theme_picker_label">應用程式主題</string>
     <string name="pref_appearance_auto_scroll_title">自動捲動到上次播放</string>
     <string name="pref_appearance_auto_scroll_summary">開啟影片列表時自動捲動到上次播放的影片</string>
@@ -108,7 +106,6 @@
     <string name="pref_clear_thumbnail_cache_title">清除縮圖快取</string>
     <string name="pref_clear_thumbnail_cache_summary">刪除所有快取的影片縮圖 (在瀏覽資料夾時會重新產生)</string>
 
-
     <string name="pref_layout_title">播放程式配置</string>
     <string name="pref_layout_summary">自訂播放程式按鈕配置</string>
     <string name="pref_layout_top_right_controls">右上角控制項</string>
@@ -122,7 +119,6 @@
     <string name="pref_player_orientation_free">自由</string>
     <string name="pref_player_orientation_video">影片</string>
     <string name="pref_player_orientation_smart">智慧</string>
-    <string name="pref_player_orientation_smart_summary">除非手動更改，否則遵循影片方向</string>
     <string name="pref_player_orientation_portrait">直向</string>
     <string name="pref_player_orientation_reverse_portrait">反向直向</string>
     <string name="pref_player_orientation_sensor_portrait">感應器直向</string>
@@ -135,27 +131,20 @@
     <string name="pref_player_seeking_title">搜尋</string>
     <string name="pref_player_close_after_eof">播放結束後關閉</string>
     <string name="pref_player_remember_brightness">記住螢幕亮度</string>
-
-    <string name="pref_player_gestures">手勢</string>
     <string name="pref_player_gestures_brightness">亮度手勢</string>
     <string name="pref_player_gestures_volume">音量手勢</string>
     <string name="pref_player_gestures_pinch_to_zoom">捏合縮放</string>
     <string name="pref_player_gestures_horizontal_swipe_to_seek">水平滑動搜尋</string>
-    <string name="pref_player_gestures_horizontal_swipe_to_seek_summary">在螢幕上向左或向右滑動以進行快進或快退</string>
     <string name="pref_player_gestures_swipe_to_subtitle_seek_title">滑動搜尋字幕</string>
     <string name="pref_player_gestures_swipe_to_subtitle_seek_summary">在螢幕頂部或底部向左或向右滑動以搜尋字幕</string>
     <string name="pref_player_gestures_horizontal_swipe_sensitivity">水平滑動靈敏度</string>
     <string name="pref_player_gestures_horizontal_swipe_sensitivity_summary">調整每次滑動覆蓋的距離</string>
     <string name="pref_player_gestures_hold_for_multiple_speed">長按進行多倍速播放</string>
-
-    <string name="pref_player_controls">控制</string>
     <string name="pref_player_controls_allow_gestures_in_panels">允許在面板中使用手勢</string>
-    <string name="pref_player_controls_display_volume_as_percentage">將音量顯示為百分比</string>
     <string name="pref_player_controls_show_loading_circle">顯示載入環</string>
     <string name="pref_player_display_show_status_bar">隨控制項顯示系統狀態列</string>
 
     <string name="pref_player_display">顯示</string>
-    <string name="pref_player_display_panel_opacity">面板透明度</string>
 
     <string name="pref_gesture">手勢</string>
     <string name="pref_gesture_summary">雙擊、媒體控制</string>
@@ -192,8 +181,6 @@
     <string name="pref_gesture_media_play">播放/暫停</string>
     <string name="pref_gesture_media_next">下一個</string>
     <string name="pref_gesture_media_custom_info">您可以在 input.conf 中使用以下鍵碼將自訂動作綁定到媒體控制：</string>
-
-    <string name="pref_gesture_view_title">檢視</string>
     <string name="pref_gesture_tap_thumbnail_to_select_title">點擊縮圖進行選擇</string>
     <string name="pref_gesture_tap_thumbnail_to_select_summary">啟用時，點擊縮圖進入選擇模式。停用時，點擊縮圖將播放影片。</string>
 
@@ -223,13 +210,10 @@
     <string name="pref_subtitles_autoload_title">自動載入字幕</string>
     <string name="pref_subtitles_autoload_summary">自動載入同名的外部字幕。</string>
     <string name="pref_subtitles_save_location">字幕儲存位置</string>
-    <string name="all_languages">全部 (選擇性過濾)</string>
     <string name="pref_subtitles_clear_downloads">清除字幕下載</string>
     <string name="pref_subtitles_clear_downloads_summary">刪除目前儲存位置中的所有檔案</string>
     <string name="pref_subtitles_clear_downloads_confirmation">您確定要刪除所有下載的字幕嗎？此操作無法復原。訂</string>
     <string name="toast_subtitles_cleared">已清除字幕下載</string>
-    <string name="pref_subtitles_searching">搜尋中…</string>
-    <string name="pref_subtitles_found">找到 %d 個字幕</string>
     <string name="pref_audio">音訊</string>
     <string name="pref_audio_summary">偏好語言、音訊聲道、音調修正</string>
     <string name="pref_audio_pitch_correction_title">啟用音訊音調修正</string>
@@ -262,17 +246,12 @@
     <string name="pref_advanced_cleared_fonts_cache">已清除字型快取</string>
     <string name="pref_advanced_enable_recently_played_title">最近播放</string>
     <string name="pref_advanced_enable_recently_played_summary">追蹤並顯示最近播放的影片和播放清單</string>
-
-    <string name="pref_advanced_features_tooltip">啟用實驗性或進階功能，例如統計頁面和 Anime4K 提升</string>
     <string name="pref_anime4k_title">Anime4K 提升 (實驗性)</string>
     <string name="pref_anime4k_summary">啟用 Anime4K 提升過濾器</string>
     <string name="pref_anime4k_incompatibility">Anime4K 不相容性</string>
     <string name="pref_anime4k_gpu_next_error">gpu-next 與 Anime4K 著色器不相容。啟用 Anime4K 時，應用程式將自動使用舊的「gpu」後端以確保著色器相容性。</string>
-    <string name="pref_anime4k_cannot_use_with_gpu_next">啟用 gpu-next 時無法使用 Anime4K</string>
     <string name="anime4k_mode_title">Anime4K 預設</string>
     <string name="anime4k_quality_title">Anime4K 變體</string>
-    <string name="anime4k_mode_toast">Anime4K：預設 %1$s</string>
-    <string name="anime4k_quality_toast">Anime4K 變體：%1$s</string>
 
     <!-- Anime4K Modes (Renamed to Presets in UI) -->
     <string name="anime4k_mode_off">關閉</string>
@@ -291,8 +270,6 @@
     <string name="pref_about_title">關於</string>
     <string name="pref_about_summary">致謝、授權</string>
     <string name="pref_about_oss_libraries">函式庫</string>
-    <string name="pref_about_donate_title">贊助</string>
-    <string name="pref_about_donate_upi">UPI</string>
 
     <string name="player_sheets_add_ext_sub">新增外部字幕</string>
     <string name="player_sheets_add_ext_audio">新增外部音軌</string>
@@ -324,9 +301,6 @@
     <string name="player_sheets_sub_delay_card_title">字幕延遲</string>
     <string name="player_sheets_sub_delay_card_delay">延遲</string>
     <string name="player_sheets_sub_delay_card_speed">速度</string>
-    <string name="player_sheets_sub_delay_subtitle_type_primary">主要字幕</string>
-    <string name="player_sheets_sub_delay_subtitle_type_secondary">次要字幕</string>
-    <string name="player_sheets_sub_delay_subtitle_type_primary_and_secondary">兩者</string>
     <string name="player_sheets_sub_delay_subtitle_voice_heard">聽到聲音</string>
     <string name="player_sheets_sub_delay_subtitle_text_seen">看到文字</string>
     <string name="player_sheets_delay_set_as_default">設為預設值</string>
@@ -355,20 +329,12 @@
     <string name="player_sheets_speed_slider_label">速度</string>
     <string name="player_sheets_speed_make_default">設為預設速度</string>
 
-    <string name="player_sheets_decoder_formatted" formatted="false">%s (%s)</string>
-
     <string name="numeric_chooser_value_too_big">數值太大</string>
     <string name="numeric_chooser_value_too_small">數值太小</string>
 
     <string name="player_sheets_more_title">更多</string>
     <string name="player_sheets_stats_page_title">預設統計頁面</string>
     <string name="player_sheets_stats_page_chip">第 %d 頁</string>
-    <string name="player_sheets_stats_page_0_desc">已停用。無重疊統計資訊。</string>
-    <string name="player_sheets_stats_page_1_desc">概覽。CPU/GPU 使用率、音訊/影片同步、丟失影格、時脈速度。</string>
-    <string name="player_sheets_stats_page_2_desc">影格時間。解碼/渲染時間、縮放器資訊。</string>
-    <string name="player_sheets_stats_page_3_desc">快取狀態。緩衝區健康度、解複用器 (Demuxer) 快取、可搜尋範圍。</string>
-    <string name="player_sheets_stats_page_4_desc">目前按鍵綁定。已映射的鍵盤快捷鍵列表。</string>
-    <string name="player_sheets_stats_page_5_desc">軌道列表。影片、音訊和字幕軌道的詳細資訊。</string>
 
     <string name="player_aspect_fit">配合螢幕</string>
     <string name="player_aspect_crop">裁剪</string>
@@ -382,15 +348,10 @@
     <string name="crash_screen_fix_crash">修復崩潰 (刪除資料庫)</string>
     <string name="crash_screen_database_deleted">資料庫已成功刪除。請重新啟動應用程式。</string>
     <string name="crash_screen_database_hint">此崩潰似乎與資料庫有關。請嘗試刪除資料庫以修復。</string>
-
-    <string name="timer_picker_enter_timer">輸入時間</string>
-    <string name="timer_picker_pick_time">選擇時間</string>
     <string name="timer_title">睡眠定時器</string>
     <string name="timer_remaining">剩餘 %s</string>
 
     <string name="toast_sleep_timer_ended">睡眠定時器結束</string>
-
-
 
     <string name="swap_the_volume_and_brightness_slider">交換音量和亮度滑動條</string>
     <string name="pref_player_display_reduce_player_animation">減少播放程式動畫</string>
@@ -398,21 +359,10 @@
     <string name="show_splash_ovals_on_double_tap_to_seek">雙擊搜尋時顯示漣漪效果</string>
     <string name="show_time_on_double_tap_to_seek">顯示搜尋時間</string>
 
-    <string name="pref_audio_channels_auto_safe_desc">預設，安全自動選擇</string>
-    <string name="pref_audio_channels_auto_desc">自動選擇</string>
-    <string name="pref_audio_channels_mono_desc">混音為單聲道</string>
-    <string name="pref_audio_channels_stereo_desc">混音為雙聲道</string>
-    <string name="pref_audio_channels_reverse_stereo_desc">交換左右聲道</string>
-
     <string name="player_sheets_frame_navigation_title">影格導航</string>
     <string name="player_sheets_frame_navigation_include_subtitles">快照中包含字幕</string>
 
     <string name="player_sheets_zoom_slider_label">影片縮放</string>
-
-    <plurals name="seconds">
-        <item quantity="one">%1$d 秒</item>
-        <item quantity="other">%1$d 秒</item>
-    </plurals>
 
     <!-- Background Playback -->
     <string name="background_playback_title">背景播放</string>
@@ -436,7 +386,6 @@
     <string name="fonts_loaded">已載入 %1$d 個字型</string>
     <string name="reload_fonts">重新載入字型</string>
     <string name="clear_font_directory">清除字型目錄</string>
-    <string name="reset_to_default_font">重設為預設字型</string>
     <string name="set_as_default">設為預設值</string>
 
     <!-- Notification strings -->
@@ -466,29 +415,9 @@
     <string name="pref_folders_blacklisted">資料夾已列入黑名單</string>
 
     <!-- M3U Playlist Strings -->
-    <string name="playlist_add_m3u_title">新增 M3U 播放清單</string>
-    <string name="playlist_add_success">M3U 播放清單新增成功</string>
-    <string name="playlist_add_error">新增 M3U 播放清單失敗：%s</string>
-    <string name="playlist_create_empty">建立空白播放清單</string>
-    <string name="playlist_refresh_success">播放清單重新整理成功</string>
-    <string name="playlist_refresh_error">重新整理播放清單失敗：%s</string>
-    <string name="playlist_m3u_badge">M3U</string>
 
     <string name="open_file">開啟檔案</string>
     <string name="recently_played">最近播放</string>
-    <string name="install">安裝</string>
-    <string name="download">下載</string>
-    <string name="failed_load_audio_invalid_uri">載入音訊檔案失敗：無效的 URI</string>
-    <string name="audio_track_added">已新增音軌</string>
-    <string name="failed_load_audio">載入音訊失敗：%s</string>
-    <string name="invalid_subtitle_format">無效的字幕檔案格式</string>
-    <string name="subtitle_added">已新增 %s</string>
-    <string name="failed_load_subtitle">載入字幕失敗</string>
-    <string name="remove_from_playlist">從播放清單中移除 %1$d %2$s？</string>
-    <string name="remove_playlist_items_confirm">選定的 %2$s 將從此播放清單中移除。原始 %3$s 不會被刪除。</string>
-    <string name="search_videos">搜尋影片…</string>
-    <string name="search_folders_and_videos">搜尋資料夾和影片…</string>
-    <string name="search_playlists">搜尋播放清單…</string>
     <string name="play_recently_played_or_first">播放最近播放或第一個影片</string>
     <string name="toggle_menu">切換選單</string>
     <string name="close">關閉</string>
@@ -496,42 +425,16 @@
     <string name="done">完成</string>
     <string name="create">建立</string>
     <string name="select">選擇</string>
-    <string name="browse">瀏覽</string>
-    <string name="disconnect">中斷連線</string>
-    <string name="connect">連線</string>
-    <string name="remove">移除</string>
-    <string name="add">新增</string>
-    <string name="ignore">忽略</string>
-    <string name="loading_detailed_information">正在載入詳細資訊…</string>
     <string name="export_complete">匯出完成</string>
     <string name="import_complete">匯入完成</string>
-    <string name="auto_picture_in_picture">自動子母畫面</string>
-    <string name="show_navigation_bar_with_controls">隨控制項顯示導覽列</string>
-    <string name="rename_playlist">重新命名播放清單</string>
-    <string name="create_playlist">建立播放清單</string>
-    <string name="add_connection">新增連線</string>
     <string name="playlist_name">播放清單名稱</string>
     <string name="new_name">新名稱</string>
     <string name="folder_name">資料夾名稱</string>
-    <string name="choose_local_m3u_file">選擇本機 M3U 檔案</string>
     <string name="home">首頁</string>
-    <string name="playlists">播放清單</string>
     <string name="unit_seconds">秒</string>
     <string name="milliseconds">毫秒</string>
     <string name="name">名稱</string>
-    <string name="protocol">協定</string>
-    <string name="host_ip_address">主機/IP 位址</string>
-    <string name="port">連接埠</string>
     <string name="path">路徑</string>
-    <string name="anonymous_guest_access">匿名/訪客存取</string>
-    <string name="use_https_secure_connection">使用 HTTPS (安全連線)</string>
-    <string name="username">使用者名稱</string>
-    <string name="password">密碼</string>
-    <string name="selected_long_press_to_reorder">已選擇 (長按可重新排序)</string>
-    <string name="available">可用</string>
-    <string name="width">寬度</string>
-    <string name="height">高度</string>
-    <string name="filter_presets">過濾器預設</string>
     <string name="no_storage_devices_found">找不到儲存裝置</string>
     <string name="no_folders_or_supported_files">無資料夾或支援的檔案</string>
 

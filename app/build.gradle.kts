@@ -19,8 +19,8 @@ android {
     applicationId = "com.magen.player"
     minSdk = 26
     targetSdk = 36
-    versionCode = 226
-    versionName = "5.5.8"
+    versionCode = 227
+    versionName = "5.5.9"
 
     vectorDrawables {
       useSupportLibrary = true

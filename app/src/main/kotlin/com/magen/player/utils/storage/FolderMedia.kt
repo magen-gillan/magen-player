@@ -41,13 +41,6 @@ internal class DirectStats(
     var latestModified: Long = 0L,
 )
 
-/** Raw MediaStore rows after one query pass, keyed by parent folder. */
-internal data class MediaStoreScan(
-    val byFolder: Map<String, FolderMedia>,
-    /** True if at least one provider query failed, so the snapshot may be partial. */
-    val incomplete: Boolean,
-)
-
 internal fun folderKey(path: String): String =
     path.trimEnd(File.separatorChar).ifEmpty { File.separator }
 

@@ -6,7 +6,6 @@
 	<string name="generic_confirm">Подтвердить</string>
 	<string name="generic_cancel">Отмена</string>
 	<string name="generic_ok">ОК</string>
-	<string name="generic_unit_ms">мс</string>
 	<string name="generic_disabled">Отключено</string>
 
 	<string name="pref_preferences">Настройки</string>
@@ -45,7 +44,6 @@
 	<string name="pref_appearance_show_unplayed_old_video_label_summary">Отображать метку \"NEW\" на видео, добавленных в течение указанного количества дней, которые никогда не воспроизводились</string>
 	<string name="pref_appearance_unplayed_old_video_days_title">Порог дней для метки нового видео</string>
 	<string name="pref_appearance_unplayed_old_video_days_summary">Видео, добавленные за последние %d дней без истории воспроизведения, будут отмечены как новые</string>
-	<string name="pref_appearance_category_thumbnails">Миниатюры</string>
 	<string name="pref_appearance_theme_picker_label">Тема приложения</string>
 	<string name="pref_appearance_auto_scroll_title">Автопрокрутка к последнему воспроизведённому</string>
 	<string name="pref_appearance_auto_scroll_summary">Автоматически прокручивать к последнему воспроизведённому видео при открытии списков видео</string>
@@ -118,7 +116,6 @@
 	<string name="pref_clear_thumbnail_cache_title">Очистить кэш миниатюр</string>
 	<string name="pref_clear_thumbnail_cache_summary">Удалить все кэшированные миниатюры видео (будут созданы заново при просмотре папок)</string>
 
-
 	<string name="pref_layout_title">Расположение элементов</string>
 	<string name="pref_layout_summary">Настроить расположение кнопок плеера</string>
 	<string name="pref_layout_top_right_controls">Элементы управления сверху справа</string>
@@ -132,7 +129,6 @@
 	<string name="pref_player_orientation_free">Свободная</string>
 	<string name="pref_player_orientation_video">По видео</string>
 	<string name="pref_player_orientation_smart">Умная</string>
-	<string name="pref_player_orientation_smart_summary">Следовать ориентации видео, пока не изменено вручную</string>
 	<string name="pref_player_orientation_portrait">Портретная</string>
 	<string name="pref_player_orientation_reverse_portrait">Портретная (перевернутая)</string>
 	<string name="pref_player_orientation_sensor_portrait">Портретная (сенсор)</string>
@@ -149,15 +145,12 @@
 	<string name="pref_player_seeking_title">Перемотка</string>
 	<string name="pref_player_close_after_eof">Закрывать после окончания воспроизведения</string>
 	<string name="pref_player_remember_brightness">Запоминать яркость дисплея</string>
-
-	<string name="pref_player_gestures">Жесты</string>
 	<string name="pref_player_gestures_brightness">Жесты яркости</string>
 	<string name="pref_player_gestures_volume">Жесты громкости</string>
 	<string name="pref_player_gestures_pinch_to_zoom">Щипок для масштаба</string>
 	<string name="pref_player_gestures_pan_and_zoom">Панорамирование и масштаб</string>
 	<string name="pref_player_gestures_pan_and_zoom_summary">Разрешить панорамирование (перемещение) видео вместе с масштабированием</string>
 	<string name="pref_player_gestures_horizontal_swipe_to_seek">Горизонтальный свайп для перемотки</string>
-	<string name="pref_player_gestures_horizontal_swipe_to_seek_summary">Свайп влево или вправо по экрану для перемотки вперёд или назад</string>
 	<string name="pref_player_gestures_swipe_to_subtitle_seek_title">Свайп для перехода по субтитрам</string>
 	<string name="pref_player_gestures_swipe_to_subtitle_seek_summary">Свайп влево или вправо в верхней или нижней части экрана для перехода по субтитрам</string>
 	<string name="pref_player_gestures_move_subtitle_by_dragging_title">Перемещение субтитров перетаскиванием</string>
@@ -165,17 +158,13 @@
 	<string name="pref_player_gestures_horizontal_swipe_sensitivity">Чувствительность горизонтального свайпа</string>
 	<string name="pref_player_gestures_horizontal_swipe_sensitivity_summary">Настройте, какое расстояние покрывается за один свайп</string>
 	<string name="pref_player_gestures_hold_for_multiple_speed">Удержание для многократного ускорения</string>
-
-	<string name="pref_player_controls">Элементы управления</string>
 	<string name="pref_player_controls_disable_media_buttons_title">Отключить медиакнопки</string>
 	<string name="pref_player_controls_disable_media_buttons_summary">Игнорировать команды воспроизведения от гарнитур, Bluetooth-устройств и т. д.</string>
 	<string name="pref_player_controls_allow_gestures_in_panels">Разрешить жесты на панелях</string>
-	<string name="pref_player_controls_display_volume_as_percentage">Отображать громкость в процентах</string>
 	<string name="pref_player_controls_show_loading_circle">Показывать круг загрузки</string>
 	<string name="pref_player_display_show_status_bar">Показывать строку состояния системы с элементами управления</string>
 
 	<string name="pref_player_display">Отображение</string>
-	<string name="pref_player_display_panel_opacity">Непрозрачность панели</string>
 
 	<string name="pref_gesture">Жесты</string>
 	<string name="pref_gesture_summary">Двойное касание, управление медиа</string>
@@ -214,8 +203,6 @@
 	<string name="pref_gesture_media_play">Воспроизведение/Пауза</string>
 	<string name="pref_gesture_media_next">Следующее</string>
 	<string name="pref_gesture_media_custom_info">Вы можете привязать пользовательские действия к управлению медиа в файле input.conf, используя следующие коды клавиш:</string>
-
-	<string name="pref_gesture_view_title">Вид</string>
 	<string name="pref_gesture_tap_thumbnail_to_select_title">Нажатие на миниатюру для выбора</string>
 	<string name="pref_gesture_tap_thumbnail_to_select_summary">Если включено, нажатие на миниатюру переходит в режим выбора. Если отключено, нажатие воспроизводит видео. Не действует в режиме сетки.</string>
 
@@ -249,15 +236,11 @@
 	<string name="pref_subtitles_open_at_video_location_title">Открывать в папке с видео</string>
 	<string name="pref_subtitles_open_at_video_location_summary">Открывать окно выбора файла в той же папке, где находится текущее видео</string>
 	<string name="pref_subtitles_custom_picker_folder_title">Папка выбора по умолчанию</string>
-	<string name="pref_subtitles_custom_picker_folder_summary">Выбранная папка, которая открывается при добавлении субтитров вручную</string>
 	<string name="pref_subtitles_save_location">Место сохранения субтитров</string>
-	<string name="all_languages">Все (выборочная фильтрация)</string>
 	<string name="pref_subtitles_clear_downloads">Очистить загруженные субтитры</string>
 	<string name="pref_subtitles_clear_downloads_summary">Удалить все файлы в текущем месте сохранения</string>
 	<string name="pref_subtitles_clear_downloads_confirmation">Вы уверены, что хотите удалить все скачанные субтитры? Это действие нельзя отменить.</string>
 	<string name="toast_subtitles_cleared">Загруженные субтитры очищены</string>
-	<string name="pref_subtitles_searching">Поиск…</string>
-	<string name="pref_subtitles_found">Найдено субтитров: %d</string>
 	<string name="pref_audio">Аудио</string>
 	<string name="pref_audio_summary">Предпочитаемые языки, аудиоканалы, коррекция высоты тона</string>
 	<string name="pref_audio_pitch_correction_title">Включить коррекцию высоты звука</string>
@@ -293,17 +276,12 @@
 	<string name="pref_advanced_cleared_fonts_cache">Кэш шрифтов очищен</string>
 	<string name="pref_advanced_enable_recently_played_title">Недавно воспроизведённые</string>
 	<string name="pref_advanced_enable_recently_played_summary">Отслеживать и отображать недавно воспроизведённые видео и плейлисты</string>
-
-	<string name="pref_advanced_features_tooltip">Включить экспериментальные или дополнительные функции, такие как страница статистики и апскейлинг Anime4K</string>
 	<string name="pref_anime4k_title">Апскейлинг Anime4K (Экспериментально)</string>
 	<string name="pref_anime4k_summary">Включить фильтр апскейлинга Anime4K</string>
 	<string name="pref_anime4k_incompatibility">Несовместимость с Anime4K</string>
 	<string name="pref_anime4k_gpu_next_error">gpu-next несовместим с шейдерами Anime4K. Когда Anime4K включён, приложение автоматически переключается на старый бэкенд \'gpu\' для совместимости с шейдерами.</string>
-	<string name="pref_anime4k_cannot_use_with_gpu_next">Невозможно использовать Anime4K при включённом gpu-next</string>
 	<string name="anime4k_mode_title">Пресеты Anime4K</string>
 	<string name="anime4k_quality_title">Варианты Anime4K</string>
-	<string name="anime4k_mode_toast">Anime4K: Пресет %1$s</string>
-	<string name="anime4k_quality_toast">Вариант Anime4K: %1$s</string>
 
 	<!-- Anime4K Modes (Renamed to Presets in UI) -->
 	<string name="anime4k_mode_off">Выкл</string>
@@ -323,8 +301,6 @@
 	<string name="pref_about_summary">Благодарности, лицензии</string>
 	<string name="pref_about_oss_libraries">Библиотеки</string>
 	<string name="pref_about_device_info">Информация об устройстве</string>
-	<string name="pref_about_donate_title">Поддержать</string>
-	<string name="pref_about_donate_upi">UPI</string>
 
 	<string name="player_sheets_add_ext_sub">Добавить внешние субтитры</string>
 	<string name="player_sheets_add_ext_audio">Добавить внешние аудиодорожки</string>
@@ -356,9 +332,6 @@
 	<string name="player_sheets_sub_delay_card_title">Задержка субтитров</string>
 	<string name="player_sheets_sub_delay_card_delay">Задержка</string>
 	<string name="player_sheets_sub_delay_card_speed">Скорость</string>
-	<string name="player_sheets_sub_delay_subtitle_type_primary">Основные субтитры</string>
-	<string name="player_sheets_sub_delay_subtitle_type_secondary">Вторичные субтитры</string>
-	<string name="player_sheets_sub_delay_subtitle_type_primary_and_secondary">Оба</string>
 	<string name="player_sheets_sub_delay_subtitle_voice_heard">Голос слышен</string>
 	<string name="player_sheets_sub_delay_subtitle_text_seen">Текст виден</string>
 	<string name="player_sheets_delay_set_as_default">Установить по умолчанию</string>
@@ -385,18 +358,11 @@
 	<string name="player_sheets_filters_warning">Некоторые фильтры могут не работать на вашем текущем видеодрайвере</string>
 	<string name="player_sheets_speed_slider_label">Скорость</string>
 	<string name="player_sheets_speed_make_default">Установить скорость по умолчанию</string>
-	<string name="player_sheets_decoder_formatted" formatted="false">%s (%s)</string>
 	<string name="numeric_chooser_value_too_big">Значение слишком велико</string>
 	<string name="numeric_chooser_value_too_small">Значение слишком мало</string>
 	<string name="player_sheets_more_title">Ещё</string>
 	<string name="player_sheets_stats_page_title">Страница статистики по умолчанию</string>
 	<string name="player_sheets_stats_page_chip">Страница %d</string>
-	<string name="player_sheets_stats_page_0_desc">Отключена. Статистика не отображается.</string>
-	<string name="player_sheets_stats_page_1_desc">Обзор. Загрузка CPU/GPU, синхронизация A/V, пропущенные кадры, частота.</string>
-	<string name="player_sheets_stats_page_2_desc">Тайминг кадров. Время декодирования/рендеринга, информация скейлера.</string>
-	<string name="player_sheets_stats_page_3_desc">Статус кэша. Буфер, кэш демультиплексора, диапазоны перемотки.</string>
-	<string name="player_sheets_stats_page_4_desc">Текущие привязки клавиш. Список назначенных сочетаний клавиш.</string>
-	<string name="player_sheets_stats_page_5_desc">Список дорожек. Детали видео, аудио и субтитров.</string>
 
 	<string name="playlist_now_playing">Сейчас играет</string>
 	<string name="playlist_playing">Воспроизведение</string>
@@ -418,9 +384,6 @@
 	<string name="crash_screen_fix_crash">Исправить сбой (Удалить базу данных)</string>
 	<string name="crash_screen_database_deleted">База данных успешно удалена. Пожалуйста, перезапустите приложение.</string>
 	<string name="crash_screen_database_hint">Похоже, этот сбой связан с базой данных. Попробуйте удалить базу данных для его исправления.</string>
-
-	<string name="timer_picker_enter_timer">Введите время</string>
-	<string name="timer_picker_pick_time">Выберите время</string>
 	<string name="timer_title">Таймер сна</string>
 	<string name="timer_remaining">Осталось %s</string>
 	<string name="toast_sleep_timer_ended">Таймер сна завершен</string>
@@ -432,12 +395,6 @@
 	<string name="pref_player_show_circular_double_tap_seek_title">Показывать круговую перемотку двойным касанием</string>
 	<string name="pref_player_show_circular_double_tap_seek_summary">Показывать круговой оверлей перемотки со временем под ним</string>
 	<string name="show_time_on_double_tap_to_seek">Показывать время перемотки</string>
-
-	<string name="pref_audio_channels_auto_safe_desc">По умолчанию, безопасный автовыбор</string>
-	<string name="pref_audio_channels_auto_desc">Автовыбор</string>
-	<string name="pref_audio_channels_mono_desc">Сведение в моно</string>
-	<string name="pref_audio_channels_stereo_desc">Сведение в стерео</string>
-	<string name="pref_audio_channels_reverse_stereo_desc">Поменять местами левый и правый каналы</string>
 
 	<string name="player_sheets_aspect_ratio_title">Соотношение сторон</string>
 	<string name="player_sheets_aspect_ratio_presets">Пресеты</string>
@@ -478,11 +435,6 @@
 
 	<string name="player_sheets_zoom_slider_label">Масштаб видео</string>
 
-	<plurals name="seconds">
-		<item quantity="one">%1$d секунда</item>
-		<item quantity="other">%1$d секунд</item>
-	</plurals>
-
 	<!-- Background Playback -->
 	<string name="background_playback_title">Фоновое воспроизведение</string>
 	<string name="pref_player_background_playback">Фоновое воспроизведение</string>
@@ -510,7 +462,6 @@
 	<string name="fonts_loaded">Шрифтов загружено: %1$d</string>
 	<string name="reload_fonts">Перезагрузить шрифты</string>
 	<string name="clear_font_directory">Очистить каталог шрифтов</string>
-	<string name="reset_to_default_font">Сбросить на шрифт по умолчанию</string>
 	<string name="set_as_default">Установить по умолчанию</string>
 
 	<!-- Notification strings -->
@@ -550,29 +501,9 @@
 	<string name="pref_folders_blacklisted">Папка(и) в чёрном списке</string>
 
 	<!-- M3U Playlist Strings -->
-	<string name="playlist_add_m3u_title">Добавить плейлист M3U</string>
-	<string name="playlist_add_success">Плейлист M3U успешно добавлен</string>
-	<string name="playlist_add_error">Не удалось добавить плейлист M3U: %s</string>
-	<string name="playlist_create_empty">Создать пустой плейлист</string>
-	<string name="playlist_refresh_success">Плейлист успешно обновлен</string>
-	<string name="playlist_refresh_error">Не удалось обновить плейлист: %s</string>
-	<string name="playlist_m3u_badge">M3U</string>
 
 	<string name="open_file">Открыть файл</string>
 	<string name="recently_played">Недавно воспроизведённые</string>
-	<string name="install">Установить</string>
-	<string name="download">Скачать</string>
-	<string name="failed_load_audio_invalid_uri">Не удалось загрузить аудиофайл: недействительный URI</string>
-	<string name="audio_track_added">Аудиодорожка добавлена</string>
-	<string name="failed_load_audio">Не удалось загрузить аудио: %s</string>
-	<string name="invalid_subtitle_format">Неверный формат файла субтитров</string>
-	<string name="subtitle_added">%s добавлено</string>
-	<string name="failed_load_subtitle">Не удалось загрузить субтитры</string>
-	<string name="remove_from_playlist">Удалить %1$d %2$s из плейлиста?</string>
-	<string name="remove_playlist_items_confirm">Выбранные %2$s будут удалены из этого плейлиста. Оригинальные %3$s не будут удалены.</string>
-	<string name="search_videos">Поиск видео…</string>
-	<string name="search_folders_and_videos">Поиск папок и видео…</string>
-	<string name="search_playlists">Поиск плейлистов…</string>
 	<string name="search_no_results_title">Результатов не найдено</string>
 	<string name="search_no_results_message">Нет файлов или папок, соответствующих вашему запросу</string>
 	<string name="search_empty_title">Поиск</string>
@@ -584,43 +515,17 @@
 	<string name="done">Готово</string>
 	<string name="create">Создать</string>
 	<string name="select">Выбрать</string>
-	<string name="browse">Обзор</string>
-	<string name="disconnect">Отключить</string>
-	<string name="connect">Подключить</string>
-	<string name="remove">Удалить</string>
-	<string name="add">Добавить</string>
-	<string name="ignore">Игнорировать</string>
-	<string name="loading_detailed_information">Загрузка подробной информации…</string>
 	<string name="export_complete">Экспорт завершен</string>
 	<string name="import_complete">Импорт завершен</string>
-	<string name="auto_picture_in_picture">Авто-режим "Картинка в картинке"</string>
-	<string name="show_navigation_bar_with_controls">Показывать панель навигации с элементами управления</string>
-	<string name="rename_playlist">Переименовать плейлист</string>
-	<string name="create_playlist">Создать плейлист</string>
-	<string name="add_connection">Добавить подключение</string>
 	<string name="playlist_name">Название плейлиста</string>
 	<string name="new_name">Новое имя</string>
 	<string name="folder_name">Имя папки</string>
-	<string name="choose_local_m3u_file">Выбрать локальный файл M3U</string>
 	<string name="home">Главная</string>
 	<string name="shorts">Shorts</string>
-	<string name="playlists">Плейлисты</string>
 	<string name="unit_seconds">Секунды</string>
 	<string name="milliseconds">Миллисекунды</string>
 	<string name="name">Имя</string>
-	<string name="protocol">Протокол</string>
-	<string name="host_ip_address">Хост / IP-адрес</string>
-	<string name="port">Порт</string>
 	<string name="path">Путь</string>
-	<string name="anonymous_guest_access">Анонимный/гостевой доступ</string>
-	<string name="use_https_secure_connection">Использовать HTTPS (защищенное соединение)</string>
-	<string name="username">Имя пользователя</string>
-	<string name="password">Пароль</string>
-	<string name="selected_long_press_to_reorder">Выбрано (удерживайте для изменения порядка)</string>
-	<string name="available">Доступно</string>
-	<string name="width">Ширина</string>
-	<string name="height">Высота</string>
-	<string name="filter_presets">Пресеты фильтров</string>
 	<string name="no_storage_devices_found">Накопители не найдены</string>
 	<string name="no_folders_or_supported_files">Нет папок или поддерживаемых файлов</string>
 
@@ -678,24 +583,11 @@
 
 	<!-- Network Connection Card -->
 	<!-- Playlist Screen Empty and Search States -->
-	<string name="no_playlists_found">Плейлисты не найдены</string>
-	<string name="try_different_search_term">Попробуйте другой поисковый запрос</string>
 	<string name="no_playlists_yet">Пока нет плейлистов</string>
-	<string name="no_playlists_yet_desc">Create a playlist or import a local M3U file.</string>
-	<string name="empty_playlists_desc">Создайте плейлист, чтобы увидеть его здесь</string>
 
 	<!-- Recently Played Screen -->
-	<string name="recently_played_disabled_title">Недавно воспроизведённые отключены</string>
-	<string name="recently_played_disabled_message">Включите эту функцию в Дополнительных настройках, чтобы отслеживать историю воспроизведения</string>
 	<string name="no_recently_played_videos">Нет недавно воспроизведённых видео</string>
-	<string name="no_recently_played_videos_message">Видео, которые вы воспроизводите, будут появляться здесь</string>
-	<string name="no_recently_played_items">Нет недавно воспроизведённых элементов</string>
-	<string name="no_recently_played_items_message">Ваши недавно воспроизведённые видео и плейлисты будут появляться здесь</string>
-	<string name="remove_from_history_title">Удалить %1$d %2$s из истории?</string>
-	<string name="remove_from_history_msg">Выбранные %1$s будут удалены из списка недавно воспроизведённых. Оригинальные видеофайлы не будут удалены.</string>
 	<string name="delete_files_title">Удалить %1$d %2$s?</string>
-	<string name="delete_files_msg">Это действие навсегда удалит оригинальные видеофайлы из памяти вашего устройства.\n\nЭто действие нельзя отменить.</string>
-	<string name="also_delete_files">Также удалить оригинальный(е) файл(ы)</string>
 
 	<!-- Folder List Screen Empty States -->
 	<string name="no_video_folders_found">Папки с видео не найдены</string>
@@ -704,7 +596,6 @@
 	<!-- File System Browser Screen Strings -->
 	<string name="search_in_all_storage_volumes">Поиск во всех накопителях</string>
 	<string name="search_in_folder_placeholder">Поиск в %1$s…</string>
-	<string name="search_default_folder_name">папка</string>
 	<string name="empty_folder_title">Пустая папка</string>
 	<string name="empty_folder_message">Эта папка не содержит видео или вложенных папок</string>
 
@@ -712,16 +603,9 @@
 	<string name="search_all_videos">Поиск по всем видео…</string>
 
 	<!-- Network Streaming Screen Strings -->
-	<string name="paste">Вставить</string>
 	<string name="play">Воспроизвести</string>
 
 	<!-- Playlist Detail Screen Strings -->
-	<string name="no_videos_in_playlist">В этом плейлисте нет видео</string>
-	<string name="no_videos_in_playlist_desc">Добавьте видео из браузера, чтобы собрать свой плейлист</string>
-	<string name="done_reordering">Изменение порядка завершено</string>
-	<string name="reorder_playlist">Изменить порядок плейлиста</string>
-	<string name="remove_from_playlist_confirm">Выбранные %1$s будут удалены из этого плейлиста. Оригинальные %2$s не будут удалены.</string>
-	<string name="remove_from_playlist_action">Удалить из плейлиста</string>
 
 	<!-- Shorts Screen Strings -->
 	<string name="go_back">Назад</string>
@@ -781,15 +665,6 @@
 	<string name="name_cannot_contain_invalid_chars">Имя не может содержать / или \\</string>
 
 	<!-- Sheets Strings -->
-	<string name="playlist_created_successfully">Плейлист успешно создан</string>
-	<string name="failed_create_playlist">Не удалось создать плейлист</string>
-	<string name="m3u_playlist_added_successfully">Плейлист M3U успешно добавлен</string>
-	<string name="failed_add_m3u_playlist">Не удалось добавить плейлист M3U</string>
-	<string name="add_m3u_playlist">Добавить плейлист M3U</string>
-	<string name="or">ИЛИ</string>
-	<string name="playlist_options">Опции плейлиста</string>
-	<string name="create_empty_playlist">Создать пустой плейлист</string>
-	<string name="create_blank_playlist_desc">Создать новый пустой плейлист</string>
 	<!-- Component Strings -->
 	<string name="more_options">Дополнительные опции</string>
 	<string name="move">Переместить</string>
@@ -805,7 +680,6 @@
 	<string name="folders_count">Папок (%1$d)</string>
 	<string name="media_count">Медиа (%1$d)</string>
 	<string name="drag_to_reorder">Перетащите для изменения порядка</string>
-	<string name="connect_social_media">Оставайтесь с нами в соцсетях</string>
 
 	<!-- Sort Dialog Strings -->
 	<string name="sort_and_view_options">Опции сортировки и вида</string>
@@ -814,7 +688,6 @@
 	<!-- Preference Category Strings -->
 	<string name="pref_category_ui_appearance">Интерфейс и внешний вид</string>
 	<string name="pref_category_playback_controls">Воспроизведение и управление</string>
-	<string name="pref_category_file_management">Управление файлами</string>
 	<string name="pref_category_media_settings">Настройки медиа</string>
 	<string name="pref_category_magen_shorts">Magen Shorts</string>
 	<string name="pref_category_magen_shorts_settings">Настройки Magen Shorts</string>
@@ -847,8 +720,6 @@
 	<string name="pref_select_sourced_folders_desc">Выберите каталоги, откуда брать Shorts. Если не выбрано ни одного, Shorts будут браться из всех папок.</string>
 
 	<!-- Update features -->
-	<string name="pref_about_checking">Проверка…</string>
-	<string name="pref_about_up_to_date">У вас установлена последняя версия!</string>
 	<!-- Player Button Labels -->
 	<string name="btn_label_back">Стрелка назад</string>
 	<string name="btn_label_title">Название видео</string>
@@ -875,7 +746,6 @@
 	<string name="btn_label_ambient_mode">Режим Ambient</string>
 	<string name="btn_label_sleep_timer">Таймер сна</string>
 	<string name="btn_label_none">Нет</string>
-
 
 	<string name="timer_start">Запустить таймер</string>
 	<string name="slide_to_unlock">Проведите для разблокировки</string>
@@ -908,12 +778,10 @@
 
 	<!-- Player controls shared -->
 	<string name="playlist_separator">• %1$s</string>
-	<string name="chapters">Главы</string>
 	<string name="skip_seconds">Пропустить %1$d с</string>
 	<string name="playback_speed">Скорость воспроизведения</string>
 	<string name="screen_rotation">Ориентация</string>
 	<string name="frame_nav">Покадрово</string>
-	<string name="frame_navigation">Покадровая навигация</string>
 	<string name="pip">PiP</string>
 	<string name="video_zoom">Масштаб видео</string>
 	<string name="lock">Блокировка</string>
@@ -999,8 +867,6 @@
 	<string name="item_type_video">видео</string>
 	<string name="item_type_folder">папка</string>
 	<string name="item_type_file">файл</string>
-	<string name="item_type_playlist">плейлист</string>
-	<string name="item_type_item">элемент</string>
 
 	<string name="no_videos_in_folder">В этой папке нет видео</string>
 	<string name="no_videos_in_folder_desc">Добавленные в эту папку видео появятся здесь</string>
@@ -1071,7 +937,6 @@
 	<string name="pref_advanced_section_system_integration">Интеграция с системой</string>
 	<string name="pref_advanced_section_logging">Логирование</string>
 	<string name="pref_advanced_tap_to_edit_configuration">Нажмите, чтобы редактировать конфигурацию</string>
-	<string name="pref_advanced_mpv_directory_ready">Каталог MPV готов ✓</string>
 	<string name="pref_advanced_lua_set_storage_first">Сначала установите место хранения и включите скрипты Lua</string>
 	<string name="pref_advanced_no_scripts_enabled">Нет включённых скриптов</string>
 	<string name="pref_advanced_custom_lua_summary">Создание и управление пользовательскими кнопками Lua</string>
@@ -1167,15 +1032,6 @@
 	<string name="filter_preset_deep_black">Глубокий чёрный</string>
 	<string name="filter_preset_deep_black_desc">Улучшенный чёрный цвет для OLED-дисплеев</string>
     <string name="pref_player_resume_playback_title">Возобновить воспроизведение</string>
-    <string name="welcome_title">Добро пожаловать в magen player</string>
-    <string name="welcome_subtitle">Ваш современный, мощный и настраиваемый медиаплеер.</string>
-    <string name="welcome_language_section_title">Предпочитаемый язык</string>
-    <string name="welcome_language_section_desc">Выберите отображаемый язык</string>
-    <string name="welcome_grant_permission">Предоставить разрешение</string>
-    <string name="welcome_get_started">Начать</string>
-    <string name="welcome_skip_permission">Продолжить без доступа к хранилищу</string>
-    <string name="storage_access_granted">Доступ к хранилищу предоставлен</string>
-    <string name="storage_access_granted_desc">Разрешение предоставлено. magen player готов обнаруживать и воспроизводить ваши медиафайлы.</string>
     <string name="player_resume_prompt_title">Возобновить воспроизведение?</string>
     <string name="pref_player_resume_playback_summary">Выберите, как открываются ранее просмотренные видео</string>
     <string name="pref_player_resume_mode_always">Всегда возобновлять</string>
@@ -1197,5 +1053,4 @@
     <string name="generic_off">Выкл.</string>
     <string name="system_default">Системный язык</string>
     <string name="pref_appearance_language_title">Язык приложения</string>
-    <string name="pref_appearance_language_summary">Изменить язык интерфейса приложения</string>
 </resources>

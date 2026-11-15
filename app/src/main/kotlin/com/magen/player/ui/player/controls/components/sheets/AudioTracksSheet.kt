@@ -215,50 +215,6 @@ fun AudioTrackCard(
   }
 }
 
-@Composable
-fun AudioTrackRow(
-  title: String,
-  isSelected: Boolean,
-  onClick: () -> Unit,
-  modifier: Modifier = Modifier,
-) {
-  val containerColor = if (isSelected) {
-    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
-  } else {
-    MaterialTheme.colorScheme.surfaceContainerHigh
-  }
-  val borderColor = if (isSelected) {
-    MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
-  } else androidx.compose.ui.graphics.Color.Transparent
-
-  androidx.compose.material3.Surface(
-    modifier = modifier.fillMaxWidth(),
-    shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
-    color = containerColor,
-    border = if (isSelected) androidx.compose.foundation.BorderStroke(1.dp, borderColor) else null,
-    onClick = onClick,
-  ) {
-    Row(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 14.dp, vertical = 10.dp),
-      verticalAlignment = Alignment.CenterVertically,
-      horizontalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-      RadioButton(
-        selected = isSelected,
-        onClick = onClick,
-      )
-      Text(
-        text = title,
-        style = MaterialTheme.typography.bodyMedium,
-        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-        color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
-      )
-    }
-  }
-}
-
 /**
  * A selectable alternate audio language that has NOT been attached to mpv yet.
  * Picking it attaches the stream on demand.

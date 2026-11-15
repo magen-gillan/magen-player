@@ -24,39 +24,6 @@ import com.magen.player.presentation.components.GroupedListItem
 import com.magen.player.presentation.components.groupedItemShape
 
 /**
- * Material 3 Expressive card container for grouping related preferences.
- * Supports standalone (GroupPosition.ONLY) or connected positions (FIRST, MIDDLE, LAST).
- */
-@Composable
-fun PreferenceCard(
-  modifier: Modifier = Modifier,
-  position: GroupPosition = GroupPosition.ONLY,
-  color: Color? = null,
-  tonalElevation: Dp = 1.dp,
-  content: @Composable ColumnScope.() -> Unit,
-) {
-  val shape = groupedItemShape(position)
-  Surface(
-    modifier = modifier
-      .fillMaxWidth()
-      .padding(horizontal = 16.dp)
-      .clip(shape),
-    shape = shape,
-    color = color ?: MaterialTheme.colorScheme.surfaceContainerHigh,
-    contentColor = MaterialTheme.colorScheme.onSurface,
-    tonalElevation = tonalElevation,
-    shadowElevation = 0.dp,
-  ) {
-    Column(
-      modifier = Modifier.padding(vertical = 4.dp),
-      verticalArrangement = Arrangement.spacedBy(0.dp),
-    ) {
-      content()
-    }
-  }
-}
-
-/**
  * Material 3 Expressive single-item preference card with connected shape geometry.
  */
 @Composable

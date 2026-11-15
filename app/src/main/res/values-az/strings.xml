@@ -6,7 +6,6 @@
     <string name="generic_confirm">Təsdiqlə</string>
     <string name="generic_cancel">Ləğv et</string>
     <string name="generic_ok">Oldu</string>
-    <string name="generic_unit_ms">ms</string>
     <string name="generic_disabled">Deaktiv</string>
 
     <string name="pref_preferences">Tərcihlər</string>
@@ -48,7 +47,6 @@
     <string name="pref_appearance_show_unplayed_old_video_label_summary">Müəyyən edilmiş günlər ərzində əlavə edilmiş və heç oynadılmamış videolarda \"Yeni\" etiketi göstər</string>
     <string name="pref_appearance_unplayed_old_video_days_title">Yeni video etiketi üçün gün həddi</string>
     <string name="pref_appearance_unplayed_old_video_days_summary">Son %d gün ərzində əlavə edilmiş və oynatma tarixçəsi olmayan videolar yeni kimi işarələnəcək</string>
-    <string name="pref_appearance_category_thumbnails">Kiçik şəkil</string>
     <string name="pref_appearance_theme_picker_label">Tətbiqin teması</string>
     <string name="pref_appearance_auto_scroll_title">Son oynadılan videoya avtomatik sürüşdür</string>
     <string name="pref_appearance_auto_scroll_summary">Video siyahılarını açarkən son oynadılan videoya avtomatik sürüşdür</string>
@@ -136,7 +134,6 @@
     <string name="pref_player_orientation_free">Sərbəst</string>
     <string name="pref_player_orientation_video">Video</string>
     <string name="pref_player_orientation_smart">Ağıllı</string>
-    <string name="pref_player_orientation_smart_summary">Əl ilə dəyişdirilmədikcə videonun istiqamətinə uyğunlaş</string>
     <string name="pref_player_orientation_portrait">Şaquli</string>
     <string name="pref_player_orientation_reverse_portrait">Tərs şaquli</string>
     <string name="pref_player_orientation_sensor_portrait">Sensora görə şaquli</string>
@@ -175,15 +172,12 @@
     <string name="pref_player_default_aspect_ratio">Standart en-boy nisbəti</string>
     <string name="pref_player_remember_aspect_ratio">En-boy nisbətinin videolar arasında yadda saxlanması</string>
     <string name="pref_player_remember_aspect_ratio_summary">Oynadıcıda istifadə olunan en-boy nisbətini sonrakı videolar üçün yadda saxlayın</string>
-
-    <string name="pref_player_gestures">Jestlər</string>
     <string name="pref_player_gestures_brightness">Parlaqlıq jestləri</string>
     <string name="pref_player_gestures_volume">Səs jestləri</string>
     <string name="pref_player_gestures_pinch_to_zoom">Miqyası dəyişmək üçün iki barmaqdan istifadə et</string>
     <string name="pref_player_gestures_pan_and_zoom">Sürüşdürmə və miqyaslama</string>
     <string name="pref_player_gestures_pan_and_zoom_summary">Miqyaslama ilə yanaşı videonun sürüşdürülməsinə (dartılmasına) icazə ver</string>
     <string name="pref_player_gestures_horizontal_swipe_to_seek">İrəli geri sarmaq üçün üfüqi sürüşdür</string>
-    <string name="pref_player_gestures_horizontal_swipe_to_seek_summary">İrəli və ya geri sarmaq üçün ekranda sola və ya sağa sürüşdür</string>
     <string name="pref_player_gestures_swipe_to_subtitle_seek_title">Altyazılar arasında keçid üçün sürüşdür</string>
     <string name="pref_player_gestures_swipe_to_subtitle_seek_summary">Altyazılar arasında keçid üçün ekranın yuxarı və ya aşağı hissəsində sola və ya sağa sürüşdür</string>
     <string name="pref_player_gestures_move_subtitle_by_dragging_title">Yerini dəyişmək üçün altyazını dart</string>
@@ -193,17 +187,13 @@
     <string name="pref_player_gestures_hold_for_multiple_speed">Sürəti bir neçə dəfə artırmaq üçün basılı saxla</string>
     <string name="pref_player_remember_long_press_speed_title">Tənzimlənmiş sürəti yadda saxla</string>
     <string name="pref_player_remember_long_press_speed_summary">Növbəti uzun basmalarda sürüşdürmə ilə son seçilmiş sürətdən istifadə et</string>
-
-    <string name="pref_player_controls">İdarəetmə</string>
     <string name="pref_player_controls_disable_media_buttons_title">Media düymələrini söndür</string>
     <string name="pref_player_controls_disable_media_buttons_summary">Qulaqlıq, Bluetooth və digər cihazlardan gələn oynatma əmrlərinə məhəl qoyma</string>
     <string name="pref_player_controls_allow_gestures_in_panels">Panellərdə jestlərə icazə ver</string>
-    <string name="pref_player_controls_display_volume_as_percentage">Səsi faizlə göstər</string>
     <string name="pref_player_controls_show_loading_circle">Yüklənmə dairəsini göstər</string>
     <string name="pref_player_display_show_status_bar">İdarəetmə elementləri ilə birlikdə sistemin vəziyyət çubuğunu göstər</string>
 
     <string name="pref_player_display">Ekran</string>
-    <string name="pref_player_display_panel_opacity">Panelin qeyri-şəffaflığı</string>
 
     <string name="pref_gesture">Jestlər</string>
     <string name="pref_gesture_summary">İki dəfə toxunma, media idarəetməsi</string>
@@ -242,8 +232,6 @@
     <string name="pref_gesture_media_play">Oynat/fasilə ver</string>
     <string name="pref_gesture_media_next">Növbəti</string>
     <string name="pref_gesture_media_custom_info">input.conf faylında aşağıdakı düymə kodlarından istifadə edərək media idarəetmə elementlərinə fərdi əməliyyatlar təyin edə bilərsiniz:</string>
-
-    <string name="pref_gesture_view_title">Görünüş</string>
     <string name="pref_gesture_tap_thumbnail_to_select_title">Seçmək üçün kiçik şəklə toxun</string>
     <string name="pref_gesture_tap_thumbnail_to_select_summary">Aktivləşdirildikdə kiçik şəkillərə toxunmaq seçim rejimini açır. Söndürüldükdə kiçik şəkillərə toxunmaq videonu oynadır. Tor rejimində təsiri yoxdur.</string>
 
@@ -279,15 +267,11 @@
     <string name="pref_subtitles_open_at_video_location_title">Videonun yerləşdiyi qovluqda aç</string>
     <string name="pref_subtitles_open_at_video_location_summary">Fayl seçicisini cari video ilə eyni qovluqda aç</string>
     <string name="pref_subtitles_custom_picker_folder_title">Standart seçim qovluğu</string>
-    <string name="pref_subtitles_custom_picker_folder_summary">Altyazılar əl ilə əlavə edilərkən açılacaq seçilmiş qovluq</string>
     <string name="pref_subtitles_save_location">Altyazıların saxlanma məkanı</string>
-    <string name="all_languages">Hamısı (seçmə süzgəcləmə)</string>
     <string name="pref_subtitles_clear_downloads">Endirilmiş altyazıları təmizlə</string>
     <string name="pref_subtitles_clear_downloads_summary">Cari saxlanma məkanındakı bütün faylları sil</string>
     <string name="pref_subtitles_clear_downloads_confirmation">Bütün endirilmiş altyazıları silmək istədiyinizə əminsiniz? Bu əməliyyat geri qaytarıla bilməz.</string>
     <string name="toast_subtitles_cleared">Endirilmiş altyazılar təmizləndi</string>
-    <string name="pref_subtitles_searching">Axtarılır…</string>
-    <string name="pref_subtitles_found">%d altyazı tapıldı</string>
     <string name="pref_audio">Audio</string>
     <string name="pref_audio_summary">Üstünlük verilən dillər, audio kanalları, səs tonunun düzəldilməsi</string>
     <string name="pref_audio_pitch_correction_title">Səs tonunun düzəldilməsini aktivləşdir</string>
@@ -327,17 +311,12 @@
     <string name="pref_advanced_history_auto_remove_deleted_summary">Silinmiş medianı son oynadılanlar siyahısından avtomatik çıxar və təmizlə</string>
     <string name="pref_advanced_history_exclude_external_title">Xarici və paylaşılan medianı istisna et</string>
     <string name="pref_advanced_history_exclude_external_summary">Digər tətbiqlərdən və ya paylaşma panelindən açılan medianı son oynadılanlar siyahısına əlavə etmə</string>
-
-    <string name="pref_advanced_features_tooltip">Statistika səhifəsi və Anime4K ilə ölçüböyütmə kimi sınaq və ya təkmil funksiyaları aktivləşdir</string>
     <string name="pref_anime4k_title">Anime4K ilə ölçüböyütmə (sınaq)</string>
     <string name="pref_anime4k_summary">Anime4K ölçüböyütmə süzgəcini aktivləşdir</string>
     <string name="pref_anime4k_incompatibility">Anime4K uyğunsuzluğu</string>
     <string name="pref_anime4k_gpu_next_error">gpu-next Anime4K şeyderləri ilə uyğun deyil. Anime4K aktivləşdirildikdə tətbiq şeyder uyğunluğu üçün avtomatik olaraq köhnə \'gpu\' arxa sistemindən istifadə edəcək.</string>
-    <string name="pref_anime4k_cannot_use_with_gpu_next">gpu-next aktiv olduqda Anime4K istifadə edilə bilməz</string>
     <string name="anime4k_mode_title">Anime4K hazır tənzimləmələri</string>
     <string name="anime4k_quality_title">Anime4K variantları</string>
-    <string name="anime4k_mode_toast">Anime4K: hazır tənzimləmə %1$s</string>
-    <string name="anime4k_quality_toast">Anime4K variantı: %1$s</string>
 
     <!-- Anime4K Modes (Renamed to Presets in UI) -->
     <string name="anime4k_mode_off">Deaktiv</string>
@@ -357,8 +336,6 @@
     <string name="pref_about_summary">Təşəkkürlər, lisenziyalar</string>
     <string name="pref_about_oss_libraries">Kitabxanalar</string>
     <string name="pref_about_device_info">Cihaz məlumatları</string>
-    <string name="pref_about_donate_title">İanə et</string>
-    <string name="pref_about_donate_upi">UPI</string>
 
     <string name="player_sheets_add_ext_sub">Xarici altyazılar əlavə et</string>
     <string name="player_sheets_add_ext_audio">Xarici səs cığırları əlavə et</string>
@@ -393,9 +370,6 @@
     <string name="player_sheets_sub_delay_card_title">Altyazı gecikməsi</string>
     <string name="player_sheets_sub_delay_card_delay">Gecikmə</string>
     <string name="player_sheets_sub_delay_card_speed">Sürət</string>
-    <string name="player_sheets_sub_delay_subtitle_type_primary">Əsas altyazı</string>
-    <string name="player_sheets_sub_delay_subtitle_type_secondary">İkinci altyazı</string>
-    <string name="player_sheets_sub_delay_subtitle_type_primary_and_secondary">Hər ikisi</string>
     <string name="player_sheets_sub_delay_subtitle_voice_heard">Danışıq eşidildi</string>
     <string name="player_sheets_sub_delay_subtitle_text_seen">Mətn göründü</string>
     <string name="player_sheets_delay_set_as_default">Standart olaraq təyin et</string>
@@ -422,28 +396,11 @@
     <string name="player_sheets_filters_warning">Bəzi süzgəclər cari video drayverində işləməyə bilər</string>
     <string name="player_sheets_speed_slider_label">Sürət</string>
     <string name="player_sheets_speed_make_default">Standart sürət olaraq təyin et</string>
-    <string name="player_sheets_decoder_formatted" formatted="false">%s (%s)</string>
     <string name="numeric_chooser_value_too_big">Dəyər çox böyükdür</string>
     <string name="numeric_chooser_value_too_small">Dəyər çox kiçikdir</string>
     <string name="player_sheets_more_title">Daha çox</string>
     <string name="player_sheets_stats_page_title">Standart statistika səhifəsi</string>
     <string name="player_sheets_stats_page_chip">Səhifə %d</string>
-    <string name="player_sheets_stats_page_0_desc">Deaktiv. Ekranüstü statistika yoxdur.</string>
-    <string name="player_sheets_stats_page_1_desc">İcmal. CPU/GPU istifadəsi, A/V sinxronizasiyası, buraxılmış kadrlar, takt tezliyi.</string>
-    <string name="player_sheets_stats_page_2_desc">Kadr vaxtları. Dekodlaşdırma və təsvirin yaradılma müddətləri, miqyaslayıcı məlumatları.</string>
-    <string name="player_sheets_stats_page_3_desc">Keşin vəziyyəti. Buferin vəziyyəti, demultipleksor keşi, irəli geri sarma üçün əlçatan aralıqlar.</string>
-    <string name="player_sheets_stats_page_4_desc">Cari düymə təyinatları. Təyin edilmiş klaviatura qısayollarının siyahısı.</string>
-    <string name="player_sheets_stats_page_5_desc">Cığır siyahısı. Video, səs və altyazı cığırlarının təfərrüatları.</string>
-    <string name="player_sheets_stats_page_6_desc">Sistem statistikası. Batareya səviyyəsi, enerji sərfiyyatı, temperatur, RAM, ekran.</string>
-    <string name="diagnostics_playback_decoder_header">Oynatma və dekoder</string>
-    <string name="diagnostics_power_thermals_header">Enerji və temperatur</string>
-    <string name="diagnostics_session_header">Seans</string>
-    <string name="diagnostics_app_cpu">Tətbiqin CPU istifadəsi</string>
-    <string name="diagnostics_memory_cache_header">Yaddaş və keş</string>
-    <string name="diagnostics_process_memory">Proses</string>
-    <string name="diagnostics_process_memory_value">PSS %1$s | Java %2$s/%3$s | yerli %4$s</string>
-    <string name="diagnostics_playback_cache">Oynatma</string>
-    <string name="diagnostics_playback_cache_value">Buferdə %1$.1f s | paketlər %2$s | fayl %3$s</string>
 
     <string name="playlist_now_playing">Hazırda oynadılan</string>
     <string name="playlist_playing">Oynadılır</string>
@@ -465,9 +422,6 @@
     <string name="crash_screen_fix_crash">Çökməni düzəlt (verilənlər bazasını sil)</string>
     <string name="crash_screen_database_deleted">Verilənlər bazası uğurla silindi. Tətbiqi yenidən başlat.</string>
     <string name="crash_screen_database_hint">Görünür, bu çökmə verilənlər bazası ilə əlaqəlidir. Düzəltmək üçün verilənlər bazasını silməyi sına.</string>
-
-    <string name="timer_picker_enter_timer">Vaxtı daxil et</string>
-    <string name="timer_picker_pick_time">Vaxtı seç</string>
     <string name="timer_title">Yuxu taymeri</string>
     <string name="timer_remaining">%s qalıb</string>
     <string name="toast_sleep_timer_ended">Yuxu taymerinin vaxtı bitdi</string>
@@ -479,12 +433,6 @@
     <string name="pref_player_show_circular_double_tap_seek_title">İki dəfə toxunaraq irəli geri sarma dairəsini göstər</string>
     <string name="pref_player_show_circular_double_tap_seek_summary">Altında vaxt göstərilən dairəvi irəli geri sarma göstəricisi göstər</string>
     <string name="show_time_on_double_tap_to_seek">İrəli geri sarma vaxtını göstər</string>
-
-    <string name="pref_audio_channels_auto_safe_desc">Standart, təhlükəsiz avtomatik seçim</string>
-    <string name="pref_audio_channels_auto_desc">Avtomatik seçim</string>
-    <string name="pref_audio_channels_mono_desc">Monoya qarışdır</string>
-    <string name="pref_audio_channels_stereo_desc">Stereoya qarışdır</string>
-    <string name="pref_audio_channels_reverse_stereo_desc">Sol və sağ kanalların yerini dəyiş</string>
 
     <string name="player_sheets_aspect_ratio_title">Enboy nisbəti</string>
     <string name="player_sheets_aspect_ratio_presets">Hazır tənzimləmələr</string>
@@ -525,11 +473,6 @@
 
     <string name="player_sheets_zoom_slider_label">Videonun böyüdülməsi</string>
 
-    <plurals name="seconds">
-        <item quantity="one">%1$d saniyə</item>
-        <item quantity="other">%1$d saniyə</item>
-    </plurals>
-
     <!-- Background Playback -->
     <string name="background_playback_title">Arxa fonda oynatma</string>
     <string name="pref_player_background_playback">Arxa fonda oynatma</string>
@@ -557,7 +500,6 @@
     <string name="fonts_loaded">%1$d şrift yükləndi</string>
     <string name="reload_fonts">Şriftləri yenidən yüklə</string>
     <string name="clear_font_directory">Şrift qovluğunu təmizlə</string>
-    <string name="reset_to_default_font">Standart şrifti bərpa et</string>
     <string name="set_as_default">Standart olaraq təyin et</string>
 
     <!-- Notification strings -->
@@ -597,29 +539,9 @@
     <string name="pref_folders_blacklisted">Qovluqlar qara siyahıya əlavə edildi</string>
 
     <!-- M3U Playlist Strings -->
-    <string name="playlist_add_m3u_title">M3U pleylisti əlavə et</string>
-    <string name="playlist_add_success">M3U pleylisti uğurla əlavə edildi</string>
-    <string name="playlist_add_error">M3U pleylistini əlavə etmək mümkün olmadı: %s</string>
-    <string name="playlist_create_empty">Boş pleylist yarat</string>
-    <string name="playlist_refresh_success">Pleylist uğurla yeniləndi</string>
-    <string name="playlist_refresh_error">Pleylisti yeniləmək mümkün olmadı: %s</string>
-    <string name="playlist_m3u_badge">M3U</string>
 
     <string name="open_file">Fayl aç</string>
     <string name="recently_played">Son oynadılanlar</string>
-    <string name="install">Quraşdır</string>
-    <string name="download">Endir</string>
-    <string name="failed_load_audio_invalid_uri">Səs faylını yükləmək mümkün olmadı: yanlış URI</string>
-    <string name="audio_track_added">Səs cığırı əlavə edildi</string>
-    <string name="failed_load_audio">Səsi yükləmək mümkün olmadı: %s</string>
-    <string name="invalid_subtitle_format">Altyazı faylının formatı yanlışdır</string>
-    <string name="subtitle_added">%s əlavə edildi</string>
-    <string name="failed_load_subtitle">Altyazını yükləmək mümkün olmadı</string>
-    <string name="remove_from_playlist">%1$d %2$s pleylistdən çıxarılsın?</string>
-    <string name="remove_playlist_items_confirm">Seçilmiş %2$s bu pleylistdən çıxarılacaq. Orijinal %3$s silinməyəcək.</string>
-    <string name="search_videos">Videolarda axtarış…</string>
-    <string name="search_folders_and_videos">Qovluqlarda və videolarda axtarış…</string>
-    <string name="search_playlists">Pleylistlərdə axtarış…</string>
     <string name="search_no_results_title">Nəticə tapılmadı</string>
     <string name="search_no_results_message">Axtarış sorğuna uyğun fayl və ya qovluq yoxdur</string>
     <string name="search_empty_title">Axtarış</string>
@@ -631,43 +553,17 @@
     <string name="done">Hazırdır</string>
     <string name="create">Yarat</string>
     <string name="select">Seç</string>
-    <string name="browse">Gözdən keçir</string>
-    <string name="disconnect">Əlaqəni kəs</string>
-    <string name="connect">Qoşul</string>
-    <string name="remove">Çıxar</string>
-    <string name="add">Əlavə et</string>
-    <string name="ignore">Nəzərə alma</string>
-    <string name="loading_detailed_information">Ətraflı məlumat yüklənir…</string>
     <string name="export_complete">İxrac tamamlandı</string>
     <string name="import_complete">İdxal tamamlandı</string>
-    <string name="auto_picture_in_picture">Avtomatik şəkil içində şəkil</string>
-    <string name="show_navigation_bar_with_controls">Naviqasiya panelini idarəetmə düymələri ilə birlikdə göstər</string>
-    <string name="rename_playlist">Pleylistin adını dəyiş</string>
-    <string name="create_playlist">Pleylist yarat</string>
-    <string name="add_connection">Əlaqə əlavə et</string>
     <string name="playlist_name">Pleylistin adı</string>
     <string name="new_name">Yeni ad</string>
     <string name="folder_name">Qovluğun adı</string>
-    <string name="choose_local_m3u_file">Lokal M3U faylı seç</string>
     <string name="home">Əsas səhifə</string>
     <string name="shorts">Qısa videolar</string>
-    <string name="playlists">Pleylistlər</string>
     <string name="unit_seconds">Saniyə</string>
     <string name="milliseconds">Millisaniyə</string>
     <string name="name">Ad</string>
-    <string name="protocol">Protokol</string>
-    <string name="host_ip_address">Qovşaq/IP ünvanı</string>
-    <string name="port">Port</string>
     <string name="path">Yol</string>
-    <string name="anonymous_guest_access">Anonim/qonaq girişi</string>
-    <string name="use_https_secure_connection">HTTPS istifadə et (təhlükəsiz əlaqə)</string>
-    <string name="username">İstifadəçi adı</string>
-    <string name="password">Parol</string>
-    <string name="selected_long_press_to_reorder">Seçilib (sıranı dəyişmək üçün basıb saxla)</string>
-    <string name="available">Mövcuddur</string>
-    <string name="width">En</string>
-    <string name="height">Hündürlük</string>
-    <string name="filter_presets">Hazır süzgəc dəstləri</string>
     <string name="no_storage_devices_found">Yaddaş qurğusu tapılmadı</string>
     <string name="no_folders_or_supported_files">Qovluq və ya dəstəklənən fayl yoxdur</string>
 
@@ -725,24 +621,11 @@
 
     <!-- Network Connection Card -->
     <!-- Playlist Screen Empty and Search States -->
-    <string name="no_playlists_found">Pleylist tapılmadı</string>
-    <string name="try_different_search_term">Başqa axtarış sözü ilə cəhd et</string>
     <string name="no_playlists_yet">Hələ pleylist yoxdur</string>
-    <string name="no_playlists_yet_desc">Create a playlist or import a local M3U file.</string>
-    <string name="empty_playlists_desc">Burada görünməsi üçün pleylist yarat</string>
 
     <!-- Recently Played Screen -->
-    <string name="recently_played_disabled_title">Son oynadılanlar funksiyası deaktivdir</string>
-    <string name="recently_played_disabled_message">Oynatma tarixçəsini izləmək üçün onu əlavə parametrlərdə aktivləşdir</string>
     <string name="no_recently_played_videos">Son oynadılan video yoxdur</string>
-    <string name="no_recently_played_videos_message">Oynatdığınız videolar burada görünəcək</string>
-    <string name="no_recently_played_items">Son oynadılan element yoxdur</string>
-    <string name="no_recently_played_items_message">Son oynatdığınız videolar və pleylistlər burada görünəcək</string>
-    <string name="remove_from_history_title">%1$d %2$s tarixçədən çıxarılsın?</string>
-    <string name="remove_from_history_msg">Seçilmiş %1$s son oynadılanlar siyahınızdan çıxarılacaq. Orijinal video faylları silinməyəcək.</string>
     <string name="delete_files_title">%1$d %2$s silinsin?</string>
-    <string name="delete_files_msg">Orijinal video faylları cihazınızın yaddaşından həmişəlik silinəcək.\n\nBu əməliyyat geri qaytarıla bilməz.</string>
-    <string name="also_delete_files">Orijinal faylları da sil</string>
 
     <!-- Folder List Screen Empty States -->
     <string name="no_video_folders_found">Video qovluğu tapılmadı</string>
@@ -751,7 +634,6 @@
     <!-- File System Browser Screen Strings -->
     <string name="search_in_all_storage_volumes">Bütün yaddaşda axtarış</string>
     <string name="search_in_folder_placeholder">%1$s daxilində axtarış…</string>
-    <string name="search_default_folder_name">qovluq</string>
     <string name="empty_folder_title">Boş qovluq</string>
     <string name="empty_folder_message">Bu qovluqda video və ya alt qovluq yoxdur</string>
 
@@ -759,16 +641,9 @@
     <string name="search_all_videos">Bütün videolarda axtarış…</string>
 
     <!-- Network Streaming Screen Strings -->
-    <string name="paste">Yapışdır</string>
     <string name="play">Oynat</string>
 
     <!-- Playlist Detail Screen Strings -->
-    <string name="no_videos_in_playlist">Bu pleylistdə video yoxdur</string>
-    <string name="no_videos_in_playlist_desc">Pleylistinizi qurmaq üçün brauzerdən videolar əlavə et</string>
-    <string name="done_reordering">Sıralamanı tamamla</string>
-    <string name="reorder_playlist">Pleylistin sırasını dəyiş</string>
-    <string name="remove_from_playlist_confirm">Seçilmiş %1$s bu pleylistdən çıxarılacaq. Orijinal %2$s silinməyəcək.</string>
-    <string name="remove_from_playlist_action">Pleylistdən çıxar</string>
 
     <!-- Shorts Screen Strings -->
     <string name="go_back">Geri qayıt</string>
@@ -828,15 +703,6 @@
     <string name="name_cannot_contain_invalid_chars">Adda / və ya \\ ola bilməz</string>
 
     <!-- Sheets Strings -->
-    <string name="playlist_created_successfully">Pleylist uğurla yaradıldı</string>
-    <string name="failed_create_playlist">Pleylist yaratmaq mümkün olmadı</string>
-    <string name="m3u_playlist_added_successfully">M3U pleylisti uğurla əlavə edildi</string>
-    <string name="failed_add_m3u_playlist">M3U pleylistini əlavə etmək mümkün olmadı</string>
-    <string name="add_m3u_playlist">M3U pleylisti əlavə et</string>
-    <string name="or">və ya</string>
-    <string name="playlist_options">Pleylist seçimləri</string>
-    <string name="create_empty_playlist">Boş pleylist yarat</string>
-    <string name="create_blank_playlist_desc">Yeni boş pleylist yarat</string>
     <!-- Component Strings -->
     <string name="more_options">Daha çox seçim</string>
     <string name="move">Köçür</string>
@@ -852,7 +718,6 @@
     <string name="folders_count">Qovluqlar (%1$d)</string>
     <string name="media_count">Media (%1$d)</string>
     <string name="drag_to_reorder">Sıranı dəyişmək üçün sürüklə</string>
-    <string name="connect_social_media">Sosial mediada bizimlə əlaqə saxla</string>
     <!-- Sort Dialog Strings -->
     <string name="sort_and_view_options">Sıralama və görünüş seçimləri</string>
     <string name="view_options">Görünüş seçimləri</string>
@@ -860,7 +725,6 @@
     <!-- Preference Category Strings -->
     <string name="pref_category_ui_appearance">İnterfeys və görünüş</string>
     <string name="pref_category_playback_controls">Oynatma və idarəetmə</string>
-    <string name="pref_category_file_management">Fayl idarəetməsi</string>
     <string name="pref_category_media_settings">Media parametrləri</string>
     <string name="pref_category_magen_shorts">Magen Shorts</string>
     <string name="pref_category_magen_shorts_settings">Magen Shorts parametrləri</string>
@@ -893,8 +757,6 @@
     <string name="pref_select_sourced_folders_desc">Qısa videoların götürüləcəyi qovluqları seç. Qovluq seçilməsə, qısa videolar bütün qovluqlardan götürüləcək.</string>
 
     <!-- Update features -->
-    <string name="pref_about_checking">Yoxlanılır…</string>
-    <string name="pref_about_up_to_date">Ən son versiyadan istifadə edirsiniz!</string>
     <!-- Player Button Labels -->
     <string name="btn_label_back">Geri oxu</string>
     <string name="btn_label_title">Videonun başlığı</string>
@@ -953,12 +815,10 @@
 
     <!-- Player controls shared -->
     <string name="playlist_separator">• %1$s</string>
-    <string name="chapters">Fəsillər</string>
     <string name="skip_seconds">%1$d saniyə keç</string>
     <string name="playback_speed">Oynatma sürəti</string>
     <string name="screen_rotation">Döndərmə</string>
     <string name="frame_nav">Kadr keçidi</string>
-    <string name="frame_navigation">Kadrlar arasında keçid</string>
     <string name="pip">PiP</string>
     <string name="video_zoom">Videonun miqyası</string>
     <string name="lock">Kilidlə</string>
@@ -988,7 +848,6 @@
     <string name="clip_export_exact_desc">Dəqiq vaxt nöqtəsindən başlayan, kadr dəqiqliyi ilə ixrac.</string>
     <string name="clip_export_fast_tag">İtkisiz</string>
     <string name="clip_export_exact_tag">Kadr dəqiqliyi</string>
-    <string name="clip_export_duration">Müddət: %s</string>
     <string name="background_playback">Arxa fon</string>
     <string name="ambient">Mühit işığı</string>
     <string name="ambience_mode">Mühit işığı rejimi</string>
@@ -1053,8 +912,6 @@
     <string name="item_type_video">video</string>
     <string name="item_type_folder">qovluq</string>
     <string name="item_type_file">fayl</string>
-    <string name="item_type_playlist">pleylist</string>
-    <string name="item_type_item">element</string>
 
     <string name="no_videos_in_folder">Bu qovluqda video yoxdur</string>
     <string name="no_videos_in_folder_desc">Bu qovluğa əlavə etdiyiniz videolar burada görünəcək</string>
@@ -1062,7 +919,6 @@
 
     <string name="pref_player_general">Ümumi</string>
     <string name="pref_player_autoplay_on_open">Açıldıqda avtomatik oynat</string>
-    <string name="pref_player_autoplay_on_open_summary">Media açıldıqda oynatmanı avtomatik başlat</string>
     <string name="pref_player_autoplay_on_open_summary_on">Media açıldıqda oynatmanı avtomatik başlat</string>
     <string name="pref_player_autoplay_on_open_summary_off">Medianı fasilədə aç</string>
     <string name="pref_player_playlist_mode_summary_on">Qovluqdakı bütün videoları avtomatik olaraq pleylistə əlavə et</string>
@@ -1129,7 +985,6 @@
     <string name="pref_advanced_section_system_integration">Sistem inteqrasiyası</string>
     <string name="pref_advanced_section_logging">Jurnallaşdırma</string>
     <string name="pref_advanced_tap_to_edit_configuration">Konfiqurasiyanı redaktə etmək üçün toxunun</string>
-    <string name="pref_advanced_mpv_directory_ready">MPV qovluğu hazırdır ✓</string>
     <string name="pref_advanced_lua_set_storage_first">Əvvəlcə saxlama məkanını təyin edin və Lua skriptlərini aktivləşdirin</string>
     <string name="pref_advanced_no_scripts_enabled">Aktivləşdirilmiş skript yoxdur</string>
     <string name="pref_advanced_custom_lua_summary">Fərdi Lua düymələri yaradın və idarə edin</string>
@@ -1230,17 +1085,6 @@
     <!-- Language & Welcome/Onboarding strings -->
     <string name="system_default">Sistem standartı</string>
     <string name="pref_appearance_language_title">Tətbiqin dili</string>
-    <string name="pref_appearance_language_summary">Tətbiqin interfeys dilini dəyiş</string>
-
-    <string name="welcome_title">magen player tətbiqinə xoş gəlmisiniz</string>
-    <string name="welcome_subtitle">Müasir, güclü və fərdiləşdirilə bilən media oynadıcınız.</string>
-    <string name="welcome_language_section_title">Üstünlük verilən dil</string>
-    <string name="welcome_language_section_desc">İnterfeys dilini seçin</string>
-    <string name="storage_access_granted">Yaddaşa giriş icazəsi verilib</string>
-    <string name="storage_access_granted_desc">İcazə verilib. magen player media fayllarınızı aşkar etməyə və oynatmağa hazırdır.</string>
-    <string name="welcome_grant_permission">İcazə ver</string>
-    <string name="welcome_get_started">Başla</string>
-    <string name="welcome_skip_permission">Yaddaşa giriş olmadan davam et</string>
 
     <!-- PlayerButtonChip Preview Strings -->
     <string name="preview_chapter_chip">1:06 • Fəsil 1</string>

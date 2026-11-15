@@ -7,7 +7,6 @@
 	<string name="generic_confirm">Підтвердити</string>
 	<string name="generic_cancel">Скасувати</string>
 	<string name="generic_ok">ОК</string>
-	<string name="generic_unit_ms">мс</string>
 	<string name="generic_disabled">Вимкнено</string>
 
 	<string name="pref_preferences">Налаштування</string>
@@ -46,7 +45,6 @@
 	<string name="pref_appearance_show_unplayed_old_video_label_summary">Відображати мітку "НОВЕ" на відео, доданих протягом зазначеної кількості днів, які ніколи не відтворювалися</string>
 	<string name="pref_appearance_unplayed_old_video_days_title">Поріг днів для мітки нового відео</string>
 	<string name="pref_appearance_unplayed_old_video_days_summary">Відео, додані за останні %d днів без історії відтворення, будуть позначені як нові</string>
-	<string name="pref_appearance_category_thumbnails">Мініатюри</string>
 	<string name="pref_appearance_theme_picker_label">Тема програми</string>
 	<string name="pref_appearance_auto_scroll_title">Автопрокрутка до останнього відтвореного</string>
 	<string name="pref_appearance_auto_scroll_summary">Автоматично прокручувати до останнього відтвореного відео при відкритті списків відео</string>
@@ -119,7 +117,6 @@
 	<string name="pref_clear_thumbnail_cache_title">Очистити кеш мініатюр</string>
 	<string name="pref_clear_thumbnail_cache_summary">Видалити всі кешовані мініатюри відео (будуть створені заново при перегляді тек)</string>
 
-
 	<string name="pref_layout_title">Розташування елементів</string>
 	<string name="pref_layout_summary">Налаштувати розташування кнопок плеєра</string>
 	<string name="pref_layout_top_right_controls">Елементи керування зверху справа</string>
@@ -133,7 +130,6 @@
 	<string name="pref_player_orientation_free">Вільна</string>
 	<string name="pref_player_orientation_video">За відео</string>
 	<string name="pref_player_orientation_smart">Розумна</string>
-	<string name="pref_player_orientation_smart_summary">Слідувати орієнтації відео, доки не змінено вручну</string>
 	<string name="pref_player_orientation_portrait">Портретна</string>
 	<string name="pref_player_orientation_reverse_portrait">Портретна (перевернута)</string>
 	<string name="pref_player_orientation_sensor_portrait">Портретна (сенсор)</string>
@@ -165,15 +161,12 @@
 	<string name="pref_player_seeking_title">Перемотка</string>
 	<string name="pref_player_close_after_eof">Закривати після завершення відтворення</string>
 	<string name="pref_player_remember_brightness">Запам\'ятовувати яскравість дисплея</string>
-
-	<string name="pref_player_gestures">Жести</string>
 	<string name="pref_player_gestures_brightness">Жести яскравості</string>
 	<string name="pref_player_gestures_volume">Жести гучності</string>
 	<string name="pref_player_gestures_pinch_to_zoom">Щипок для масштабу</string>
 	<string name="pref_player_gestures_pan_and_zoom">Панорамування та масштаб</string>
 	<string name="pref_player_gestures_pan_and_zoom_summary">Дозволити панорамування (переміщення) відео разом із масштабуванням</string>
 	<string name="pref_player_gestures_horizontal_swipe_to_seek">Горизонтальний свайп для перемотки</string>
-	<string name="pref_player_gestures_horizontal_swipe_to_seek_summary">Свайп вліво або вправо по екрану для перемотки вперед або назад</string>
 	<string name="pref_player_gestures_swipe_to_subtitle_seek_title">Свайп для переходу по субтитрам</string>
 	<string name="pref_player_gestures_swipe_to_subtitle_seek_summary">Свайп вліво або вправо у верхній або нижній частині екрана для переходу по субтитрам</string>
 	<string name="pref_player_gestures_move_subtitle_by_dragging_title">Переміщення субтитрів перетягуванням</string>
@@ -183,17 +176,13 @@
 	<string name="pref_player_gestures_hold_for_multiple_speed">Утримуйте для прискорення</string>
 	<string name="pref_player_remember_long_press_speed_title">Запам\'ятовувати налаштовану швидкість</string>
 	<string name="pref_player_remember_long_press_speed_summary">Використовувати останню свайпнуту швидкість для подальших довгих натискань</string>
-
-	<string name="pref_player_controls">Елементи керування</string>
 	<string name="pref_player_controls_disable_media_buttons_title">Вимкнути медіакнопки</string>
 	<string name="pref_player_controls_disable_media_buttons_summary">Ігнорувати команди відтворення від гарнітур, Bluetooth-пристроїв тощо</string>
 	<string name="pref_player_controls_allow_gestures_in_panels">Дозволити жести на панелях</string>
-	<string name="pref_player_controls_display_volume_as_percentage">Відображати гучність у відсотках</string>
 	<string name="pref_player_controls_show_loading_circle">Показувати коло завантаження</string>
 	<string name="pref_player_display_show_status_bar">Показувати рядок стану системи з елементами керування</string>
 
 	<string name="pref_player_display">Відображення</string>
-	<string name="pref_player_display_panel_opacity">Непрозорість панелі</string>
 
 	<string name="pref_gesture">Жести</string>
 	<string name="pref_gesture_summary">Подвійне торкання, керування медіа</string>
@@ -232,8 +221,6 @@
 	<string name="pref_gesture_media_play">Відтворення/Пауза</string>
 	<string name="pref_gesture_media_next">Уперед</string>
 	<string name="pref_gesture_media_custom_info">Ви можете прив\'язати користувацькі дії до керування медіа у файлі input.conf, використовуючи наступні коди клавіш:</string>
-
-	<string name="pref_gesture_view_title">Вигляд</string>
 	<string name="pref_gesture_tap_thumbnail_to_select_title">Торкання мініатюри для вибору</string>
 	<string name="pref_gesture_tap_thumbnail_to_select_summary">Якщо увімкнено, торкання мініатюри переходить у режим вибору. Якщо вимкнено, торкання відтворює відео. Не діє в режимі сітки.</string>
 
@@ -269,15 +256,11 @@
 	<string name="pref_subtitles_open_at_video_location_title">Відкривати в теці з відео</string>
 	<string name="pref_subtitles_open_at_video_location_summary">Відкривати вікно вибору файлу в тій самій теці, де знаходиться поточне відео</string>
 	<string name="pref_subtitles_custom_picker_folder_title">Тека вибору за промовчання</string>
-	<string name="pref_subtitles_custom_picker_folder_summary">Обрана тека, яка відкривається при додаванні субтитрів вручну</string>
 	<string name="pref_subtitles_save_location">Місце збереження субтитрів</string>
-	<string name="all_languages">Всі (вибіркова фільтрація)</string>
 	<string name="pref_subtitles_clear_downloads">Очистити завантажені субтитри</string>
 	<string name="pref_subtitles_clear_downloads_summary">Видалити всі файли в поточному місці збереження</string>
 	<string name="pref_subtitles_clear_downloads_confirmation">Ви впевнені, що хочете видалити всі завантажені субтитри? Цю дію не можна скасувати.</string>
 	<string name="toast_subtitles_cleared">Завантажені субтитри очищені</string>
-	<string name="pref_subtitles_searching">Пошук…</string>
-	<string name="pref_subtitles_found">Знайдено субтитрів: %d</string>
 	<string name="pref_audio">Аудіо</string>
 	<string name="pref_audio_summary">Бажані мови, аудіоканали, корекція висоти тону</string>
 	<string name="pref_audio_pitch_correction_title">Увімкнути корекцію висоти звуку</string>
@@ -313,17 +296,12 @@
 	<string name="pref_advanced_cleared_fonts_cache">Кеш шрифтів очищено</string>
 	<string name="pref_advanced_enable_recently_played_title">Нещодавно відтворені</string>
 	<string name="pref_advanced_enable_recently_played_summary">Відстежувати та відображати нещодавно відтворені відео та плейлисти</string>
-
-	<string name="pref_advanced_features_tooltip">Увімкнути експериментальні або додаткові функції, такі як сторінка статистики та апскейлінг Anime4K</string>
 	<string name="pref_anime4k_title">Апскейлінг Anime4K (Експериментально)</string>
 	<string name="pref_anime4k_summary">Увімкнути фільтр апскейлінгу Anime4K</string>
 	<string name="pref_anime4k_incompatibility">Несумісність з Anime4K</string>
 	<string name="pref_anime4k_gpu_next_error">gpu-next несумісний з шейдерами Anime4K. Коли Anime4K увімкнено, програма автоматично перемикається на старий бекенд \'gpu\' для сумісності з шейдерами.</string>
-	<string name="pref_anime4k_cannot_use_with_gpu_next">Неможливо використовувати Anime4K при увімкненому gpu-next</string>
 	<string name="anime4k_mode_title">Пресети Anime4K</string>
 	<string name="anime4k_quality_title">Варіанти Anime4K</string>
-	<string name="anime4k_mode_toast">Anime4K: Пресет %1$s</string>
-	<string name="anime4k_quality_toast">Варіант Anime4K: %1$s</string>
 
 	<!-- Anime4K Modes (Renamed to Presets in UI) -->
 	<string name="anime4k_mode_off">Вимк</string>
@@ -343,8 +321,6 @@
 	<string name="pref_about_summary">Подяки, ліцензії</string>
 	<string name="pref_about_oss_libraries">Бібліотеки</string>
 	<string name="pref_about_device_info">Інформація про пристрій</string>
-	<string name="pref_about_donate_title">Пожертвувати</string>
-	<string name="pref_about_donate_upi">UPI</string>
 
 	<string name="player_sheets_add_ext_sub">Додати зовнішні субтитри</string>
 	<string name="player_sheets_add_ext_audio">Додати зовнішні аудіодоріжки</string>
@@ -376,9 +352,6 @@
 	<string name="player_sheets_sub_delay_card_title">Затримка субтитрів</string>
 	<string name="player_sheets_sub_delay_card_delay">Затримка</string>
 	<string name="player_sheets_sub_delay_card_speed">Швидкість</string>
-	<string name="player_sheets_sub_delay_subtitle_type_primary">Основні субтитри</string>
-	<string name="player_sheets_sub_delay_subtitle_type_secondary">Вторинні субтитри</string>
-	<string name="player_sheets_sub_delay_subtitle_type_primary_and_secondary">Обидва</string>
 	<string name="player_sheets_sub_delay_subtitle_voice_heard">Голос чути</string>
 	<string name="player_sheets_sub_delay_subtitle_text_seen">Текст видно</string>
 	<string name="player_sheets_delay_set_as_default">Встановити за промовчання</string>
@@ -405,24 +378,11 @@
 	<string name="player_sheets_filters_warning">Деякі фільтри можуть не працювати з вашим поточним відеодрайвером</string>
 	<string name="player_sheets_speed_slider_label">Швидкість</string>
 	<string name="player_sheets_speed_make_default">Зробити швидкість за промовчання</string>
-	<string name="player_sheets_decoder_formatted" formatted="false">%s (%s)</string>
 	<string name="numeric_chooser_value_too_big">Значення занадто велике</string>
 	<string name="numeric_chooser_value_too_small">Значення занадто мале</string>
 	<string name="player_sheets_more_title">Більше</string>
 	<string name="player_sheets_stats_page_title">Сторінка статистики за промовчання</string>
 	<string name="player_sheets_stats_page_chip">Сторінка %d</string>
-	<string name="player_sheets_stats_page_0_desc">Вимкнено. Немає статистики оверлею.</string>
-	<string name="player_sheets_stats_page_1_desc">Огляд. Використання CPU/GPU, синхронізація A/V, пропущені кадри, швидкість годинника.</string>
-	<string name="player_sheets_stats_page_2_desc">Таймінг кадрів. Час декодування/рендерингу, інформація про скейлер.</string>
-	<string name="player_sheets_stats_page_3_desc">Статус кешу. Стан буфера, кеш демуксера, діапазони пошуку.</string>
-	<string name="player_sheets_stats_page_4_desc">Поточні прив\'язки клавіш. Список прив\'язаних клавіатурних скорочень.</string>
-	<string name="player_sheets_stats_page_5_desc">Список доріжок. Деталі відео-, аудіо- та субтитрових доріжок.</string>
-
-	<string name="pref_audio_channels_auto_safe_desc">за промовчання, безпечний автовибір</string>
-	<string name="pref_audio_channels_auto_desc">Автовибір</string>
-	<string name="pref_audio_channels_mono_desc">Зведення в моно</string>
-	<string name="pref_audio_channels_stereo_desc">Зведення в стерео</string>
-	<string name="pref_audio_channels_reverse_stereo_desc">Поміняти місцями лівий та правий канали</string>
 
 	<string name="player_sheets_aspect_ratio_title">Співвідношення сторін</string>
 	<string name="player_sheets_aspect_ratio_presets">Пресети</string>
@@ -483,9 +443,6 @@
 	<string name="crash_screen_fix_crash">Виправити аварію (видалити базу даних)</string>
 	<string name="crash_screen_database_deleted">Базу даних успішно видалено. Будь ласка, перезапустіть програму.</string>
 	<string name="crash_screen_database_hint">Ця аварія, схоже, пов\'язана з базою даних. Спробуйте видалити базу даних для виправлення.</string>
-
-	<string name="timer_picker_enter_timer">Введіть час</string>
-	<string name="timer_picker_pick_time">Оберіть час</string>
 	<string name="timer_title">Таймер сну</string>
 	<string name="timer_remaining">Залишилось %s</string>
 	<string name="toast_sleep_timer_ended">Таймер сну завершено</string>
@@ -497,13 +454,6 @@
 	<string name="pref_player_show_circular_double_tap_seek_title">Показувати кругову перемотку подвійним торканням</string>
 	<string name="pref_player_show_circular_double_tap_seek_summary">Показувати круговий оверлей перемотки з часом під ним</string>
 	<string name="show_time_on_double_tap_to_seek">Показувати час перемотки</string>
-
-	<plurals name="seconds">
-		<item quantity="one">%1$d секунда</item>
-		<item quantity="few">%1$d секунди</item>
-		<item quantity="many">%1$d секунд</item>
-		<item quantity="other">%1$d секунд</item>
-	</plurals>
 
 	<!-- Background Playback -->
 	<string name="background_playback_title">Фонове відтворення</string>
@@ -532,7 +482,6 @@
 	<string name="fonts_loaded">Шрифтів завантажено: %1$d</string>
 	<string name="reload_fonts">Перезавантажити шрифти</string>
 	<string name="clear_font_directory">Очистити каталог шрифтів</string>
-	<string name="reset_to_default_font">Скинути на шрифт за промовчання</string>
 	<string name="set_as_default">Встановити за промовчанням</string>
 
 	<!-- Notification strings -->
@@ -572,29 +521,9 @@
 	<string name="pref_folders_blacklisted">Тека(и) у чорному списку</string>
 
 	<!-- M3U Playlist Strings -->
-	<string name="playlist_add_m3u_title">Додати плейлист M3U</string>
-	<string name="playlist_add_success">Плейлист M3U успішно додано</string>
-	<string name="playlist_add_error">Не вдалося додати плейлист M3U: %s</string>
-	<string name="playlist_create_empty">Створити порожній плейлист</string>
-	<string name="playlist_refresh_success">Плейлист успішно оновлено</string>
-	<string name="playlist_refresh_error">Не вдалося оновити плейлист: %s</string>
-	<string name="playlist_m3u_badge">M3U</string>
 
 	<string name="open_file">Відкрити файл</string>
 	<string name="recently_played">Нещодавно відтворені</string>
-	<string name="install">Встановити</string>
-	<string name="download">Завантажити</string>
-	<string name="failed_load_audio_invalid_uri">Не вдалося завантажити аудіофайл: недійсний URI</string>
-	<string name="audio_track_added">Аудіодоріжку додано</string>
-	<string name="failed_load_audio">Не вдалося завантажити аудіо: %s</string>
-	<string name="invalid_subtitle_format">Невірний формат файлу субтитрів</string>
-	<string name="subtitle_added">%s додано</string>
-	<string name="failed_load_subtitle">Не вдалося завантажити субтитри</string>
-	<string name="remove_from_playlist">Видалити %1$d %2$s з плейлиста?</string>
-	<string name="remove_playlist_items_confirm">Обрані %2$s будуть видалені з цього плейлиста. Оригінальні %3$s не будуть видалені.</string>
-	<string name="search_videos">Пошук відео…</string>
-	<string name="search_folders_and_videos">Пошук тек та відео…</string>
-	<string name="search_playlists">Пошук плейлистів…</string>
 	<string name="search_no_results_title">Результатів не знайдено</string>
 	<string name="search_no_results_message">Немає файлів або тек, що відповідають вашому запиту</string>
 	<string name="search_empty_title">Пошук</string>
@@ -606,43 +535,17 @@
 	<string name="done">Готово</string>
 	<string name="create">Створити</string>
 	<string name="select">Вибрати</string>
-	<string name="browse">Огляд</string>
-	<string name="disconnect">Відключити</string>
-	<string name="connect">Підключити</string>
-	<string name="remove">Видалити</string>
-	<string name="add">Додати</string>
-	<string name="ignore">Ігнорувати</string>
-	<string name="loading_detailed_information">Завантаження детальної інформації…</string>
 	<string name="export_complete">Експорт завершено</string>
 	<string name="import_complete">Імпорт завершено</string>
-	<string name="auto_picture_in_picture">Авто-режим \"Картинка в картинці\"</string>
-	<string name="show_navigation_bar_with_controls">Показувати панель навігації з елементами керування</string>
-	<string name="rename_playlist">Перейменувати плейлист</string>
-	<string name="create_playlist">Створити плейлист</string>
-	<string name="add_connection">Додати підключення</string>
 	<string name="playlist_name">Назва плейлиста</string>
 	<string name="new_name">Нова назва</string>
 	<string name="folder_name">Назва теки</string>
-	<string name="choose_local_m3u_file">Вибрати локальний файл M3U</string>
 	<string name="home">Головна</string>
 	<string name="shorts">Shorts</string>
-	<string name="playlists">Плейлисти</string>
 	<string name="unit_seconds">Секунди</string>
 	<string name="milliseconds">Мілісекунди</string>
 	<string name="name">Назва</string>
-	<string name="protocol">Протокол</string>
-	<string name="host_ip_address">Хост/IP-адреса</string>
-	<string name="port">Порт</string>
 	<string name="path">Шлях</string>
-	<string name="anonymous_guest_access">Анонімний/Гостьовий доступ</string>
-	<string name="use_https_secure_connection">Використовувати HTTPS (безпечне з\'єднання)</string>
-	<string name="username">Ім\'я користувача</string>
-	<string name="password">Пароль</string>
-	<string name="selected_long_press_to_reorder">Вибрано (довге натискання для зміни порядку)</string>
-	<string name="available">Доступно</string>
-	<string name="width">Ширина</string>
-	<string name="height">Висота</string>
-	<string name="filter_presets">Пресети фільтрів</string>
 	<string name="no_storage_devices_found">Пристроїв зберігання не знайдено</string>
 	<string name="no_folders_or_supported_files">Тек або підтримуваних файлів не знайдено</string>
 
@@ -700,24 +603,11 @@
 
 	<!-- Network Connection Card -->
 	<!-- Playlist Screen Empty and Search States -->
-	<string name="no_playlists_found">Плейлистів не знайдено</string>
-	<string name="try_different_search_term">Спробуйте інший пошуковий запит</string>
 	<string name="no_playlists_yet">Плейлистів ще немає</string>
-	<string name="no_playlists_yet_desc">Create a playlist or import a local M3U file.</string>
-	<string name="empty_playlists_desc">Створіть плейлист, щоб побачити його тут</string>
 
 	<!-- Recently Played Screen -->
-	<string name="recently_played_disabled_title">\"Нещодавно відтворені\" вимкнено</string>
-	<string name="recently_played_disabled_message">Увімкніть це в розширених налаштуваннях для відстеження історії відтворення</string>
 	<string name="no_recently_played_videos">Немає нещодавно відтворених відео</string>
-	<string name="no_recently_played_videos_message">Відео, які ви відтворюєте, з\'являться тут</string>
-	<string name="no_recently_played_items">Немає нещодавно відтворених елементів</string>
-	<string name="no_recently_played_items_message">Ваші нещодавно відтворені відео та плейлисти з\'являться тут</string>
-	<string name="remove_from_history_title">Видалити %1$d %2$s з історії?</string>
-	<string name="remove_from_history_msg">Це видалить обрані %1$s зі списку нещодавно відтворених. Оригінальні відеофайли не будуть видалені.</string>
 	<string name="delete_files_title">Видалити %1$d %2$s?</string>
-	<string name="delete_files_msg">Це назавжди видалить оригінальний відеофайл(и) зі сховища вашого пристрою.\n\nЦю дію не можна скасувати.</string>
-	<string name="also_delete_files">Також видалити оригінальний файл(и)</string>
 
 	<!-- Folder List Screen Empty States -->
 	<string name="no_video_folders_found">Відеотек не знайдено</string>
@@ -726,7 +616,6 @@
 	<!-- File System Browser Screen Strings -->
 	<string name="search_in_all_storage_volumes">Пошук у всіх сховищах</string>
 	<string name="search_in_folder_placeholder">Пошук у %1$s…</string>
-	<string name="search_default_folder_name">тека</string>
 	<string name="empty_folder_title">Порожня тека</string>
 	<string name="empty_folder_message">Ця тека не містить відео або підтек</string>
 
@@ -734,16 +623,9 @@
 	<string name="search_all_videos">Пошук усіх відео…</string>
 
 	<!-- Network Streaming Screen Strings -->
-	<string name="paste">Вставити</string>
 	<string name="play">Відтворити</string>
 
 	<!-- Playlist Detail Screen Strings -->
-	<string name="no_videos_in_playlist">Немає відео в цьому плейлисті</string>
-	<string name="no_videos_in_playlist_desc">Додайте відео з браузера, щоб створити плейлист</string>
-	<string name="done_reordering">Зміна порядку завершена</string>
-	<string name="reorder_playlist">Змінити порядок плейлиста</string>
-	<string name="remove_from_playlist_confirm">Обрані %1$s будуть видалені з цього плейлиста. Оригінальні %2$s не будуть видалені.</string>
-	<string name="remove_from_playlist_action">Видалити з плейлиста</string>
 
 	<!-- Shorts Screen Strings -->
 	<string name="go_back">Назад</string>
@@ -803,15 +685,6 @@
 	<string name="name_cannot_contain_invalid_chars">Назва не може містити / або \\</string>
 
 	<!-- Sheets Strings -->
-	<string name="playlist_created_successfully">Плейлист успішно створено</string>
-	<string name="failed_create_playlist">Не вдалося створити плейлист</string>
-	<string name="m3u_playlist_added_successfully">Плейлист M3U успішно додано</string>
-	<string name="failed_add_m3u_playlist">Не вдалося додати плейлист M3U</string>
-	<string name="add_m3u_playlist">Додати плейлист M3U</string>
-	<string name="or">АБО</string>
-	<string name="playlist_options">Опції плейлиста</string>
-	<string name="create_empty_playlist">Створити порожній плейлист</string>
-	<string name="create_blank_playlist_desc">Створити новий порожній плейлист</string>
 	<!-- Component Strings -->
 	<string name="more_options">Більше опцій</string>
 	<string name="move">Перемістити</string>
@@ -827,7 +700,6 @@
 	<string name="folders_count">Теки (%1$d)</string>
 	<string name="media_count">Медіа (%1$d)</string>
 	<string name="drag_to_reorder">Перетягніть для зміни порядку</string>
-	<string name="connect_social_media">З\'єднайтеся з нами в соціальних мережах</string>
 	<!-- Sort Dialog Strings -->
 	<string name="sort_and_view_options">Сортування та параметри перегляду</string>
 	<string name="view_options">Параметри перегляду</string>
@@ -835,7 +707,6 @@
 	<!-- Preference Category Strings -->
 	<string name="pref_category_ui_appearance">Інтерфейс та зовнішній вигляд</string>
 	<string name="pref_category_playback_controls">Відтворення та керування</string>
-	<string name="pref_category_file_management">Керування файлами</string>
 	<string name="pref_category_media_settings">Налаштування медіа</string>
 	<string name="pref_category_magen_shorts">Magen Shorts</string>
 	<string name="pref_category_magen_shorts_settings">Налаштування Magen Shorts</string>
@@ -870,8 +741,6 @@
 	<string name="pref_select_sourced_folders_desc">Оберіть каталоги для отримання коротких відео. Якщо нічого не обрано, короткі відео будуть отримані з усіх папок.</string>
 
 	<!-- Update features -->
-	<string name="pref_about_checking">Перевірка…</string>
-	<string name="pref_about_up_to_date">Ви маєте останню версію!</string>
 	<!-- Player Button Labels -->
 	<string name="btn_label_back">Стрілка назад</string>
 	<string name="btn_label_title">Назва відео</string>
@@ -930,12 +799,10 @@
 
 	<!-- Player controls shared -->
 	<string name="playlist_separator">• %1$s</string>
-	<string name="chapters">Глави</string>
 	<string name="skip_seconds">Пропустити %1$d с</string>
 	<string name="playback_speed">Швидкість відтворення</string>
 	<string name="screen_rotation">Обертання</string>
 	<string name="frame_nav">Навігація кадрів</string>
-	<string name="frame_navigation">Покадрова навігація</string>
 	<string name="pip">Картинка в картинці</string>
 	<string name="video_zoom">Масштаб відео</string>
 	<string name="lock">Блокувати</string>
@@ -1022,8 +889,6 @@
 	<string name="item_type_video">відео</string>
 	<string name="item_type_folder">тека</string>
 	<string name="item_type_file">файл</string>
-	<string name="item_type_playlist">плейлист</string>
-	<string name="item_type_item">елемент</string>
 
 	<string name="no_videos_in_folder">Немає відео в цій теці</string>
 	<string name="no_videos_in_folder_desc">Відео, які ви додасте в цю теку, з\'являться тут</string>
@@ -1106,7 +971,6 @@
 	<string name="pref_advanced_section_system_integration">Системна інтеграція</string>
 	<string name="pref_advanced_section_logging">Логування</string>
 	<string name="pref_advanced_tap_to_edit_configuration">Натисніть для редагування конфігурації</string>
-	<string name="pref_advanced_mpv_directory_ready">Каталог MPV готовий ✓</string>
 	<string name="pref_advanced_lua_set_storage_first">Спочатку встановіть місце зберігання та увімкніть скрипти Lua</string>
 	<string name="pref_advanced_no_scripts_enabled">Скрипти не увімкнено</string>
 	<string name="pref_advanced_custom_lua_summary">Створюйте та керуйте користувацькими кнопками Lua</string>
@@ -1207,17 +1071,6 @@
 	<!-- Language & Welcome/Onboarding strings -->
 	<string name="system_default">Як у системі</string>
 	<string name="pref_appearance_language_title">Мова програми</string>
-	<string name="pref_appearance_language_summary">Змінити мову відображення програми</string>
-
-	<string name="welcome_title">Ласкаво просимо до magen player</string>
-	<string name="welcome_subtitle">Ваш сучасний, потужний та налаштовуваний медіаплеєр.</string>
-	<string name="welcome_language_section_title">Бажана мова</string>
-	<string name="welcome_language_section_desc">Оберіть мову відображення</string>
-	<string name="storage_access_granted">Доступ до сховища надано</string>
-	<string name="storage_access_granted_desc">Дозвіл надано. magen player готовий до виявлення та відтворення ваших медіафайлів.</string>
-	<string name="welcome_grant_permission">Надати дозвіл</string>
-	<string name="welcome_get_started">Почати</string>
-	<string name="welcome_skip_permission">Продовжити без доступу до сховища</string>
 
 </resources>
 
