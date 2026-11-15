@@ -6,9 +6,6 @@
     <string name="generic_ok">ওকে</string>
     <string name="pref_appearance_tab_home_title">হোম / ফাইলগুলো</string>
     <string name="pref_appearance_tab_home_summary">লোকাল ফোল্ডার দেখান &amp; ফাইল অনুসন্ধানকারী</string>
-    <string name="pref_appearance_tab_recents_summary">আগের ভিডিও সেশন দ্রুত পুনরায় শুরু করুন</string>
-    <string name="pref_appearance_tab_playlists_title">প্লেলিস্ট</string>
-    <string name="pref_appearance_tab_playlists_summary">লোকাল কাস্টম ভিডিও প্লেলিস্টগুলো দেখান</string>
     <string name="pref_appearance_summary">ডার্ক মোড, ম্যাটেরিয়াল ইউ</string>
     <string name="pref_appearance_category_theme">থিম</string>
     <string name="pref_appearance_darkmode_system">সিস্টেম</string>
@@ -24,7 +21,6 @@
     <string name="pref_appearance_category_bottom_nav">নিচের নেভিগেশন ট্যাবস</string>
     <string name="pref_appearance_tab_shorts_title">Magen Shorts</string>
     <string name="pref_appearance_tab_shorts_summary">হাই-টেম্পো উল্লম্ব ভিডিও ফিড টগল করুন</string>
-    <string name="pref_appearance_tab_recents_title">সম্প্রতি দেখা হয়েছে</string>
     <string name="pref_appearance_unlimited_name_lines_title">পুরো নাম দেখান</string>
     <string name="pref_appearance_unlimited_name_lines_summary"></string>
     <string name="pref_appearance_enable_bounce_animation_title">বাউন্সি অ্যানিমেশন চালু করুন</string>
@@ -482,7 +478,6 @@
     <string name="folder_name">ফোল্ডারের নাম</string>
     <string name="choose_local_m3u_file">স্থানীয় M3U ফাইল নির্বাচন করুন</string>
     <string name="home">হোম</string>
-    <string name="recents">সাম্প্রতিক</string>
     <string name="playlists">প্লেলিস্ট</string>
     <string name="unit_seconds">সেকেন্ড</string>
     <string name="milliseconds">মিলিসেকেন্ড</string>
@@ -678,7 +673,6 @@
     <string name="auto_swipe_to_next_short_desc">ভিডিও শেষ হলে স্বয়ংক্রিয়ভাবে সোয়াইপ করুন</string>
     <string name="long_press_speed">দীর্ঘ প্রেসের গতি</string>
     <string name="video_information">ভিডিও তথ্য</string>
-    <string name="blocked_videos_manager">ব্লক করা ভিডিও ম্যানেজার</string>
     <string name="delete_short">সর্টস মুছুন</string>
     <string name="delete_short_desc">ডিভাইস থেকে এই ফাইলটি স্থায়ীভাবে মুছুন</string>
     <string name="long_press_speed_desc">গতি লক করতে দীর্ঘ টিপুন এবং পরিবর্তন করতে স্বাভাবিক টিপুন</string>
@@ -773,8 +767,6 @@
     <string name="pref_sourced_folders_count">%1$d ফোল্ডার(গুলি) থেকে সোর্স করা হয়েছে</string>
     <string name="pref_sourced_folders_list">উৎস থেকে: %1$s</string>
     <string name="pref_category_content_management">বিষয়বস্তু ব্যবস্থাপনা</string>
-    <string name="pref_blocked_videos">ব্লক করা ভিডিও</string>
-    <string name="pref_blocked_videos_summary">ব্লক করা শর্টস দেখুন এবং পরিচালনা করুন</string>
     <string name="pref_select_sourced_folders">উৎস ফোল্ডার নির্বাচন করুন</string>
     <string name="pref_select_sourced_folders_desc">থেকে শর্টস সোর্স করতে ডিরেক্টরি নির্বাচন করুন । যদি কোনটিই নির্বাচিত না হয়, তাহলে সমস্ত ফোল্ডার থেকে শর্টস নেওয়া হবে ।</string>
     <string name="pref_about_checking">চেক করা হচ্ছে...</string>
@@ -983,14 +975,11 @@
     <string name="pref_advanced_remove_cached_fonts_summary">সমস্ত ক্যাশ করা সাবটাইটেল ফন্টগুলি সরান</string>
     <string name="pref_advanced_enable_media_info_title">মিডিয়া তথ্য কার্যকলাপ সক্ষম করুন</string>
     <string name="pref_advanced_enable_media_info_summary">সিস্টেম-ওয়াইড \\\'ওপেন উইথ\\\' মেনুতে একটি বিকল্প হিসেবে \\\'মিডিয়া তথ্য\\\' দেখান</string>
-    <string name="blocked_shorts_empty_state">কোনো ব্লক করা ভিডিও নেই</string>
-    <string name="blocked_shorts_unblock_button">অবরুদ্ধ</string>
     <string name="custom_button_read_failed">ফাইল পড়তে ব্যর্থ হয়েছে: %1$s৷</string>
     <string name="video_settings_filter_presets_title">ফিল্টার প্রিসেট</string>
     <string name="custom_button_will_overwrite">বিদ্যমান বোতামটি ওভাররাইট করবে</string>
     <string name="custom_button_select_import_subtitle">কোন বোতামগুলি ইমপোর্ট করতে হবে তা চয়ন করুন</string>
     <string name="shorts_no_vertical_videos_found">কোন উল্লম্ব ভিডিও পাওয়া যায়নি</string>
-    <string name="shorts_no_blocked_videos_found">কোন অবরুদ্ধ ভিডিও পাওয়া যায়নি</string>
     <string name="shorts_all_finished_title">সব ভিডিও শেষ</string>
     <string name="shorts_all_finished_message">আপনি আপাতত সমস্ত উল্লম্ব ভিডিও দেখেছেন৷</string>
     <string name="shorts_video_info_title">ভিডিও তথ্য</string>
@@ -1006,7 +995,6 @@
     <string name="media_info_total_length">মোট দৈর্ঘ্য</string>
     <string name="shorts_action_love">লাভ</string>
     <string name="shorts_action_free">ফ্রি</string>
-    <string name="shorts_action_blocked">অবরুদ্ধ</string>
     <string name="custom_buttons_import_export_title">ইমপোর্ট / এক্সপোর্ট</string>
     <string name="custom_buttons_import_export_desc">একটি XML ফাইল হিসাবে তাদের Lua কোডের সাথে আপনার সমস্ত কাস্টম বোতামগুলি ব্যাকআপ বা শেয়ার করুন</string>
     <string name="generic_import">ইমপোর্ট</string>
@@ -1030,7 +1018,6 @@
     <string name="custom_button_field_label_with_slot">%1$s · %2$s</string>
     <string name="filter_preset_none">কোনোটিই নয়</string>
     <string name="shorts_action_loved">লাভ</string>
-    <string name="shorts_action_block">ব্লক</string>
     <string name="custom_buttons_export_success">বোতামগুলি সফলভাবে এক্সপোর্ট হয়েছে</string>
     <plurals name="custom_buttons_imported_count">
         <item quantity="other">%1$d বোতাম ইমপোর্ট করা হয়েছে</item>

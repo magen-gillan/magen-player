@@ -947,7 +947,7 @@
     <string name="pref_category_media_settings">Media Settings</string>
     <string name="pref_category_magen_shorts">Magen Shorts</string>
     <string name="pref_category_magen_shorts_settings">Magen Shorts Settings</string>
-    <string name="pref_category_magen_shorts_settings_desc">Manage enable/disable, shuffle, and blocked content</string>
+    <string name="pref_category_magen_shorts_settings_desc">Manage enable/disable, shuffle, and sourced folders</string>
     <string name="pref_category_advanced_about">Advanced &amp; About</string>
 
     <!-- Shorts preference screen -->

@@ -16,10 +16,6 @@
     <string name="pref_appearance_tab_home_summary">Mostrar carpetas locales y el explorador de archivos</string>
     <string name="pref_appearance_tab_shorts_title">Magen Shorts</string>
     <string name="pref_appearance_tab_shorts_summary">Alternar fuentes de video vertical de ritmo rápido</string>
-    <string name="pref_appearance_tab_recents_title">Reproducidos recientemente</string>
-    <string name="pref_appearance_tab_recents_summary">Reanudar rápidamente sesiones de video anteriores</string>
-    <string name="pref_appearance_tab_playlists_title">Listas de reproducción</string>
-    <string name="pref_appearance_tab_playlists_summary">Mostrar listas de reproducción de video personalizadas locales</string>
     <string name="pref_appearance_summary">Modo oscuro, Material You</string>
     <string name="pref_appearance_category_theme">Tema</string>
     <string name="pref_appearance_darkmode_system">Sistema</string>
@@ -540,7 +536,6 @@
     <string name="folder_name">Nombre de la carpeta</string>
     <string name="choose_local_m3u_file">Elegir archivo M3U local</string>
     <string name="home">Inicio</string>
-    <string name="recents">Recientes</string>
     <string name="playlists">Listas</string>
     <string name="unit_seconds">Segundos</string>
     <string name="milliseconds">Milisegundos</string>
@@ -667,7 +662,6 @@
     <string name="auto_swipe_to_next_short_desc">Desliza automáticamente cuando termine el video</string>
     <string name="long_press_speed">Velocidad de presión prolongada</string>
     <string name="video_information">Información de vídeo</string>
-    <string name="blocked_videos_manager">Administrador de videos bloqueados</string>
     <string name="delete_short">Eliminar short</string>
     <string name="delete_short_desc">Eliminar permanentemente este archivo del dispositivo</string>
     <string name="long_press_speed_desc">Mantén presionado para bloquear la velocidad y presiona normalmente para cambiarla</string>
@@ -769,8 +763,6 @@
     <string name="pref_sourced_folders_count">Procedente de %1$d carpeta(s)</string>
     <string name="pref_sourced_folders_list">Procedente de: %1$s</string>
     <string name="pref_category_content_management">Gestión de contenidos</string>
-    <string name="pref_blocked_videos">Vídeos bloqueados</string>
-    <string name="pref_blocked_videos_summary">Ver y administrar shorts bloqueados</string>
     <string name="pref_select_sourced_folders">Seleccionar carpetas de origen</string>
     <string name="pref_select_sourced_folders_desc">Elija directorios de los que obtener shorts. Si no se selecciona ninguno, los shorts se obtendrán de todas las carpetas.</string>
     <string name="pref_about_checking">Verificando…</string>
@@ -960,8 +952,6 @@
     <string name="pref_advanced_remove_cached_fonts_summary">Eliminar todas las fuentes de subtítulos almacenadas en caché</string>
     <string name="pref_advanced_enable_media_info_title">Habilitar la actividad de información multimedia</string>
     <string name="pref_advanced_enable_media_info_summary">Mostrar \'Información multimedia\' como una opción en los menús \'Abrir con\' de todo el sistema</string>
-    <string name="blocked_shorts_empty_state">No hay vídeos bloqueados</string>
-    <string name="blocked_shorts_unblock_button">Bloqueado</string>
     <string name="pref_gesture_enable_release_to_cancel_title">Activar \"Soltar para cancelar\"</string>
     <string name="pref_player_background_playback">Reproducción en segundo plano</string>
     <string name="pref_gesture_enable_release_to_cancel_summary">Revertir la posición de búsqueda al soltar cerca de la ubicación de inicio del arrastre</string>
@@ -997,12 +987,9 @@
     <string name="media_info_total_length">Duración total</string>
     <string name="shorts_action_loved">Amado</string>
     <string name="shorts_action_love">Amor</string>
-    <string name="shorts_action_block">Bloquear</string>
-    <string name="shorts_action_blocked">Bloqueado</string>
     <string name="shorts_action_free">Libre</string>
     <string name="shorts_action_back">Atrás</string>
     <string name="shorts_action_more">Más</string>
-    <string name="shorts_no_blocked_videos_found">No se encontraron videos bloqueados</string>
     <string name="shorts_no_vertical_videos_found">No se encontraron videos verticales</string>
     <string name="shorts_all_finished_title">Todos los vídeos terminados.</string>
     <string name="shorts_all_finished_message">Has visto todos los vídeos verticales por ahora.</string>
@@ -1075,8 +1062,6 @@
     <string name="open_with_mini_player">Abrir con mini reproductor</string>
     <string name="ui_loading">Cargando…</string>
     <string name="ui_loading_percent">Cargando %d%%</string>
-    <string name="pref_appearance_tab_you_title">Pestaña \'Tú\'</string>
-    <string name="pref_appearance_tab_you_summary">Combinar listas de reproducción y reproducidas recientemente en una sola pestaña</string>
     <string name="pref_appearance_show_next_previous_buttons_title">Mostrar botones Siguiente/Anterior</string>
     <string name="pref_appearance_show_next_previous_buttons_summary">Mostrar los botones de siguiente y anterior en la superposición de controles del reproductor</string>
     <string name="pref_appearance_player_always_dark_mode_disabled_toast">Se requiere el modo siempre oscuro del reproductor cuando los controles del reproductor de cristal están habilitados</string>
@@ -1137,7 +1122,6 @@
     <string name="diagnostics_process_memory_value">PSS %1$s | Java %2$s/%3$s | Nativo %4$s</string>
     <string name="diagnostics_playback_cache">Reproducción</string>
     <string name="diagnostics_playback_cache_value">%1$.1f s almacenados en el búfer | Paquetes %2$s | Archivo %3$s</string>
-    <string name="you">Tú</string>
     <string name="view_all">Ver todo</string>
     <string name="watched">Visto</string>
     <string name="pref_include_no_media_content_title">Incluir contenido `.nomedia`</string>

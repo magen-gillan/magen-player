@@ -13,10 +13,6 @@
     <string name="pref_appearance_tab_home_summary">Mostrar pastas locais e explorador de arquivos</string>
     <string name="pref_appearance_tab_shorts_title">Magen Shorts</string>
     <string name="pref_appearance_tab_shorts_summary">Alternar feeds de vídeo verticais em ritmo acelerado</string>
-    <string name="pref_appearance_tab_recents_title">Jogado recentemente</string>
-    <string name="pref_appearance_tab_recents_summary">Retome rapidamente sessões de vídeo anteriores</string>
-    <string name="pref_appearance_tab_playlists_title">Listas de reprodução</string>
-    <string name="pref_appearance_tab_playlists_summary">Mostrar listas de reprodução de vídeos locais personalizadas</string>
     <string name="pref_appearance_summary">Modo escuro, Material You</string>
     <string name="pref_appearance_category_theme">Tema</string>
     <string name="pref_appearance_darkmode_system">Sistema</string>
@@ -561,7 +557,6 @@
     <string name="choose_local_m3u_file">Escolha o arquivo M3U local</string>
     <string name="home">Lar</string>
     <string name="shorts">Shorts</string>
-    <string name="recents">Recentes</string>
     <string name="playlists">Listas de reprodução</string>
     <string name="unit_seconds">Segundos</string>
     <string name="milliseconds">Milissegundos</string>
@@ -665,7 +660,6 @@
     <string name="auto_swipe_to_next_short_desc">Deslize automaticamente quando o vídeo terminar</string>
     <string name="long_press_speed">Velocidade de pressão longa</string>
     <string name="video_information">Informações de vídeo</string>
-    <string name="blocked_videos_manager">Gerenciador de vídeos bloqueados</string>
     <string name="delete_short">Excluir curto</string>
     <string name="delete_short_desc">Exclua permanentemente este arquivo do dispositivo</string>
     <string name="long_press_speed_desc">Pressione longamente para bloquear a velocidade e pressione normal para alterar</string>
@@ -756,8 +750,6 @@
     <string name="pref_sourced_folders_count">Originado de %1$d pasta(s)</string>
     <string name="pref_sourced_folders_list">Originário de: %1$s</string>
     <string name="pref_category_content_management">Gerenciamento de conteúdo</string>
-    <string name="pref_blocked_videos">Vídeos bloqueados</string>
-    <string name="pref_blocked_videos_summary">Visualize e gerencie shorts bloqueados</string>
     <string name="pref_select_sourced_folders">Selecione as pastas de origem</string>
     <string name="pref_select_sourced_folders_desc">Escolha os diretórios de origem dos curtas. Se nenhum for selecionado, os curtas serão provenientes de todas as pastas.</string>
     <string name="pref_about_checking">Verificando…</string>
@@ -941,19 +933,14 @@
     <string name="pref_advanced_remove_cached_fonts_summary">Remova todas as fontes de legenda em cache</string>
     <string name="pref_advanced_enable_media_info_title">Ativar atividade de informações de mídia</string>
     <string name="pref_advanced_enable_media_info_summary">Mostrar \'Informações de mídia\' como uma opção nos menus \'Abrir com\' de todo o sistema</string>
-    <string name="blocked_shorts_empty_state">Nenhum vídeo bloqueado</string>
-    <string name="blocked_shorts_unblock_button">Bloqueado</string>
     <string name="media_info_selection_title">Informações de seleção</string>
     <string name="media_info_selected_label">Selecionado</string>
     <string name="media_info_total_length">Comprimento total</string>
     <string name="shorts_action_love">Amor</string>
     <string name="shorts_action_loved">Amado</string>
-    <string name="shorts_action_block">Bloquear</string>
-    <string name="shorts_action_blocked">Bloqueado</string>
     <string name="shorts_action_free">Livre</string>
     <string name="shorts_action_back">Voltar</string>
     <string name="shorts_action_more">Mais</string>
-    <string name="shorts_no_blocked_videos_found">Nenhum vídeo bloqueado encontrado</string>
     <string name="shorts_no_vertical_videos_found">Nenhum vídeo vertical encontrado</string>
     <string name="shorts_all_finished_title">Todos os vídeos concluídos</string>
     <string name="shorts_all_finished_message">Você já viu todos os vídeos verticais.</string>

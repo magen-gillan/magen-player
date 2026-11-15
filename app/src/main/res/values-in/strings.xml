@@ -15,10 +15,6 @@
     <string name="pref_appearance_tab_home_summary">Tampilkan folder lokal &amp; penjelajah file</string>
     <string name="pref_appearance_tab_shorts_title">Magen Shorts</string>
     <string name="pref_appearance_tab_shorts_summary">Beralih antara feed video vertikal bertempo cepat</string>
-    <string name="pref_appearance_tab_recents_title">Baru-baru ini Dimainkan</string>
-    <string name="pref_appearance_tab_recents_summary">Lanjutkan sesi video sebelumnya dengan cepat</string>
-    <string name="pref_appearance_tab_playlists_title">Daftar Putar</string>
-    <string name="pref_appearance_tab_playlists_summary">Tampilkan daftar putar video khusus lokal</string>
     <string name="pref_appearance_summary">Mode gelap, Material You</string>
     <string name="pref_appearance_category_theme">Tema</string>
     <string name="pref_appearance_darkmode_system">Sistem</string>
@@ -563,7 +559,6 @@
     <string name="choose_local_m3u_file">Pilih file M3U lokal</string>
     <string name="home">Beranda </string>
     <string name="shorts">Shorts</string>
-    <string name="recents">Terbaru</string>
     <string name="playlists">Daftar Putar</string>
     <string name="unit_seconds">Detik</string>
     <string name="milliseconds">Milidetik</string>
@@ -666,7 +661,6 @@
     <string name="auto_swipe_to_next_short_desc">Geser secara otomatis saat video berakhir</string>
     <string name="long_press_speed">Kecepatan Tekan Lama</string>
     <string name="video_information">Informasi Video</string>
-    <string name="blocked_videos_manager">Manajer Video yang Diblokir</string>
     <string name="delete_short_desc">Hapus file ini secara permanen dari perangkat</string>
     <string name="delete_short">Hapus Short</string>
     <string name="long_press_speed_desc">Tekan lama untuk mengunci kecepatan dan tekan normal untuk mengubah</string>
@@ -755,8 +749,6 @@
     <string name="pref_sourced_folders_count">Bersumber dari %1$d folder</string>
     <string name="pref_sourced_folders_list">Bersumber dari: %1$s</string>
     <string name="pref_category_content_management">Manajemen Konten</string>
-    <string name="pref_blocked_videos">Video yang Diblokir</string>
-    <string name="pref_blocked_videos_summary">Lihat dan kelola video pendek yang diblokir</string>
     <string name="pref_select_sourced_folders">Pilih Folder Bersumber</string>
     <string name="pref_select_sourced_folders_desc">Pilih direktori untuk mengambil sumber shorts. Jika tidak ada yang dipilih, video pendek akan diambil dari semua folder.</string>
     <string name="pref_about_checking">Memeriksa…</string>
@@ -946,19 +938,14 @@
     <string name="pref_advanced_remove_cached_fonts_summary">Hapus semua font subtitle yang di-cache</string>
     <string name="pref_advanced_enable_media_info_title">Aktifkan Aktivitas Info Media</string>
     <string name="pref_advanced_enable_media_info_summary">Tampilkan \'Info Media\' sebagai opsi di menu \'Buka dengan\' di seluruh sistem</string>
-    <string name="blocked_shorts_empty_state">Tidak ada video yang diblokir</string>
-    <string name="blocked_shorts_unblock_button">Diblokir</string>
     <string name="media_info_selection_title">Informasi Seleksi</string>
     <string name="media_info_selected_label">Terpilih</string>
     <string name="media_info_total_length">Panjang keseluruhan</string>
     <string name="shorts_action_love">Favorit </string>
     <string name="shorts_action_loved">Difavoritkan</string>
-    <string name="shorts_action_block">Memblokir</string>
-    <string name="shorts_action_blocked">Diblokir</string>
     <string name="shorts_action_free">Bebas</string>
     <string name="shorts_action_back">Kembali</string>
     <string name="shorts_action_more">Lainnya</string>
-    <string name="shorts_no_blocked_videos_found">Tidak ditemukan video yang diblokir</string>
     <string name="shorts_no_vertical_videos_found">Tidak ada video vertikal yang ditemukan</string>
     <string name="shorts_all_finished_title">Semua video selesai</string>
     <string name="shorts_all_finished_message">Anda telah melihat semua video vertikal untuk saat ini.</string>

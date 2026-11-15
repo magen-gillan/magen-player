@@ -871,7 +871,7 @@ private fun ShortPageItem(
         animationSpec = tween(300)
     )
 
-    BoxWithConstraints(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             // 1. Taps (pause/resume) and Double Taps (like/confetti)

@@ -15,10 +15,6 @@
     <string name="pref_appearance_tab_home_summary">Lokale Ordner und Datei-Explorer anzeigen</string>
     <string name="pref_appearance_tab_shorts_title">Magen Shorts</string>
     <string name="pref_appearance_tab_shorts_summary">Schalten Sie vertikale Hochgeschwindigkeits-Video-Feeds ein</string>
-    <string name="pref_appearance_tab_recents_title">Kürzlich gespielt</string>
-    <string name="pref_appearance_tab_recents_summary">Vorherige Videos schnell fortsetzen</string>
-    <string name="pref_appearance_tab_playlists_title">Wiedergabelisten</string>
-    <string name="pref_appearance_tab_playlists_summary">Lokale benutzerdefinierte Video-Wiedergabelisten anzeigen</string>
     <string name="pref_appearance_summary">Dunkler Modus, Material You</string>
     <string name="pref_appearance_category_theme">Design</string>
     <string name="pref_appearance_darkmode_system">System</string>
@@ -574,7 +570,6 @@
     <string name="choose_local_m3u_file">Wähle eine lokale M3U-Datei</string>
     <string name="home">Heim</string>
     <string name="shorts">Shorts</string>
-    <string name="recents">Neueste</string>
     <string name="playlists">Wiedergabelisten</string>
     <string name="unit_seconds">Sekunden</string>
     <string name="milliseconds">Millisekunden</string>
@@ -678,7 +673,6 @@
     <string name="auto_swipe_to_next_short_desc">Wische automatisch, wenn das Video endet</string>
     <string name="long_press_speed">Lange Druckgeschwindigkeit</string>
     <string name="video_information">Videoinformationen</string>
-    <string name="blocked_videos_manager">Manager für blockierte Videos</string>
     <string name="delete_short">Kurz löschen</string>
     <string name="delete_short_desc">Lösche diese Datei dauerhaft vom Gerät</string>
     <string name="long_press_speed_desc">Lange drücken, um die Geschwindigkeit zu sperren, und normal drücken, um sie zu ändern</string>
@@ -773,8 +767,6 @@
     <string name="pref_sourced_folders_count">Aus %1$d Ordnern bezogen</string>
     <string name="pref_sourced_folders_list">Quelle: %1$s</string>
     <string name="pref_category_content_management">Content-Management</string>
-    <string name="pref_blocked_videos">Blockierte Videos</string>
-    <string name="pref_blocked_videos_summary">Blockierte Shorts anzeigen und verwalten</string>
     <string name="pref_select_sourced_folders">Wählen Sie Quellordner aus</string>
     <string name="pref_select_sourced_folders_desc">Wähle Verzeichnisse aus, aus denen Kurzvideos bezogen werden sollen. Wenn keine ausgewählt ist, werden Kurzvideos aus allen Ordnern bezogen.</string>
     <string name="pref_about_checking">Überprüfung…</string>
@@ -983,19 +975,14 @@
     <string name="pref_advanced_remove_cached_fonts_summary">Entferne alle zwischengespeicherten Untertitelschriftarten</string>
     <string name="pref_advanced_enable_media_info_title">Aktiviere die Aktivität „Medieninformationen“.</string>
     <string name="pref_advanced_enable_media_info_summary">Zeige „Medieninformationen“ als Option in systemweiten „Öffnen mit“-Menüs an</string>
-    <string name="blocked_shorts_empty_state">Keine blockierten Videos</string>
-    <string name="blocked_shorts_unblock_button">Blockiert</string>
     <string name="media_info_selection_title">Auswahlinformationen</string>
     <string name="media_info_selected_label">Ausgewählt</string>
     <string name="media_info_total_length">Gesamtlänge</string>
     <string name="shorts_action_love">Liebe</string>
     <string name="shorts_action_loved">Geliebt</string>
-    <string name="shorts_action_block">Block</string>
-    <string name="shorts_action_blocked">Blockiert</string>
     <string name="shorts_action_free">Frei</string>
     <string name="shorts_action_back">Zurück</string>
     <string name="shorts_action_more">Mehr</string>
-    <string name="shorts_no_blocked_videos_found">Keine blockierten Videos gefunden</string>
     <string name="shorts_no_vertical_videos_found">Keine vertikalen Videos gefunden</string>
     <string name="shorts_all_finished_title">Alle Videos fertig</string>
     <string name="shorts_all_finished_message">Vorerst alle vertikalen Videos gesehen.</string>

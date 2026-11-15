@@ -18,10 +18,6 @@
 	<string name="pref_appearance_tab_home_summary">Показати локальні теки та файловий менеджер</string>
 	<string name="pref_appearance_tab_shorts_title">Magen Shorts</string>
 	<string name="pref_appearance_tab_shorts_summary">Увімкнути стрічку динамічних вертикальних відео</string>
-	<string name="pref_appearance_tab_recents_title">Нещодавно відтворені</string>
-	<string name="pref_appearance_tab_recents_summary">Швидко відновити попередні відеосеанси</string>
-	<string name="pref_appearance_tab_playlists_title">Плейлисти</string>
-	<string name="pref_appearance_tab_playlists_summary">Показати локальні користувацькі відеоплейлисти</string>
 	<string name="pref_appearance_summary">Темна тема, Material You</string>
 	<string name="pref_appearance_category_theme">Тема</string>
 	<string name="pref_appearance_darkmode_system">Системна</string>
@@ -630,7 +626,6 @@
 	<string name="choose_local_m3u_file">Вибрати локальний файл M3U</string>
 	<string name="home">Головна</string>
 	<string name="shorts">Shorts</string>
-	<string name="recents">Нещодавні</string>
 	<string name="playlists">Плейлисти</string>
 	<string name="unit_seconds">Секунди</string>
 	<string name="milliseconds">Мілісекунди</string>
@@ -756,7 +751,6 @@
 	<string name="auto_swipe_to_next_short_desc">Автоматичний свайп при завершенні відео</string>
 	<string name="long_press_speed">Швидкість довгого натискання</string>
 	<string name="video_information">Інформація про відео</string>
-	<string name="blocked_videos_manager">Менеджер заблокованих відео</string>
 	<string name="delete_short">Видалити коротке відео</string>
 	<string name="delete_short_desc">Назавжди видалити цей файл з пристрою</string>
 	<string name="long_press_speed_desc">Довге натискання для блокування швидкості та звичайне натискання для зміни</string>
@@ -872,8 +866,6 @@
 	<string name="pref_sourced_folders_count">З %1$d тек(и)</string>
 	<string name="pref_sourced_folders_list">З: %1$s</string>
 	<string name="pref_category_content_management">Керування контентом</string>
-	<string name="pref_blocked_videos">Заблоковані відео</string>
-	<string name="pref_blocked_videos_summary">Переглядати та керувати заблокованими короткими відео</string>
 	<string name="pref_select_sourced_folders">Вибрати теки-джерела</string>
 	<string name="pref_select_sourced_folders_desc">Оберіть каталоги для отримання коротких відео. Якщо нічого не обрано, короткі відео будуть отримані з усіх папок.</string>
 
@@ -1127,9 +1119,6 @@
 	<string name="pref_advanced_enable_media_info_title">Увімкнути активність інформації про медіа</string>
 	<string name="pref_advanced_enable_media_info_summary">Показувати \"Інформацію про медіа\" як опцію в системних меню \"Відкрити за допомогою\"</string>
 
-	<string name="blocked_shorts_empty_state">Немає заблокованих відео</string>
-	<string name="blocked_shorts_unblock_button">Заблоковано</string>
-
 	<string name="media_info_selection_title">Інформація про вибір</string>
 	<string name="media_info_selected_label">Обрано</string>
 	<string name="media_info_total_length">Загальна тривалість</string>
@@ -1137,14 +1126,11 @@
 	<!-- Shorts Player Action Buttons -->
 	<string name="shorts_action_love">Подобається</string>
 	<string name="shorts_action_loved">Сподобалось</string>
-	<string name="shorts_action_block">Заблокувати</string>
-	<string name="shorts_action_blocked">Заблоковано</string>
 	<string name="shorts_action_free">Вільно</string>
 	<string name="shorts_action_back">Назад</string>
 	<string name="shorts_action_more">Більше</string>
 
 	<!-- Shorts Empty / Exhausted States -->
-	<string name="shorts_no_blocked_videos_found">Заблокованих відео не знайдено</string>
 	<string name="shorts_no_vertical_videos_found">Вертикальних відео не знайдено</string>
 	<string name="shorts_all_finished_title">Усі відео завершено</string>
 	<string name="shorts_all_finished_message">Ви переглянули всі вертикальні відео на зараз.</string>

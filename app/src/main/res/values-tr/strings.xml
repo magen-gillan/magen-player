@@ -17,10 +17,6 @@
     <string name="pref_appearance_tab_home_summary">Yerel klasörleri ve dosya gezginini göster</string>
     <string name="pref_appearance_tab_shorts_title">Magen Shorts</string>
     <string name="pref_appearance_tab_shorts_summary">Hızlı tempolu dikey video akışlarını aç/kapat</string>
-    <string name="pref_appearance_tab_recents_title">Son Oynatılanlar</string>
-    <string name="pref_appearance_tab_recents_summary">Önceki video oturumlarına hızlıca devam et</string>
-    <string name="pref_appearance_tab_playlists_title">Oynatma Listeleri</string>
-    <string name="pref_appearance_tab_playlists_summary">Yerel özel video oynatma listelerini göster</string>
     <string name="pref_appearance_summary">Karanlık mod, Material You</string>
     <string name="pref_appearance_category_theme">Tema</string>
     <string name="pref_appearance_darkmode_system">Sistem</string>
@@ -656,7 +652,6 @@
     <string name="choose_local_m3u_file">Yerel M3U dosyası seç</string>
     <string name="home">Ana Sayfa</string>
     <string name="shorts">Shorts</string>
-    <string name="recents">Son Oynatılanlar</string>
     <string name="playlists">Oynatma Listeleri</string>
     <string name="unit_seconds">Saniye</string>
     <string name="milliseconds">Milisaniye</string>
@@ -782,7 +777,6 @@
     <string name="auto_swipe_to_next_short_desc">Video bittiğinde otomatik olarak kaydır</string>
     <string name="long_press_speed">Uzun Basma Hızı</string>
     <string name="video_information">Video Bilgisi</string>
-    <string name="blocked_videos_manager">Engellenen Videolar Yöneticisi</string>
     <string name="delete_short">Short\'u Sil</string>
     <string name="delete_short_desc">Bu dosyayı cihazdan kalıcı olarak sil</string>
     <string name="long_press_speed_desc">Hızı kilitlemek için uzun bas, değiştirmek için normal bas</string>
@@ -896,8 +890,6 @@
     <string name="pref_sourced_folders_count">%1$d klasörden alınır</string>
     <string name="pref_sourced_folders_list">Şuradan alınır: %1$s</string>
     <string name="pref_category_content_management">İçerik Yönetimi</string>
-    <string name="pref_blocked_videos">Engellenen Videolar</string>
-    <string name="pref_blocked_videos_summary">Engellenen shorts\'ları görüntüle ve yönet</string>
     <string name="pref_select_sourced_folders">Kaynak Klasörleri Seç</string>
     <string name="pref_select_sourced_folders_desc">Shorts\'ların alınacağı dizinleri seç. Hiçbiri seçilmezse shorts tüm klasörlerden alınır.</string>
 
@@ -1152,9 +1144,6 @@
     <string name="pref_advanced_enable_media_info_title">Medya Bilgisi Etkinliğini Etkinleştir</string>
     <string name="pref_advanced_enable_media_info_summary">Sistem genelindeki \'Şununla aç\' menülerinde \'Medya Bilgisi\' seçeneğini göster</string>
 
-    <string name="blocked_shorts_empty_state">Engellenen video yok</string>
-    <string name="blocked_shorts_unblock_button">Engellendi</string>
-    
     <string name="media_info_selection_title">Seçim Bilgisi</string>
     <string name="media_info_selected_label">Seçili</string>
     <string name="media_info_total_length">Toplam süre</string>
@@ -1162,14 +1151,11 @@
         <!-- Shorts Player Action Buttons -->
     <string name="shorts_action_love">Beğen</string>
     <string name="shorts_action_loved">Beğenildi</string>
-    <string name="shorts_action_block">Engelle</string>
-    <string name="shorts_action_blocked">Engellendi</string>
     <string name="shorts_action_free">Serbest Bırak</string>
     <string name="shorts_action_back">Geri</string>
     <string name="shorts_action_more">Daha Fazla</string>
 
         <!-- Shorts Empty / Exhausted States -->
-    <string name="shorts_no_blocked_videos_found">Engellenen video bulunamadı</string>
     <string name="shorts_no_vertical_videos_found">Dikey video bulunamadı</string>
     <string name="shorts_all_finished_title">Tüm videolar bitti</string>
     <string name="shorts_all_finished_message">Şimdilik tüm dikey videoları izledin.</string>

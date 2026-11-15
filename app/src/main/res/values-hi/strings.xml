@@ -15,10 +15,6 @@
     <string name="pref_appearance_tab_home_summary">स्थानीय फ़ोल्डर और फ़ाइल एक्सप्लोरर दिखाएँ</string>
     <string name="pref_appearance_tab_shorts_title">Magen Shorts</string>
     <string name="pref_appearance_tab_shorts_summary">हाई - टेम्पो वर्टिकल वीडियो फ़ीड टॉगल करें</string>
-    <string name="pref_appearance_tab_recents_title">हाल ही में खोला गया</string>
-    <string name="pref_appearance_tab_recents_summary">पिछले वीडियो सत्रों को तुरंत फिर से शुरू करें</string>
-    <string name="pref_appearance_tab_playlists_title">प्लेलिस्ट</string>
-    <string name="pref_appearance_tab_playlists_summary">स्थानीय कस्टम वीडियो प्लेलिस्ट दिखाएं</string>
     <string name="pref_appearance_summary">डार्क मोड, मटेरियल यू</string>
     <string name="pref_appearance_category_theme">थीम्स</string>
     <string name="pref_appearance_darkmode_system">सिस्टम</string>
@@ -574,7 +570,6 @@
     <string name="choose_local_m3u_file">स्थानीय M3U फ़ाइल चुनें</string>
     <string name="home">होम</string>
     <string name="shorts">शॉर्ट्स</string>
-    <string name="recents">रिसेंट</string>
     <string name="playlists">प्लेलिस्ट</string>
     <string name="unit_seconds">सेकंड</string>
     <string name="milliseconds">मिलीसेकंड</string>
@@ -678,7 +673,6 @@
     <string name="auto_swipe_to_next_short_desc">वीडियो खत्म होने पर अपने आप स्वाइप करें</string>
     <string name="long_press_speed">लॉन्ग प्रेस स्पीड</string>
     <string name="video_information">वीडियो जानकारी</string>
-    <string name="blocked_videos_manager">ब्लॉक किया गया वीडियो मैनेजर</string>
     <string name="delete_short">शॉर्ट हटाएँ</string>
     <string name="delete_short_desc">इस फ़ाइल को डिवाइस से स्थायी रूप से हटा दें</string>
     <string name="long_press_speed_desc">गति को लॉक करने के लिए लंबे समय तक दबाएँ और बदलने के लिए सामान्य दबाएँ</string>
@@ -777,8 +771,6 @@
     <string name="pref_sourced_folders_count">%1$d फ़ोल्डरोंसे सोर्स किया गया</string>
     <string name="pref_sourced_folders_list">स्रोत: %1$s</string>
     <string name="pref_category_content_management">सामग्री मैनेजमेंट</string>
-    <string name="pref_blocked_videos">ब्लॉक किए गए वीडियो</string>
-    <string name="pref_blocked_videos_summary">ब्लॉक किए गए शॉर्ट्स देखें और मैनेज करें</string>
     <string name="pref_select_sourced_folders">सोर्स किए गए फ़ोल्डर चुनें</string>
     <string name="pref_select_sourced_folders_desc">से शॉर्ट्स सोर्स करने के लिए डायरेक्ट्री चुनें। यदि कोई भी चयनित नहीं है, तो सभी फ़ोल्डरों से शॉर्ट्स प्राप्त किए जाएंगे।</string>
     <string name="pref_about_checking">जाँच हो रही है...</string>
@@ -987,19 +979,14 @@
     <string name="pref_advanced_remove_cached_fonts_summary">सभी कैश्ड सबटाइटल फ़ॉन्ट हटाएँ</string>
     <string name="pref_advanced_enable_media_info_title">मीडिया जानकारी गतिविधि सक्षम करें</string>
     <string name="pref_advanced_enable_media_info_summary">सिस्टम-व्यापी ओपन विथ मेनू में एक विकल्प के रूप में मीडिया जानकारी दिखाएं</string>
-    <string name="blocked_shorts_empty_state">कोई अवरोधित वीडियो नहीं</string>
-    <string name="blocked_shorts_unblock_button">ब्लॉक्ड</string>
     <string name="media_info_selection_title">चयन जानकारी</string>
     <string name="media_info_selected_label">सेलेक्टेड</string>
     <string name="media_info_total_length">कुल लंबाई</string>
     <string name="shorts_action_love">प्यार</string>
     <string name="shorts_action_loved">प्यार किया</string>
-    <string name="shorts_action_block">ब्लॉक</string>
-    <string name="shorts_action_blocked">ब्लैक्ड</string>
     <string name="shorts_action_free">मुफ़्त</string>
     <string name="shorts_action_back">पीछे</string>
     <string name="shorts_action_more">अधिक</string>
-    <string name="shorts_no_blocked_videos_found">कोई ब्लॉक वीडियो नहीं मिला</string>
     <string name="shorts_no_vertical_videos_found">कोई वर्टिकल वीडियो नहीं मिला</string>
     <string name="shorts_all_finished_title">सभी वीडियो समाप्त हो गए</string>
     <string name="shorts_all_finished_message">आपने अभी तक सभी वर्टिकल वीडियो देख लिए हैं।</string>

@@ -17,10 +17,6 @@
     <string name="pref_appearance_tab_home_summary">Lokal qovluqları və fayl bələdçisini göstər</string>
     <string name="pref_appearance_tab_shorts_title">Magen Shorts</string>
     <string name="pref_appearance_tab_shorts_summary">Sürətli şaquli video lentlərini aktivləşdir və ya söndür</string>
-    <string name="pref_appearance_tab_recents_title">Son oynadılanlar</string>
-    <string name="pref_appearance_tab_recents_summary">Əvvəlki videolara baxmağa qaldığın yerdən tez davam et</string>
-    <string name="pref_appearance_tab_playlists_title">Pleylistlər</string>
-    <string name="pref_appearance_tab_playlists_summary">Lokal fərdi video pleylistlərini göstər</string>
     <string name="pref_appearance_summary">Qaranlıq rejim, Material You</string>
     <string name="pref_appearance_category_theme">Tema</string>
     <string name="pref_appearance_darkmode_system">Sistem</string>
@@ -655,7 +651,6 @@
     <string name="choose_local_m3u_file">Lokal M3U faylı seç</string>
     <string name="home">Əsas səhifə</string>
     <string name="shorts">Qısa videolar</string>
-    <string name="recents">Son oynadılanlar</string>
     <string name="playlists">Pleylistlər</string>
     <string name="unit_seconds">Saniyə</string>
     <string name="milliseconds">Millisaniyə</string>
@@ -781,7 +776,6 @@
     <string name="auto_swipe_to_next_short_desc">Video bitdikdə avtomatik sürüşdür</string>
     <string name="long_press_speed">Basıb saxladıqda oynatma sürəti</string>
     <string name="video_information">Video məlumatları</string>
-    <string name="blocked_videos_manager">Bloklanmış videoların idarəsi</string>
     <string name="delete_short">Qısa videonu sil</string>
     <string name="delete_short_desc">Bu faylı cihazdan həmişəlik sil</string>
     <string name="long_press_speed_desc">Sürəti sabitləmək üçün basıb saxla, dəyişmək üçün qısa bas</string>
@@ -895,8 +889,6 @@
     <string name="pref_sourced_folders_count">%1$d qovluqdan götürülür</string>
     <string name="pref_sourced_folders_list">Mənbə: %1$s</string>
     <string name="pref_category_content_management">Məzmun idarəetməsi</string>
-    <string name="pref_blocked_videos">Bloklanmış videolar</string>
-    <string name="pref_blocked_videos_summary">Bloklanmış qısa videolara bax və onları idarə et</string>
     <string name="pref_select_sourced_folders">Mənbə qovluqlarını seç</string>
     <string name="pref_select_sourced_folders_desc">Qısa videoların götürüləcəyi qovluqları seç. Qovluq seçilməsə, qısa videolar bütün qovluqlardan götürüləcək.</string>
 
@@ -1150,9 +1142,6 @@
     <string name="pref_advanced_enable_media_info_title">Media məlumatı pəncərəsini aktivləşdir</string>
     <string name="pref_advanced_enable_media_info_summary">Sistemdəki \'Bununla aç\' menyularında \'Media məlumatı\' seçimini göstər</string>
 
-    <string name="blocked_shorts_empty_state">Bloklanmış video yoxdur</string>
-    <string name="blocked_shorts_unblock_button">Bloklanıb</string>
-    
     <string name="media_info_selection_title">Seçim məlumatı</string>
     <string name="media_info_selected_label">Seçilib</string>
     <string name="media_info_total_length">Ümumi müddət</string>
@@ -1160,14 +1149,11 @@
         <!-- Shorts Player Action Buttons -->
     <string name="shorts_action_love">Bəyən</string>
     <string name="shorts_action_loved">Bəyənilib</string>
-    <string name="shorts_action_block">Blokla</string>
-    <string name="shorts_action_blocked">Bloklanıb</string>
     <string name="shorts_action_free">Sərbəst burax</string>
     <string name="shorts_action_back">Geri</string>
     <string name="shorts_action_more">Daha çox</string>
 
         <!-- Shorts Empty / Exhausted States -->
-    <string name="shorts_no_blocked_videos_found">Bloklanmış video tapılmadı</string>
     <string name="shorts_no_vertical_videos_found">Şaquli video tapılmadı</string>
     <string name="shorts_all_finished_title">Bütün videolar bitdi</string>
     <string name="shorts_all_finished_message">Hazırda bütün şaquli videolara baxmısınız.</string>

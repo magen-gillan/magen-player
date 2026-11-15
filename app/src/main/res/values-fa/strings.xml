@@ -15,10 +15,6 @@
     <string name="pref_appearance_tab_home_summary">نمایش پوشه‌های محلی و فایل اکسپلورر</string>
     <string name="pref_appearance_tab_shorts_title">Magen Shorts</string>
     <string name="pref_appearance_tab_shorts_summary">فیدهای ویدیویی عمودی با سرعت بالا را تغییر دهید</string>
-    <string name="pref_appearance_tab_recents_title">اخیرا پخش‌شده</string>
-    <string name="pref_appearance_tab_recents_summary">به سرعت جلسات ویدیویی قبلی را از سر بگیرید</string>
-    <string name="pref_appearance_tab_playlists_title">لیست های پخش</string>
-    <string name="pref_appearance_tab_playlists_summary">نمایش لیست های پخش ویدیوی سفارشی محلی</string>
     <string name="pref_appearance_summary">حالت تاریک، متریال یو</string>
     <string name="pref_appearance_category_theme">پوسته</string>
     <string name="pref_appearance_darkmode_system">سیستم</string>
@@ -574,7 +570,6 @@
     <string name="choose_local_m3u_file">فایل محلی M3U را انتخاب کنید</string>
     <string name="home">صفحه اصلی</string>
     <string name="shorts">شورت</string>
-    <string name="recents">اخیر</string>
     <string name="playlists">لیست های پخش</string>
     <string name="unit_seconds">ثانیه ها</string>
     <string name="milliseconds">میلی ثانیه</string>
@@ -678,7 +673,6 @@
     <string name="auto_swipe_to_next_short_desc">وقتی ویدیو تمام شد، انگشت خود را به‌طور خودکار بکشید</string>
     <string name="long_press_speed">سرعت فشار طولانی</string>
     <string name="video_information">اطلاعات ویدیویی</string>
-    <string name="blocked_videos_manager">مدیر ویدیوهای مسدود شده</string>
     <string name="delete_short">حذف Short</string>
     <string name="delete_short_desc">این فایل را برای همیشه از دستگاه حذف کنید</string>
     <string name="long_press_speed_desc">فشار طولانی برای قفل کردن سرعت و فشار عادی برای تغییر</string>
@@ -769,8 +763,6 @@
     <string name="pref_sourced_folders_count">منبع از %1$d پوشه(ها)</string>
     <string name="pref_sourced_folders_list">منبع: %1$s</string>
     <string name="pref_category_content_management">مدیریت محتوا</string>
-    <string name="pref_blocked_videos">ویدیوهای مسدود شده</string>
-    <string name="pref_blocked_videos_summary">شورت مسدود شده را مشاهده و مدیریت کنید</string>
     <string name="pref_select_sourced_folders">منبع پوشه ها را انتخاب کنید</string>
     <string name="pref_select_sourced_folders_desc">دایرکتوری هایی را انتخاب کنید تا از آنها منبع کوتاهی بگیرید. اگر هیچ کدام انتخاب نشد، شورت ها از همه پوشه ها تهیه می شوند.</string>
     <string name="pref_about_checking">در حال بررسی…</string>
@@ -958,19 +950,14 @@
     <string name="pref_advanced_remove_cached_fonts_summary">تمام فونت های زیرنویس ذخیره شده را حذف کنید</string>
     <string name="pref_advanced_enable_media_info_title">فعال کردن Media Info Activity</string>
     <string name="pref_advanced_enable_media_info_summary">«اطلاعات رسانه» را به عنوان یک گزینه در منوهای «باز کردن با» در سراسر سیستم نشان دهید</string>
-    <string name="blocked_shorts_empty_state">هیچ ویدیوی مسدود شده ای وجود ندارد</string>
-    <string name="blocked_shorts_unblock_button">مسدود شده است</string>
     <string name="media_info_selection_title">اطلاعات انتخاب</string>
     <string name="media_info_selected_label">انتخاب شده است</string>
     <string name="media_info_total_length">طول کل</string>
     <string name="shorts_action_love">عشق</string>
     <string name="shorts_action_loved">دوست داشت</string>
-    <string name="shorts_action_block">مسدود کردن</string>
-    <string name="shorts_action_blocked">مسدود شده است</string>
     <string name="shorts_action_free">رایگان</string>
     <string name="shorts_action_back">برگشت</string>
     <string name="shorts_action_more">بیشتر</string>
-    <string name="shorts_no_blocked_videos_found">هیچ ویدیوی مسدود شده ای یافت نشد</string>
     <string name="shorts_no_vertical_videos_found">هیچ ویدیوی عمودی یافت نشد</string>
     <string name="shorts_all_finished_title">همه ویدیوها تمام شد</string>
     <string name="shorts_all_finished_message">در حال حاضر همه ویدیوهای عمودی را دیده‌اید.</string>

@@ -515,7 +515,6 @@
     <string name="folder_name">資料夾名稱</string>
     <string name="choose_local_m3u_file">選擇本機 M3U 檔案</string>
     <string name="home">首頁</string>
-    <string name="recents">最近</string>
     <string name="playlists">播放清單</string>
     <string name="unit_seconds">秒</string>
     <string name="milliseconds">毫秒</string>

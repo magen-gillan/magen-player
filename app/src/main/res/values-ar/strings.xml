@@ -717,7 +717,7 @@
     <string name="pref_category_media_settings">إعدادات الوسائط</string>
     <string name="pref_category_magen_shorts">Magen Shorts</string>
     <string name="pref_category_magen_shorts_settings">إعدادات Magen Shorts</string>
-    <string name="pref_category_magen_shorts_settings_desc">إدارة التفعيل والتعطيل والتشغيل العشوائي والمحتوى المحجوب</string>
+    <string name="pref_category_magen_shorts_settings_desc">إدارة التفعيل والتعطيل والتشغيل العشوائي ومجلدات المصدر</string>
     <string name="pref_category_advanced_about">المتقدمة وحول التطبيق</string>
     <string name="pref_enable_magen_shorts">تفعيل Magen Shorts</string>
     <string name="pref_enable_magen_shorts_summary">إظهار تبويب المقاطع القصيرة في شريط التنقل السفلي</string>
